@@ -1,0 +1,9 @@
+Willkommen zu participate!
+
+Hier ist ihr Validierungs-Code: {{valcode}}
+
+Ihr participate-Team!
+
+
+
+

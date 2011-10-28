@@ -1,0 +1,16 @@
+
+{% macro field(field, input) -%}
+          <div class="clearfix {{'error' if field.errors}} ">
+            {{ field.label }}
+            <div class="input">
+                {{ input }}
+                {% if field.errors %}
+                    <p>
+                    {% for error in field.errors %}
+                        <span class="help-inline">{{ error }}</span><br>
+                    {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+          </div>
+{%- endmacro %}

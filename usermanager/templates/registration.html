@@ -1,0 +1,32 @@
+{% extends "master/master.html" %}
+{% block content %}
+      <div class="row">
+        <div class="span16">
+
+
+        <form class="validate" method="POST" action="/register">
+        <fieldset>
+          <legend>Registrierung</legend>
+          <div class="clearfix">
+            <div class="input">
+                Um sich zu registrieren, geben Sie einfach Ihre E-Mail-Adresse ein und wählen
+                Sie ein Passwort. 
+            </div>
+          </div><!-- /clearfix -->
+
+          {{ macros.field(form.name, form.name(class="xlarge required")) }}
+          {{ macros.field(form.email, form.email(class="xlarge required email", remote="/register/validate")) }}
+          {{ macros.field(form.password, form.password(class="xlarge password required", id="password")) }}
+          {{ macros.field(form.password2, form.password2(class="xlarge required", equalTo="#password")) }}
+          {{ macros.field(form.bio, form.bio(class="xxlarge")) }}
+
+          <div class="clearfix">
+            <div class="input">
+                <input type="submit" class="btn large success" value="Registrieren">
+            </div>
+          </div><!-- /clearfix -->
+        </fieldset>
+        </form>
+      </div>
+      </div>
+{% endblock %}
