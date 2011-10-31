@@ -3,7 +3,6 @@ from werkzeug.routing import Map, Rule, NotFound, RequestRedirect
 from framework import Handler
 
 import werkzeug.wsgi
-import os
 
 import setup
 import register
@@ -29,14 +28,9 @@ class App(Application):
         self.add_rule('/register/validate', 'register.validate', register.ValidationView)
 
 def app_factory(**local_conf):
-    settings = setup.setup(**local_conf)
-    app = App(settings)
-    app = werkzeug.wsgi.SharedDataMiddleware(app, {
-        '/css': os.path.join(settings.static_file_path, 'css'),
-        '/js': os.path.join(settings.static_file_path, 'js'),
-        '/img': os.path.join(settings.static_file_path, 'img'),
-    })
-    return app
+    config = setup.setup(**local_conf)
+    app = App(config)
+    return werkzeug.wsgi.SharedDataMiddleware(app, config._static_map)
 
 
 

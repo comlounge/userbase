@@ -15,7 +15,7 @@ class Handler(BaseHandler):
         params.user_id = None
         params.session_id = None
         params.user = None
-        params.txt = self.settings.texts
+        params.txt = self.config.i18n.de
         return params
 
 

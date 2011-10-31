@@ -20,7 +20,7 @@ class RegistrationForm(Form):
 class RegistrationView(Handler):
     """an index handler"""
 
-    template = "master/registration.html"
+    template = "registration.html"
 
     @ashtml()
     def get(self):
@@ -32,13 +32,13 @@ class RegistrationView(Handler):
         form = RegistrationForm(self.request.form)
         if self.request.method == 'POST' and form.validate():       
             # TODO: check email availability in db model or widget validator?
-            if self.settings.db_users.by_email(form.email.data) is not None:
+            if self.config.dbs.users.by_email(form.email.data) is not None:
                 return ""
-            user = User(form.data, settings = settings)
+            user = User(form.data, config = config)
             user.set_pw(form.password.data)
-            user = self.settings.db_users.put(user)
+            user = self.config.dbs.users.put(user)
             user.send_validation_code()
-            user = self.settings.db_users.put(user)
+            user = self.config.dbs.users.put(user)
             raise self.redirect(self.url_for('registered'))
         return self.render(form=form)
 
@@ -53,7 +53,7 @@ class ValidationView(Handler):
         args = self.request.values
         if "email" in args:
             email = args['email']
-            if self.settings.db_users.by_email(email) is not None:
+            if self.config.dbs.users.by_email(email) is not None:
                 return "Diese E-Mail-Adresse ist schon registriert."
         return True
 

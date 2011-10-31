@@ -33,7 +33,7 @@ class Record(object):
     schema = None
     create_id = True
 
-    def __init__(self, data, from_db = False, collection = None, settings = settings):
+    def __init__(self, data, from_db = False, collection = None, config = {}):
         """initialize a user with data
 
         :param data: The data in dict form to store in this object which will be available as obj.d
@@ -100,10 +100,10 @@ class Collection(object):
     data_class = None
     use_objectids = False # does the mongodb collection use object ids?
 
-    def __init__(self, collection, settings = {}):
+    def __init__(self, collection, config = {}):
         """initialize the collection"""
         self.collection = collection
-        self.settings = settings
+        self.config = config
 
     def put(self, obj):
         """store an object"""
