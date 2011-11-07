@@ -57,6 +57,8 @@ class User(Record):
         self.d.validation_code_sent = str(datetime.datetime.now())
         # TODO: actually sent the code
         self.d.state = "code_sent"
+        self.collection.config.mail.mailer.mail("%s <%s>" %(self.d.name, self.d.email), "Registration", "welcome.txt", valcode = self.d.validation_code)
+
 
 class Users(Collection):
     

@@ -3,7 +3,7 @@ import sys, os
 
 version = '1.0'
 
-setup(name='usermanager',
+setup(name='userbase',
       version=version,
       description="Participate User Manager",
       long_description="""\
@@ -28,11 +28,9 @@ setup(name='usermanager',
         "wtforms",
       ],
       entry_points="""
-        [console_scripts]
-        run = starflyer.scripts:run
-        [starflyer_app_factory]
-        default = usermanager.main:app_factory
-        [starflyer_setup]
-        default = usermanager.setup:setup
+        [starflyer.config]
+        default = userbase.setup:setup
+        [paste.app_factory]
+        main = starflyer:run
       """,
       )

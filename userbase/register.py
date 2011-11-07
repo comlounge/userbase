@@ -34,7 +34,7 @@ class RegistrationView(Handler):
             # TODO: check email availability in db model or widget validator?
             if self.config.dbs.users.by_email(form.email.data) is not None:
                 return ""
-            user = User(form.data, config = config)
+            user = User(form.data, collection = self.config.dbs.users)
             user.set_pw(form.password.data)
             user = self.config.dbs.users.put(user)
             user.send_validation_code()
@@ -60,4 +60,31 @@ class ValidationView(Handler):
 class RegisteredView(Handler):
     """an index handler"""
 
-    template = "master/registered.html"
+    template = "registered.html"
+
+class ValidationCodeView(Handler):
+    """view used to validate a validation code. The following can happen:
+
+    - the code is invalid. Then it is said so and the user can optionally
+      send the code again by being redirected to ValidationRetryView.
+    - the code is valid. In this case the user is activated and redirected to the
+      welcome screen. This screen is blank per default but can be overridden by
+      the host service to show an appropriate screen.
+    """
+
+    template = "registered.html"
+
+    def get(self, code=None):
+        """validate the code"""
+        print code
+        # get the user for this code
+        user = self.config.dbs.users.find_by_code(code)
+        if user is None: # code is invalid
+            return self.render(tmplname="invalid_code.html")
+        user.state = "live"
+        user.save()
+        self.redirect(self.url_for("welcome"))
+
+
+
+

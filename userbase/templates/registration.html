@@ -15,7 +15,7 @@
           </div><!-- /clearfix -->
 
           {{ macros.field(form.name, form.name(class="xlarge required")) }}
-          {{ macros.field(form.email, form.email(class="xlarge required email", remote="/register/validate")) }}
+          {{ macros.field(form.email, form.email(class="xlarge required email", remote=url_for('register.validate'))) }}
           {{ macros.field(form.password, form.password(class="xlarge password required", id="password")) }}
           {{ macros.field(form.password2, form.password2(class="xlarge required", equalTo="#password")) }}
           {{ macros.field(form.bio, form.bio(class="xxlarge")) }}
