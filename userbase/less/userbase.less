@@ -1,0 +1,139 @@
+
+@import "bootstrap/lib/variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "bootstrap/lib/mixins.less";
+
+// quick layout shortcuts
+//
+.padT { padding-top: 5px; }
+.padTT { padding-top: 10px; }
+.padTTT { padding-top: 20px; }
+.txt-large {
+    font-size: 1.2em;
+    line-height: 1.5em;
+}
+
+body {
+    background: #eee;
+}
+
+// layout overrides
+//
+
+header {
+    margin-top: 50px;
+    height: 70px;
+
+    h1 {
+        font-family: 'Alfa Slab One', cursive;
+        font-size: 50px;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+    }
+}
+
+.form {
+    .border-radius(10px);
+    padding: 20px;
+    @color: #444;
+    .gradientBar(@color, darken(@color, 20%));
+    @shadow: 1px 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -1px 1px rgba(255,255,255,0.3);
+    .box-shadow(@shadow);
+    border: 1px solid #333;
+    color: #d0d0d0;
+    h2 {
+        color: #ccc;
+        font-family: 'Oswald', cursive;
+        font-weight: normal;
+        margin-left: 154px;
+        text-shadow: 0 1px 1px rgba(255,255,255,0.6), 0 -1px 0 rgba(0,0,0,0.7);
+        padding-bottom: 20px;
+    }
+    label {
+        margin-top: 20px;
+        color: #ddd;
+        font-size: 18px;
+        font-weight: normal;
+        text-shadow: 0 -1px 0px rgba(0,0,0,0.6);
+    }
+    fieldset { margin: 0; }
+    input, 
+    textarea {
+        padding: 5px 5px;
+        margin: 10px 0;
+        background: #666;
+        text-shadow: 0 -1px 0 rgba(0,0,0,0.9);
+        height: 40px;
+        border: 1px solid #333;
+        width: 380px;
+        color: #f0f0f0;
+        .box-shadow(inset 1px 1px 4px rgba(0,0,0,0.9));
+    }
+    input {
+        font-size: 20px;
+    }
+    input:focus, textarea:focus {
+        background: #eee;
+        color: #333;
+        text-shadow: 0 -1px 0 rgba(255,255,255,0.9);
+    }
+    a {
+        color: #ccc;
+        text-shadow: 0 -1px 0 rgba(0,0,0,0.9);
+        position: relative;
+        margin-left: 10px;
+        top: -15px;
+        font-size: 16px;
+    }
+}
+
+.form-actions {
+    margin: 20px 0 0 0;
+    background: transparent;
+    border: none;
+}
+
+input.button, 
+.button {
+    font-family: "Oswald", serif;
+    background: #feda71;
+    #gradient > .vertical(#feda71, #febb4a);
+    color:#996633;
+    text-shadow:0 1px 0 #fedd9b;
+    padding: 10px 30px;
+    width: auto;
+    height: auto;
+    @shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    .box-shadow(@shadow);
+    border:1px solid #f5b74e;
+    border-color:#f5b74e #e5a73e #d6982f;
+    .border-radius(4px);
+    @shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
+    .box-shadow(@shadow);
+    .transition(all 0.3s linear);
+    display: inline-block;
+
+    &:hover {
+        text-shadow:0px 1px 1px rgba(0,0,0,0.2);
+        color:#fff;
+        text-decoration: none;
+    }
+    &:active{
+        background:#fec354;
+        #gradient > .vertical (#fec354, #fecd61); 
+        border-color:#d29a3a #cc9436 #c89133;
+        @shadow: 0 1px 1px #d4d4d4, inset 0 1px 0 #fed17e;
+        .box-shadow(@shadow);
+    }
+}
+.button.xlarge {
+    font-size: 30px;
+    padding: 20px 0px;
+    text-align: center;
+    width: 100%;
+    
+}
+input.button {
+    padding-bottom: 15px;
+    margin-left: 4px;
+}
+
+

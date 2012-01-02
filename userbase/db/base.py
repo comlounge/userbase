@@ -4,7 +4,29 @@ import uuid
 import starflyer
 import mongoquery
 
-__all__ = ['Record', 'Collection', 'Error', 'InvalidData', 'ObjectNotFound']
+__all__ = ['Record', 'Collection', 'Error', 'InvalidData', 'ObjectNotFound', 'DateTime']
+
+class DateTime(colander.SchemaType):
+    """our own date time type which does not serialize to a string but keeps the datetime for mongo"""
+
+    err_template =  colander._('Invalid date')
+
+    def serialize(self, node, appstruct):
+        if appstruct is colander:
+            return colander
+
+        if not isinstance(appstruct, datetime.datetime):
+            raise colande.Invalid(node,
+                          _('"${val}" is not a datetime object',
+                            mapping={'val':appstruct})
+                          )
+
+        return appstruct
+
+    def deserialize(self, node, cstruct):
+        if not cstruct:
+            return colander.null
+        return cstruct
 
 class Error(Exception):
     """base class for all data related exceptions"""
@@ -61,6 +83,7 @@ class Record(object):
         # check if data is valid (strangely we need to call colander's deserialize()
         # because otherwise it would make strings out of everything
         # we only want the validators though
+        print self.d
         try:
             data = self.schema.deserialize(self.d)
         except colander.Invalid, e:
@@ -90,9 +113,8 @@ class Record(object):
     @classmethod
     def deserialize(cls, data, collection = None):
         """create a new instance of this class"""
-
         data = cls.on_deserialize(data)
-        return cls(data, collection)
+        return cls(data, from_db=True, collection = collection)
         
 
 class Collection(object):
@@ -128,7 +150,6 @@ class Collection(object):
     def all(self):
         """return all objects"""
         return self.query()
-
 
     @property
     def query(self):

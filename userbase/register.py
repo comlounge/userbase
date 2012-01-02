@@ -10,8 +10,9 @@ import setup
 from wtforms import Form, TextField, validators, TextAreaField, PasswordField
 
 class RegistrationForm(Form):
-    name        = TextField('Ihr Name', [validators.Length(min=6, max=35)])
-    email       = TextField('Ihre Email-Adresse', [validators.Length(min=6, max=35), validators.Email()])
+    name        = TextField('Name', [validators.Length(min=6, max=55)])
+    username    = TextField('Nickname', [validators.Length(min=6, max=35)])
+    email       = TextField('Email-Adresse', [validators.Length(min=6, max=35), validators.Email()])
     password    = PasswordField('Passwort', [validators.Length(min=6, max=35)])
     password2   = PasswordField('Passwort Wiederholung', [validators.Length(min=6, max=35)])
     bio         = TextAreaField('Bio (optional)')
@@ -37,7 +38,7 @@ class RegistrationView(Handler):
             user = User(form.data, collection = self.config.dbs.users)
             user.set_pw(form.password.data)
             user = self.config.dbs.users.put(user)
-            user.send_validation_code()
+            user.send_validation_code(self.url_for)
             user = self.config.dbs.users.put(user)
             raise self.redirect(self.url_for('registered'))
         return self.render(form=form)
@@ -76,7 +77,6 @@ class ValidationCodeView(Handler):
 
     def get(self, code=None):
         """validate the code"""
-        print code
         # get the user for this code
         user = self.config.dbs.users.find_by_code(code)
         if user is None: # code is invalid

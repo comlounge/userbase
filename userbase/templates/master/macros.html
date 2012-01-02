@@ -1,16 +1,16 @@
 
 {% macro field(field, input) -%}
-          <div class="clearfix {{'error' if field.errors}} ">
-            {{ field.label }}
-            <div class="input">
+          <fieldset class="control-group {{'error' if field.errors}} ">
+            {{ field.label(class="control-group") }}
+            <div class="controls">
                 {{ input }}
                 {% if field.errors %}
-                    <p>
+                    <div>
                     {% for error in field.errors %}
                         <span class="help-inline">{{ error }}</span><br>
                     {% endfor %}
-                    </p>
+                    </div>
                 {% endif %}
             </div>
-          </div>
+          </fieldset>
 {%- endmacro %}

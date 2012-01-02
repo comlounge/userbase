@@ -1,4 +1,4 @@
-from usermanager.db import User, Users
+from userbase.db import User, Users
 import pymongo
 
 def pytest_funcarg__db(request):

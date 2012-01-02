@@ -50,7 +50,7 @@ def setup(**kw):
         ('/registered', 'registered', register.RegisteredView),
         ('/register', 'register', register.RegistrationView),
         ('/register/validate', 'register.validate', register.ValidationView),
-        ('/validate/<code>', 'validate', register.ValidationCodeView),
+        ('/validate/<code>', 'validation', register.ValidationCodeView),
     ])
 
     ## databases

@@ -1,32 +1,30 @@
 {% extends "master/master.html" %}
 {% block content %}
-      <div class="row">
-        <div class="span16">
+    <div class="row">
+        <div class="span8">
+            <div class="form">
+                <h2>Registriere Dich!</h2>
+                <form class="boxform horizontal-form validate" method="POST" action="/register">
+                    {{ macros.field(form.name, form.name(class="span4 required")) }}
+                    {{ macros.field(form.username, form.username(class="span4 required")) }}
+                    {{ macros.field(form.email, form.email(class="span4 required email", remote=url_for('register.validate'))) }}
+                    {{ macros.field(form.password, form.password(class="span4 password required", id="password")) }}
+                    {{ macros.field(form.password2, form.password2(class="span4 required", equalTo="#password")) }}
 
-
-        <form class="validate" method="POST" action="/register">
-        <fieldset>
-          <legend>Registrierung</legend>
-          <div class="clearfix">
-            <div class="input">
-                Um sich zu registrieren, geben Sie einfach Ihre E-Mail-Adresse ein und wählen
-                Sie ein Passwort. 
+                    <fieldset class="form-actions">
+                        <div class="input">
+                            <input type="submit" class="button large" value="Registrieren">
+                        </div>
+                    </fieldset>
+                </form>
             </div>
-          </div><!-- /clearfix -->
-
-          {{ macros.field(form.name, form.name(class="xlarge required")) }}
-          {{ macros.field(form.email, form.email(class="xlarge required email", remote=url_for('register.validate'))) }}
-          {{ macros.field(form.password, form.password(class="xlarge password required", id="password")) }}
-          {{ macros.field(form.password2, form.password2(class="xlarge required", equalTo="#password")) }}
-          {{ macros.field(form.bio, form.bio(class="xxlarge")) }}
-
-          <div class="clearfix">
-            <div class="input">
-                <input type="submit" class="btn large success" value="Registrieren">
-            </div>
-          </div><!-- /clearfix -->
-        </fieldset>
-        </form>
-      </div>
-      </div>
+        </div>
+        <div class="span4">
+            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
+            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
+            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
+            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
+            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
+        </div>
+    </div>
 {% endblock %}
