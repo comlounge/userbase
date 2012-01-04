@@ -7,6 +7,9 @@ from userbase.db import User
 
 from wtforms import Form, TextField, validators, TextAreaField, PasswordField
 
+class EMailForm(Form):
+    email       = TextField('Email-Adresse:', [validators.Length(min=6, max=35), validators.Email()])
+
 class RegistrationForm(Form):
     name        = TextField('Name', [validators.Length(min=6, max=55)])
     username    = TextField('Nickname', [validators.Length(min=6, max=35)])
@@ -73,17 +76,30 @@ class ValidationCodeView(Handler):
 
     template = "registered.html"
 
+    @ashtml()
     def get(self, code=None):
         """validate the code"""
         # get the user for this code
         # TODO: check state, delete code
+        form = EMailForm(self.request.form)
         user = self.config.dbs.users.find_by_code(code)
-        if user is None: # code is invalid
-            return self.render(tmplname="invalid_code.html")
+        if user is None: # code is invalid but we might have an email address
+            email = form.data['email']
+            if email is not None:
+                user = self.config.dbs.users.find_by_email(email)
+                if user is None:
+                    self.flash("Leider ist uns kein Benutzer mit dieser E-Mail-Adresse bekannt!", css_class="error")
+                else:
+                    user.send_validation_code(self.url_for)
+                    user = self.config.dbs.users.put(user)
+                    self.flash("Wir haben Dir einen neuen Aktivierungscode per E-Mail gesendet", description="Bitte checke Deine E-Mail und klicke auf den angegebenen Link", css_class="success")
+                    raise self.redirect(self.url_for("index"))
+            return self.render(tmplname="invalid_code.html", form=form)
         user.d.state = "live"
         user.save()
         raise self.redirect(self.url_for("welcome"))
-
+    
+    post = get
 
 
 
