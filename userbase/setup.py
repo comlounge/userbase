@@ -51,6 +51,8 @@ def setup(**kw):
         ('/register/validate', 'register.validate', views.register.ValidationView),
         ('/validate/<code>', 'validation', views.register.ValidationCodeView),
         ('/welcome', 'welcome', views.welcome.WelcomeView),
+        ('/pw_forgot', 'pw_forgot', views.pwforgot.PWForgottenView),
+        ('/pw_validation/<code>', 'pw_validation', views.pwforgot.PWValidationView),
         ('/logout', 'logout', views.index.LogoutView),
     ])
 

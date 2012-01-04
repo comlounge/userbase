@@ -71,6 +71,15 @@ class User(Record):
             valcode = self.d.validation_code,
             valcode_link = valcode_link)
 
+    def send_pw_forgotten_code(self, url_for):
+        """generate and send a new password forgotten code"""
+        self.d.pw_code = self.gen_code()
+        self.d.pw_code_sent = datetime.datetime.now()
+        pw_link = url_for("pw_validation", code = self.d.pw_code, force_external=True)
+        self.collection.config.mail.mailer.mail("%s <%s>" %(self.d.name, self.d.email), "Passwort vergessen", "pw_forgotten.txt",
+            pw_code = self.d.pw_code,
+            pw_link = pw_link)
+
     def save(self):
         """save the object"""
         self.collection.put(self)
@@ -91,6 +100,14 @@ class Users(Collection):
     def find_by_code(self, code):
         """return a User object by validation code"""
         q = self.query.update(validation_code = code)
+        res = q()
+        if res.count==0:
+            return None
+        return res[0]
+
+    def find_by_pwcode(self, code):
+        """return a User object by password validation code"""
+        q = self.query.update(pw_code = code)
         res = q()
         if res.count==0:
             return None

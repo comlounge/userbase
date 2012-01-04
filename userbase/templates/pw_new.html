@@ -1,0 +1,23 @@
+{% extends "master/master.html" %}
+
+{% block content %}
+<div id="index">
+    <div class="row">
+        <div class="span8">
+            <section class="form">
+                <h2>Neues Passwort setzen</h2>
+                <h3>Hier kannst Du jetzt ein neues Passwort setzen.</h3>
+                <form class="horizontal-form validate" method="POST" action="{{url}}">
+                    {{ macros.field(form.password, form.password(class="span4 pw required", id="password")) }}
+                    {{ macros.field(form.password2, form.password2(class="span4 required", equalTo="#password")) }}
+                    <fieldset class="form-actions">
+                        <input type="submit" class="button large" value="Neues Passwort speichern">
+                    </fieldset>
+                </form>
+            </section>
+        </div>
+        <div class="span4">
+        </div>
+    </div>
+</div>
+{% endblock %}
