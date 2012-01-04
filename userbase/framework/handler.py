@@ -28,7 +28,6 @@ class Handler(BaseHandler):
                 self.log.error("user in token not found: %s " %self.userid)
                 self.userid=None
                 self.user=None
-        # TODO: set an empty cookie and redirect to homepage on errors
 
     @starflyer.ashtml()
     def get(self):
