@@ -10,9 +10,7 @@ import postmeister
 from jinja2 import Environment, PackageLoader, PrefixLoader
 from logbook import Logger
 import db
-import main
-import register
-import welcome
+import views
 
 def setup(**kw):
     """setup the application. 
@@ -47,12 +45,13 @@ def setup(**kw):
 
     ## routing
     config.routes.extend([
-        ('/', 'index', main.IndexView),
-        ('/registered', 'registered', register.RegisteredView),
-        ('/register', 'register', register.RegistrationView),
-        ('/register/validate', 'register.validate', register.ValidationView),
-        ('/validate/<code>', 'validation', register.ValidationCodeView),
-        ('/welcome', 'welcome', welcome.WelcomeView),
+        ('/', 'index', views.index.IndexView),
+        ('/registered', 'registered', views.register.RegisteredView),
+        ('/register', 'register', views.register.RegistrationView),
+        ('/register/validate', 'register.validate', views.register.ValidationView),
+        ('/validate/<code>', 'validation', views.register.ValidationCodeView),
+        ('/welcome', 'welcome', views.welcome.WelcomeView),
+        ('/logout', 'logout', views.index.LogoutView),
     ])
 
     ## databases

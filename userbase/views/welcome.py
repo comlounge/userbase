@@ -1,4 +1,4 @@
-from framework import Handler
+from userbase.framework import Handler
 
 class WelcomeView(Handler):
     """an welcome handler"""

@@ -46,13 +46,11 @@ class User(Record):
     def set_pw(self, pw):
         """store a password"""
         self.d.password = hashlib.new("md5",pw).hexdigest()
-        print self.d.password
         return pw
 
     def check_pw(self, pw):
         """check if the given password is correct"""
         hash = hashlib.new("md5",pw).hexdigest()
-        print hash, self.d.password
         return hash == self.d.password
 
     def gen_code(self):

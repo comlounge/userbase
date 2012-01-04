@@ -1,11 +1,9 @@
 from starflyer import Application, asjson, ashtml
 from werkzeug.routing import Map, Rule, NotFound, RequestRedirect
-from framework import Handler
+from userbase.framework import Handler
 import werkzeug.wsgi
 import os
-from db import User
-
-import setup
+from userbase.db import User
 
 from wtforms import Form, TextField, validators, TextAreaField, PasswordField
 

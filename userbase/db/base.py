@@ -83,7 +83,6 @@ class Record(object):
         # check if data is valid (strangely we need to call colander's deserialize()
         # because otherwise it would make strings out of everything
         # we only want the validators though
-        print self.d
         try:
             data = self.schema.deserialize(self.d)
         except colander.Invalid, e:

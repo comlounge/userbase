@@ -3,24 +3,9 @@
 {% block content %}
 <div id="index">
     <div class="row">
-        <div class="span8">
-            <section class="form">
-                <h2>Bitte logge Dich ein und diskutiere mit!</h2>
-                <form class="horizontal-form validate" method="POST" action="{{url}}">
-                    {{ macros.field(form.email, form.email(class="required")) }}
-                    {{ macros.field(form.password, form.password(class="required")) }}
-                    <fieldset class="form-actions">
-                        <input type="submit" class="button large" value="Einloggen">
-                        <a href="#">Passwort vergessen?</a>
-                    </fieldset>
-                </form>
-            </section>
-        </div>
-        <div class="span4">
-            <p>
-                Um bei Participate! mitzumachen und mitzudiskutieren, müssen Sie sich zunächst registrieren. 
-            </p>
-            <a class="button xlarge" href="/register">Registriere Dich!</a>
+        <div class="span16">
+            <h1>Homepage von Participate!</h1>
+            <a class="button xlarge" style="margin-top: 20px" href="{{url_for("logout")}}">Ausloggen</a>
         </div>
     </div>
 </div>
