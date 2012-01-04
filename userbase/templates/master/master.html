@@ -33,6 +33,12 @@
             <header>
                 <h1>Participate!</h1>
             </header>
+            {% for m in flash_messages %}
+                <div class="alert-message {{m.css_class}}">
+                    <strong>{{m.msg}}</strong><br>
+                    {{m.description}}
+                </div>
+            {% endfor %}
 
             {% block content %}
             {% endblock %}

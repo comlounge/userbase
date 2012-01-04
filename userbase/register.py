@@ -33,7 +33,7 @@ class RegistrationView(Handler):
         form = RegistrationForm(self.request.form)
         if self.request.method == 'POST' and form.validate():       
             # TODO: check email availability in db model or widget validator?
-            if self.config.dbs.users.by_email(form.email.data) is not None:
+            if self.config.dbs.users.find_by_email(form.email.data) is not None:
                 return ""
             user = User(form.data, collection = self.config.dbs.users)
             user.set_pw(form.password.data)
@@ -54,7 +54,7 @@ class ValidationView(Handler):
         args = self.request.values
         if "email" in args:
             email = args['email']
-            if self.config.dbs.users.by_email(email) is not None:
+            if self.config.dbs.users.find_by_email(email) is not None:
                 return "Diese E-Mail-Adresse ist schon registriert."
         return True
 
@@ -78,12 +78,13 @@ class ValidationCodeView(Handler):
     def get(self, code=None):
         """validate the code"""
         # get the user for this code
+        # TODO: check state, delete code
         user = self.config.dbs.users.find_by_code(code)
         if user is None: # code is invalid
             return self.render(tmplname="invalid_code.html")
-        user.state = "live"
+        user.d.state = "live"
         user.save()
-        self.redirect(self.url_for("welcome"))
+        raise self.redirect(self.url_for("welcome"))
 
 
 

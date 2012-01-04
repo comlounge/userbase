@@ -12,6 +12,7 @@ from logbook import Logger
 import db
 import main
 import register
+import welcome
 
 def setup(**kw):
     """setup the application. 
@@ -51,6 +52,7 @@ def setup(**kw):
         ('/register', 'register', register.RegistrationView),
         ('/register/validate', 'register.validate', register.ValidationView),
         ('/validate/<code>', 'validation', register.ValidationCodeView),
+        ('/welcome', 'welcome', welcome.WelcomeView),
     ])
 
     ## databases

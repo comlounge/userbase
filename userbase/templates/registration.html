@@ -8,7 +8,7 @@
                     {{ macros.field(form.name, form.name(class="span4 required")) }}
                     {{ macros.field(form.username, form.username(class="span4 required")) }}
                     {{ macros.field(form.email, form.email(class="span4 required email", remote=url_for('register.validate'))) }}
-                    {{ macros.field(form.password, form.password(class="span4 password required", id="password")) }}
+                    {{ macros.field(form.password, form.password(class="span4 pw required", id="password")) }}
                     {{ macros.field(form.password2, form.password2(class="span4 required", equalTo="#password")) }}
 
                     <fieldset class="form-actions">

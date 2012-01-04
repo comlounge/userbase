@@ -5,6 +5,9 @@ import datetime
 from base import Record, Collection, DateTime
 __all__ = ['User', 'Users']
 
+class Roles(colander.SequenceSchema):
+    role = colander.SchemaNode(colander.String())
+
 class UserSchema(colander.MappingSchema):
     email = colander.SchemaNode(colander.String(), validator = colander.Email())
     username = colander.SchemaNode(colander.String(), validator = colander.Length(6,35))
@@ -13,10 +16,11 @@ class UserSchema(colander.MappingSchema):
     bio = colander.SchemaNode(colander.String(), missing="")
     state = colander.SchemaNode(colander.String(), missing="initialized")
     validation_code = colander.SchemaNode(colander.String(), missing="")
-    pw_code = colander.SchemaNode(colander.String(), missing="")
     validation_code_sent = colander.SchemaNode(DateTime(), missing="")
+    pw_code = colander.SchemaNode(colander.String(), missing="")
     pw_code_sent = colander.SchemaNode(DateTime(), missing="")
     last_logged_in = colander.SchemaNode(DateTime(), missing="")
+    roles = Roles(missing=[])
 
 class User(Record):
     """A user record. 
@@ -42,7 +46,14 @@ class User(Record):
     def set_pw(self, pw):
         """store a password"""
         self.d.password = hashlib.new("md5",pw).hexdigest()
+        print self.d.password
         return pw
+
+    def check_pw(self, pw):
+        """check if the given password is correct"""
+        hash = hashlib.new("md5",pw).hexdigest()
+        print hash, self.d.password
+        return hash == self.d.password
 
     def gen_code(self):
         """generate a new validation code"""
@@ -57,7 +68,7 @@ class User(Record):
         self.d.validation_code_sent = datetime.datetime.now()
         # TODO: actually sent the code
         self.d.state = "code_sent"
-        valcode_link = url_for("validation", code = self.d.validation_code)
+        valcode_link = url_for("validation", code = self.d.validation_code, force_external=True)
         self.collection.config.mail.mailer.mail("%s <%s>" %(self.d.name, self.d.email), "Registration", "welcome.txt",
             valcode = self.d.validation_code,
             valcode_link = valcode_link)
@@ -71,7 +82,7 @@ class Users(Collection):
     data_class = User
     use_objectids = False # does the mongodb collection use object ids?
 
-    def by_email(self, email):
+    def find_by_email(self, email):
         """return a user by email or None"""
         q = self.query.update(email = email)
         res = q()

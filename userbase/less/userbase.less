@@ -48,32 +48,32 @@ header {
         padding-bottom: 20px;
     }
     label {
-        margin-top: 20px;
+        margin-top: 10px;
         color: #ddd;
-        font-size: 18px;
+        font-size: 14px;
         font-weight: normal;
         text-shadow: 0 -1px 0px rgba(0,0,0,0.6);
     }
     fieldset { margin: 0; }
     input, 
     textarea {
-        padding: 5px 5px;
+        padding: 2px 5px;
         margin: 10px 0;
         background: #666;
         text-shadow: 0 -1px 0 rgba(0,0,0,0.9);
-        height: 40px;
+        height: 30px;
         border: 1px solid #333;
         width: 380px;
         color: #f0f0f0;
         .box-shadow(inset 1px 1px 4px rgba(0,0,0,0.9));
     }
     input {
-        font-size: 20px;
+        font-size: 14px;
     }
     input:focus, textarea:focus {
         background: #eee;
         color: #333;
-        text-shadow: 0 -1px 0 rgba(255,255,255,0.9);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.1);
     }
     a {
         color: #ccc;
@@ -94,27 +94,27 @@ header {
 input.button, 
 .button {
     font-family: "Oswald", serif;
+    font-size: 15px;
     background: #feda71;
     #gradient > .vertical(#feda71, #febb4a);
     color:#996633;
-    text-shadow:0 1px 0 #fedd9b;
+    text-shadow: 0 1px 0 #fedd9b;
     padding: 10px 30px;
     width: auto;
     height: auto;
-    @shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    .box-shadow(@shadow);
     border:1px solid #f5b74e;
-    border-color:#f5b74e #e5a73e #d6982f;
+    border-color: #f5b74e #e5a73e #d6982f;
     .border-radius(4px);
-    @shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
+    @shadow: 0 1px 1px rgba(0,0,0,0.5), inset 0 1px 0 #fee395;
     .box-shadow(@shadow);
-    .transition(all 0.3s linear);
+    .transition(all 0.1s linear);
     display: inline-block;
 
     &:hover {
         text-shadow:0px 1px 1px rgba(0,0,0,0.2);
-        color:#fff;
+        color:#774411;
         text-decoration: none;
+        background-position: -15px -15px;
     }
     &:active{
         background:#fec354;
@@ -132,7 +132,6 @@ input.button,
     
 }
 input.button {
-    padding-bottom: 15px;
     margin-left: 4px;
 }
 

@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-    jQuery.validator.addMethod("password", function( value, element ) {
+    jQuery.validator.addMethod("pw", function( value, element ) {
         return this.optional(element) || value.length >= 6 && /\d/.test(value) && /[a-z]/i.test(value);
     }, "Ihr Passwort muss mindestens 6 Zeichen lang sein und mindestens 1 Zahl und 1 Buchstaben enthalten.");
 

@@ -55,9 +55,9 @@ header h1 {
   padding-bottom: 20px;
 }
 .form label {
-  margin-top: 20px;
+  margin-top: 10px;
   color: #ddd;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: normal;
   text-shadow: 0 -1px 0px rgba(0, 0, 0, 0.6);
 }
@@ -65,11 +65,11 @@ header h1 {
   margin: 0;
 }
 .form input, .form textarea {
-  padding: 5px 5px;
+  padding: 2px 5px;
   margin: 10px 0;
   background: #666;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.9);
-  height: 40px;
+  height: 30px;
   border: 1px solid #333;
   width: 380px;
   color: #f0f0f0;
@@ -78,12 +78,12 @@ header h1 {
   box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.9);
 }
 .form input {
-  font-size: 20px;
+  font-size: 14px;
 }
 .form input:focus, .form textarea:focus {
   background: #eee;
   color: #333;
-  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .form a {
   color: #ccc;
@@ -100,6 +100,7 @@ header h1 {
 }
 input.button, .button {
   font-family: "Oswald", serif;
+  font-size: 15px;
   background: #feda71;
   background-color: #febb4a;
   background-image: -khtml-gradient(linear, left top, left bottom, from(#feda71), to(#febb4a));
@@ -116,28 +117,26 @@ input.button, .button {
   padding: 10px 30px;
   width: auto;
   height: auto;
-  -webkit-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
-  -moz-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
-  box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
   border: 1px solid #f5b74e;
   border-color: #f5b74e #e5a73e #d6982f;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
-  -moz-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
-  box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #fee395;
-  -webkit-transition: all 0.3s linear;
-  -moz-transition: all 0.3s linear;
-  -ms-transition: all 0.3s linear;
-  -o-transition: all 0.3s linear;
-  transition: all 0.3s linear;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), inset 0 1px 0 #fee395;
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), inset 0 1px 0 #fee395;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), inset 0 1px 0 #fee395;
+  -webkit-transition: all 0.1s linear;
+  -moz-transition: all 0.1s linear;
+  -ms-transition: all 0.1s linear;
+  -o-transition: all 0.1s linear;
+  transition: all 0.1s linear;
   display: inline-block;
 }
 input.button:hover, .button:hover {
   text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
-  color: #fff;
+  color: #774411;
   text-decoration: none;
+  background-position: -15px -15px;
 }
 input.button:active, .button:active {
   background: #fec354;
@@ -163,6 +162,5 @@ input.button:active, .button:active {
   width: 100%;
 }
 input.button {
-  padding-bottom: 15px;
   margin-left: 4px;
 }
