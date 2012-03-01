@@ -48,11 +48,6 @@ class LoginAdapter(object):
         self.handler.response.set_cookie(cookie_name, ticket.cookie_value())
         return ticket.cookie_value()
 
-    def logout(self):
-        """log a user out by deleting the cookie"""
-        cookie_name = self.config.get("cookie_name", "u")
-        self.handler.response.delete_cookie(cookie_name)
-         
     @property
     def logged_in(self):
         """check if somebody is logged in"""
@@ -86,8 +81,17 @@ class LoginAdapter(object):
             raise self.handler.redirect(url, cookies = {cookie_name: value})
         else:
             raise self.handler.redirect(url)
-        
-            
 
+    def logout(self, msg=None, css_class="info"):
+        """log the user out and redirect him to the logged_out screen 
+        while displaying an optional flash message.
 
+        :param msg: The message to pass via the flash message system
+        :param css_class: The CSS class to use for this message
+        """
 
+        url = self.handler.url_for(self.config.logged_out_url)
+        cookie_name = self.config.get("cookie_name", "u")
+        if msg is not None:
+            self.handler.flash(msg, css_class=css_class)
+        raise self.handler.redirect(url, cookies = {cookie_name : "loggedout"})                                                                                                                                  
