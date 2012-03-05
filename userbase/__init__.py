@@ -16,7 +16,7 @@ class LoginAdapter(object):
         self.user = None
         req = self.request = self.handler.request
         cookie_name = self.config.get("cookie_name", "u")
-        self.cookie_secret = self.config.get("cookie_name", "foo0bar")
+        self.cookie_secret = self.config.get("cookie_secret", "foo0bar")
         if self.cookie_secret == "foo0bar":
             print "please configure a cookie secret in the login manager settings!"
 
@@ -25,7 +25,6 @@ class LoginAdapter(object):
             try:
                 self.timestamp, self.userid, self.roles, self.token_attribs = auth_tkt.parse_ticket(
                     self.cookie_secret, at, "127.0.0.1")
-                print "yes"
             except auth_tkt.BadTicket, e:
                 print "no"
                 pass
