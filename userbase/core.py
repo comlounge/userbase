@@ -3,6 +3,7 @@ import colander
 import hashlib
 import uuid
 import datetime
+import urlparse
 import mongoquery.onrm as onrm
 __all__ = ['User', 'UserManager', 'UserSchema']
 
@@ -82,10 +83,12 @@ class User(onrm.Record):
         self.d.pw_code_sent = datetime.datetime.now()
         config = self.collection.config
         route_name = config.pw_forgotten_route
-        pw_link = url_for(route_name, code = self.d.pw_code, force_external=True)
+        pw_link_path = url_for(route_name, code = self.d.pw_code)
+        vhost = config.virtual_host
+        pw_link = urlparse.urljoin(vhost, pw_link_path)
 
         mailer = config.mailer
-        use_html = config.get("use_html", False)
+        use_html = config.get("mail_use_html", False)
         subject = config.pw_forgotten_email_subject
         to_addr = "%s <%s>" %(self.d.name, self.d.email)
 
