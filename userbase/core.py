@@ -49,6 +49,8 @@ class User(onrm.Record):
     def set_pw(self, pw):
         """store a password"""
         self.d.password = hashlib.new("md5",pw).hexdigest()
+        self.d.pw_code = self.gen_code() # generate random UUID
+        self.d.pw_code_sent = None
         return pw
 
     def check_pw(self, pw):
@@ -58,7 +60,7 @@ class User(onrm.Record):
 
     def gen_code(self):
         """generate a new validation code"""
-        return unicode(uuid.uuid4())[:12]
+        return unicode(uuid.uuid4())
 
     def send_validation_code(self, url_for):
         """generate and send a new validation code"""
@@ -78,10 +80,34 @@ class User(onrm.Record):
         """generate and send a new password forgotten code"""
         self.d.pw_code = self.gen_code()
         self.d.pw_code_sent = datetime.datetime.now()
-        pw_link = url_for("pw_validation", code = self.d.pw_code, force_external=True)
-        self.collection.config.mail.mailer.mail("%s <%s>" %(self.d.name, self.d.email), "Passwort vergessen", "pw_forgotten.txt",
-            pw_code = self.d.pw_code,
-            pw_link = pw_link)
+        config = self.collection.config
+        route_name = config.pw_forgotten_route
+        pw_link = url_for(route_name, code = self.d.pw_code, force_external=True)
+
+        mailer = config.mailer
+        use_html = config.get("use_html", False)
+        subject = config.pw_forgotten_email_subject
+        to_addr = "%s <%s>" %(self.d.name, self.d.email)
+
+        if use_html:
+            txt_template = config.pw_forgotten_email_template_txt
+            html_template = config.pw_forgotten_email_template_html
+            mailer.mail_html(to_addr, 
+                unicode(subject),
+                txt_template, 
+                html_template, 
+                pw_code = self.d.pw_code,
+                pw_link = pw_link)
+        else:
+            txt_template = config.pw_forgotten_email_template_txt
+            mailer.mail(to_addr, 
+                unicode(subject),
+                txt_template,
+                pw_code = self.d.pw_code,
+                pw_link = pw_link)
+
+        self.save()
+        return self.d.pw_code
 
     def save(self):
         """save the object"""
