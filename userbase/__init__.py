@@ -1,15 +1,16 @@
 from core import *
 from paste.auth import auth_tkt
-
+from views import forms
 
 class LoginAdapter(object):
     """the login manager"""
 
-    def __init__(self, handler, userdb):
+    def __init__(self, handler, userdb, login_form=None):
         """initialize login manager"""
         self.handler = handler # the handler we adapt to
         self.userdb = userdb # the user database to use
         self.config = userdb.config
+        self.login_form = login_form
 
         # process the request and extract any login information
         self.userid = None
