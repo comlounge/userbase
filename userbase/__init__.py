@@ -5,12 +5,13 @@ from views import forms
 class LoginAdapter(object):
     """the login manager"""
 
-    def __init__(self, handler, userdb, login_form=None):
+    def __init__(self, handler, userdb, login_form=None, identifier="email"):
         """initialize login manager"""
         self.handler = handler # the handler we adapt to
         self.userdb = userdb # the user database to use
         self.config = userdb.config
         self.login_form = login_form
+        self.identifier = identifier
 
         # process the request and extract any login information
         self.userid = None
@@ -27,7 +28,6 @@ class LoginAdapter(object):
                 self.timestamp, self.userid, self.roles, self.token_attribs = auth_tkt.parse_ticket(
                     self.cookie_secret, at, "127.0.0.1")
             except auth_tkt.BadTicket, e:
-                print "no"
                 pass
         else:
             self.userid = None
@@ -63,15 +63,26 @@ class LoginAdapter(object):
 
         TODO: raise some error so we can pass the error cause and the client can do what it thinks is right
 
+        .. note:: This call does not set the cookie. This is because usually you want a redirect and we are not
+            able to set the cookie for a redirect here. Use ``login_and_redirect`` for that purpose. Otherwise
+            you have to call ``set_user()`` yourself which returns the cookie value.
+
         """
 
-        user = self.userdb[identifier]
+        user = self.userdb.find_by_identifier(self.identifier, identifier)
         if user is None:
             return None
         if not user.check_pw(password):
             return None
         self.user = user
         return user
+
+    def login_and_redirect(self, identifier, password, success_url):
+        """log the user in and on success redirect to ``success_url``. Otherwise return None"""
+        user = self.login(identifier, password)
+        if user is None:
+            return None
+        self.redirect(success_url)
 
     def redirect(self, url):
         """do the redirect while setting the login cookie if it exists"""
@@ -82,15 +93,15 @@ class LoginAdapter(object):
         else:
             raise self.handler.redirect(url)
 
-    def logout(self, msg=None, css_class="info"):
+    def logout(self, msg=None, css_class="info", url=None):
         """log the user out and redirect him to the logged_out screen 
         while displaying an optional flash message.
 
         :param msg: The message to pass via the flash message system
         :param css_class: The CSS class to use for this message
         """
-
-        url = self.handler.url_for(self.config.logged_out_url)
+        if url is None:
+            url = self.handler.url_for(self.config.logged_out_url)
         cookie_name = self.config.get("cookie_name", "u")
         if msg is not None:
             self.handler.flash(msg, css_class=css_class)

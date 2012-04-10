@@ -9,6 +9,7 @@ class Roles(colander.SequenceSchema):
     role = colander.SchemaNode(colander.String())
 
 class UserSchema(colander.MappingSchema):
+    _id = colander.SchemaNode(colander.String(), missing="", default="")
     email = colander.SchemaNode(colander.String(), validator = colander.Email())
     username = colander.SchemaNode(colander.String(), missing="", default="")
     name = colander.SchemaNode(colander.String(), validator = colander.Length(6,200))

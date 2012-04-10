@@ -120,7 +120,6 @@ class UserManager(onrm.Collection):
     """the user manager which handles users on the API level"""
 
     data_class = User
-    identifier = "email"
     use_objectids = False # does the mongodb collection use object ids?
 
     def __init__(self, collection, config={}):
@@ -164,12 +163,11 @@ class UserManager(onrm.Collection):
             return None
         return res[0]
 
-    def __getitem__(self, ident):
-        """return the user defined by the identifier given"""
-        q = self.query
-        q.update(**{self.identifier : ident})
+    def find_by_identifier(self, field, value):
+        """find a user by some custom key"""
+        q = self.query.update(**{field: value})
         res = q()
-        if res.count == 0:
+        if res.count==0:
             return None
-        return list(res)[0]
+        return res[0]
 
