@@ -69,10 +69,14 @@ class LoginAdapter(object):
 
         """
 
+        print "login"
         user = self.userdb.find_by_identifier(self.identifier, identifier)
+        print user
         if user is None:
+            print "no user"
             return None
         if not user.check_pw(password):
+            print "wrong pw"
             return None
         self.user = user
         return user

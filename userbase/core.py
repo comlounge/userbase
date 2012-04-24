@@ -99,6 +99,7 @@ class User(onrm.Record):
                 unicode(subject),
                 txt_template, 
                 html_template, 
+                user = self,
                 pw_code = self.d.pw_code,
                 pw_link = pw_link)
         else:
@@ -106,6 +107,7 @@ class User(onrm.Record):
             mailer.mail(to_addr, 
                 unicode(subject),
                 txt_template,
+                user = self,
                 pw_code = self.d.pw_code,
                 pw_link = pw_link)
 
