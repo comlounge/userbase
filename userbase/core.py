@@ -16,6 +16,7 @@ class UserSchema(colander.MappingSchema):
     yourself to any other field. You should make sure it's indexed though if you expect
     a lot of users.
     """
+    _id = colander.SchemaNode(colander.String())
     email = colander.SchemaNode(colander.String(), validator = colander.Email())
     name = colander.SchemaNode(colander.String(), validator = colander.Length(6,200))
     password = colander.SchemaNode(colander.String(), validator = colander.Length(6))
