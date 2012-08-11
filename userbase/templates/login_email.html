@@ -1,4 +1,5 @@
-{% extends "master/master.html" %}
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as macros with context %}                                                                                                           
 
 {% block content %}
 <div id="index">
@@ -7,11 +8,12 @@
             <section class="form">
                 <h2>Bitte logge Dich ein und diskutiere mit!</h2>
                 <form class="horizontal-form validate" method="POST" action="{{url}}">
-                    {{ macros.field(form.email, form.email(class="required")) }}
-                    {{ macros.field(form.password, form.password(class="required")) }}
+                    {% for field in form %}
+                        {{ macros.form_field(field) }}
+                    {% endfor %}
                     <fieldset class="form-actions">
-                        <input type="submit" class="button large" value="Einloggen">
-                        <a href="{{url_for("pw_forgot")}}">Passwort vergessen?</a>
+                        <input type="submit" class="btn large" value="Einloggen">
+                 {#       <a href="{{url_for("pw_forgot")}}">Passwort vergessen?</a>#}
                     </fieldset>
                 </form>
             </section>
@@ -20,7 +22,7 @@
             <p>
                 Um bei Participate! mitzumachen und mitzudiskutieren, müssen Sie sich zunächst registrieren. 
             </p>
-            <a class="button xlarge" href="/register">Registriere Dich!</a>
+            <a class="btn" href="/register">Registriere Dich!</a>
         </div>
     </div>
 </div>

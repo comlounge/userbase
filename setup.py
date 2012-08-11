@@ -21,8 +21,8 @@ setup(name='userbase',
         "pyyaml",
         "pymongo",
         "argparse",
-        "postmeister",
-        "mongoquery",
+        #"postmeister",
+        "mongoengine",
         "starflyer",
         "markdown",
         "pytest",
@@ -31,9 +31,7 @@ setup(name='userbase',
         "paste",
       ],
       entry_points="""
-        [starflyer.config]
-        default = userbase.setup:setup
-        [paste.app_factory]
-        main = starflyer:run
+        [console_scripts]
+        um = userbase.scripts:um
       """,
       )
