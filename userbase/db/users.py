@@ -5,9 +5,11 @@ __all__ = ['UserEMail']
 
 class UserEMail(DynamicDocument):
     """a user identified by email address and password"""
-    email = EmailField(max_length=200, required=True)
+    email = EmailField(max_length=200, required=True, primary_key=True)
     pw = StringField(max_length=200, required=True)
     fullname = StringField(max_length=200, required=False)
+    meta = {'collection': 'users'}
+    
 
     def set_password(self, pw):
         self.pw = hashlib.new("md5",pw).hexdigest()

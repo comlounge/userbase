@@ -1,4 +1,4 @@
-from starflyer import Handler
+from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, validators
 from userbase import db
 
@@ -17,23 +17,19 @@ class LoginWithEMail(Handler):
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
-                user = db.UserEMail(**f)
-                print user
-                user.save()
-                return "ok"
                 email = f['email']
                 password = f['password']
-                user = self.login_manager.login(email, password)
+
+                # try ot retrieve the user
+                user = db.UserEMail.objects.get(email = email)
                 if user is not None:
-                    url = self.url_for("index", _id=0)
-                    self.flash("Welcome, %s" %user.d.fullname, category="info")
-                    print "success"
-                    return self.login_manager.redirect(url)
-                else:
-                    print "failed"
-                    self.flash("Login failed", category="danger")
-            else:
-                self.flash("Login failed", category="danger")
+                    if user.check_password(password):
+                        url_for_params = self.module.config.login_success_url_params
+                        url = self.url_for(**url_for_params)
+                        self.session['user'] = user.id
+                        self.flash("Welcome, %s" %user.fullname)
+                        return redirect(url)
+            self.flash("Login failed", category="danger")
         return self.render(form = form)
 
     post = get

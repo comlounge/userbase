@@ -3,6 +3,7 @@ from jinja2 import PackageLoader
 
 import handlers
 import forms
+import db
 
 class UserModule(Module):
     """a module for implementing the user manager"""
@@ -20,12 +21,20 @@ class UserModule(Module):
 
     ####
 
+    def get_render_context(self, handler):
+        """inject something into the render context"""
+        p = {}
+        if "user" in handler.session:
+            p['user'] = db.UserEMail.objects.get(email = handler.session['user'])
+            p['logged_in'] = True
+        return p
+
     def finalize(self):
         """finalize the configuration"""
         # register the login handler we want to use
         self.add_url_rule(URL("/login", "login", self.config.login_handler))
+        self.add_url_rule(URL("/logout", "logout", self.config.login_handler))
 
-        # create the database connection
 
 userbase_module = UserModule(__name__)
 
