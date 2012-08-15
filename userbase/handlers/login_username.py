@@ -1,30 +1,32 @@
 from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, validators
 from userbase import db
+from mongoengine import Q
 
-__all__ = ['EMailLoginForm', 'EMailLoginHandler']
+__all__ = ['UsernameLoginHandler', 'UsernameLoginForm']
 
-class EMailLoginForm(Form):
-    email       = TextField('E-Mail', [validators.Length(max=200), validators.Email()])
-    password    = PasswordField('Password', [validators.Length(min=5, max=35)])
+class UsernameLoginForm(Form):
+    username    = TextField('Username', [validators.Length(max=200), validators.Required()])
+    password    = PasswordField('Password', [validators.Length(min=1, max=35), validators.Required()])
 
-class EMailLoginHandler(Handler):
+class UsernameLoginHandler(Handler):
     """show the user login form and process it"""
 
-    template = "_m/userbase/login_email.html"
+    template = "_m/userbase/login_username.html"
 
     def get(self):
         """show the login form"""
-        form = EMailLoginForm(self.request.form)
+        form = UsernameLoginForm(self.request.form)
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
-                email = f['email']
+                username = f['username']
                 password = f['password']
 
                 # try ot retrieve the user
-                user = db.UserEMail.objects.get(email = email)
-                if user is not None:
+                users = self.module.config.user_obj.objects(Q(username = username), class_check = False)
+                if len(users) > 0:
+                    user = users[0]
                     if user.check_password(password):
                         url_for_params = self.module.config.login_success_url_params
                         url = self.url_for(**url_for_params)

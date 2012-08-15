@@ -1,5 +1,6 @@
 from starflyer import URL, Module, ConfigurationError
 from jinja2 import PackageLoader
+from mongoengine import Q
 
 import handlers
 import forms
@@ -16,7 +17,8 @@ class UserModule(Module):
     jinja_loader = PackageLoader(__name__, "templates/")
 
     default_config = {
-        'login_handler' : handlers.LoginWithEMail
+        'login_handler' : handlers.EMailLoginHandler,
+        'user_obj'      : db.UserEMail,
     }
 
     ####
@@ -25,7 +27,7 @@ class UserModule(Module):
         """inject something into the render context"""
         p = {}
         if "user" in handler.session:
-            p['user'] = db.UserEMail.objects.get(email = handler.session['user'])
+            p['user'] = self.config.user_obj.objects(Q(_id = handler.session['user']), class_check = False)[0]
             p['logged_in'] = True
         return p
 

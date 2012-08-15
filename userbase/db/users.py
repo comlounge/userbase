@@ -1,15 +1,11 @@
 from mongoengine import *
 import hashlib
 
-__all__ = ['UserEMail']
+__all__ = ['UserEMail', 'UserUsername']
 
-class UserEMail(DynamicDocument):
-    """a user identified by email address and password"""
-    email = EmailField(max_length=200, required=True, primary_key=True)
-    pw = StringField(max_length=200, required=True)
-    fullname = StringField(max_length=200, required=False)
-    meta = {'collection': 'users'}
-    
+class UserBase(object):
+    """Base class for all users"""
+
 
     def set_password(self, pw):
         self.pw = hashlib.new("md5",pw).hexdigest()
@@ -24,6 +20,22 @@ class UserEMail(DynamicDocument):
         """check password"""
         hash = hashlib.new("md5",pw).hexdigest()
         return hash == self.pw
+
+class UserEMail(DynamicDocument, UserBase):
+    """a user identified by email address and password"""
+    email = EmailField(max_length=200, required=True, primary_key=True)
+    pw = StringField(max_length=200, required=True)
+    fullname = StringField(max_length=200, required=False)
+    meta = {'collection': 'users'}
+    
+    
+class UserUsername(DynamicDocument, UserBase):
+    """a user identified by a username and password"""
+    email = EmailField(max_length=200, required=True)
+    username = StringField(max_length=200, required=True)
+    pw = StringField(max_length=200, required=True)
+    fullname = StringField(max_length=200, required=False)
+    meta = {'collection': 'users'}
 
 
     
