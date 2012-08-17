@@ -31,6 +31,12 @@ class UserModule(Module):
             p['logged_in'] = True
         return p
 
+    def get_user(self, handler):
+        """retrieve the user from the handler session or None"""
+        if "user" in handler.session:
+            return self.config.user_obj.objects(Q(_id = handler.session['user']), class_check = False)[0]
+        return None
+
     def finalize(self):
         """finalize the configuration"""
         # register the login handler we want to use
