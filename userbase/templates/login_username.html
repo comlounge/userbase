@@ -11,10 +11,8 @@
                     {% for field in form %}
                         {{ macros.form_field(field) }}
                     {% endfor %}
-                    <fieldset class="form-actions">
-                        <input type="submit" class="btn large" value="Einloggen">
-                 {#       <a href="{{url_for("pw_forgot")}}">Passwort vergessen?</a>#}
-                    </fieldset>
+                        <input type="submit" class="btn btn-large btn-primary" value="Einloggen">
+                        {# <a href="{{url_for("pw_forgot")}}">Passwort vergessen?</a>#}
                 </form>
             </section>
         </div>
