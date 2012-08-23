@@ -11,15 +11,17 @@ class UserManager(ScriptBase):
         #
         subparsers = self.parser.add_subparsers(help='sub commands help')
         self.add_parser = subparsers.add_parser('add', help='adding users')
-        self.add_parser.add_argument('email', help='username')
+        self.add_parser.add_argument('username', help='username')
+        self.add_parser.add_argument('email', help='email address')
         self.add_parser.add_argument('password', help='password')
         self.add_parser.add_argument('--fullname', dest="fullname", default="", help='the full name')
 
     def __call__(self):
-        user = db.UserEMail(
-            email=self.args.email,
-            fullname=self.args.fullname,
-            password=self.args.password)
+        m = self.app.app.app.module_map['userbase']
+        uo = m.config.user_obj
+        data = vars(self.args)
+        del data['config_file']
+        user = uo(**data)
         user.save()
         print "user created"
 
