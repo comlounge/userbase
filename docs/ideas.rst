@@ -80,3 +80,75 @@ This could actually be some method as well which could take some parameters but 
 
     
 
+
+
+Components
+==========
+
+On the low level we have the following components:
+
+- the user object which represents a user and whether it is activated etc. 
+- some handlers which handle user login, registration, password reminders and user management. Along with that goes also forms and templates
+- the login manager which binds all these things together. This automatically is the starflyer module. 
+
+Usually a group of instances of these three levels will be grouped together as one configuration you can choose from.
+You are free to create your own components though and reuse existing ones. 
+
+
+The user object
+---------------
+
+The user object needs to derive from mongoengine and implement the following methods:
+
+- ``get_id()`` has to return it's userid. This needs to be the unique field (might be different from _id, e.g. a username))
+- ``is_active`` returns whether the user is activated or not
+- ``is_anonymous`` returns whether this is the anonymous user or not (if logged in, return ``False``)
+- ``get_verification_code()`` returns a new verification code to send out to the user for activating the account
+- ``get_pw_forgotten_code()`` returns a new code to send out to the user for setting a new password
+
+
+The userbase module/login manager 
+----------------------------------
+
+This class is used to integrate the whole system into your application. There are different classes provided
+which have different configurations, e.g. for using the email or a username as login field.
+
+Each login manager needs to implement the following methods:
+
+- ``get_user()`` returns the logged in user
+- ``logout()`` logs out the logged in user
+- ``
+
+Configuration
+*************
+
+All the handlers are hard coded into the login manager but you can subclass it and replace them. 
+
+
+
+
+
+
+
+Workflows
+=========
+
+1. User registers with the site
+2. System creates user and send out verification code (optional)
+3. User activates account
+4. User is active
+
+ad 3: Code is wrong/timed out
+3.1. System creates new code and sends it out
+
+
+
+Issues
+======
+
+- how to generate a token which can be revoked? E.g. if the password is changed the cookie should be changed as well
+- 
+
+
+
+

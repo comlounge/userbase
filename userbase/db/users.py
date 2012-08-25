@@ -21,12 +21,20 @@ class UserBase(object):
         hash = hashlib.new("md5",pw).hexdigest()
         return hash == self.pw
 
+    def get_id(self):
+        """return the userid we want to use in sessions etc."""
+        return self._id
+
 class UserEMail(DynamicDocument, UserBase):
     """a user identified by email address and password"""
     email = EmailField(max_length=200, required=True, primary_key=True)
     pw = StringField(max_length=200, required=True)
     fullname = StringField(max_length=200, required=False)
     meta = {'collection': 'users'}
+
+    def get_id(self):
+        """return the userid we want to use in sessions etc."""
+        return self.email
     
     
 class UserUsername(DynamicDocument, UserBase):
@@ -37,5 +45,6 @@ class UserUsername(DynamicDocument, UserBase):
     fullname = StringField(max_length=200, required=False)
     meta = {'collection': 'users'}
 
-
-    
+    def get_id(self):
+        """return the userid we want to use in sessions etc."""
+        return self.username

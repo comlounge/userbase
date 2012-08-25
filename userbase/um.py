@@ -6,10 +6,43 @@ import handlers
 import forms
 import db
 
-class UserModule(Module):
+__all__ = [
+    'BaseUserModule', 
+    'EMailUserModule',
+    'UsernameUserModule',
+    'username_userbase',
+    'email_userbase',
+]
+
+"""
+
+cookie and user handling in userbase
+
+The userid is generally stored in the handler session. By calling ``get_user()`` from
+the userbase module this will be retrieved (None if not present). 
+
+To remember a user we store an additional cookie which can be configured by the data above. 
+We need to be able to invalidate that information though if the user changes his password or
+if it is changed or the user is deactivated. The following cases can happen:
+
+- the user changes his password. In this case the userbase cookie must be updated
+- the admin deletes/deactivates the user. Once the user comes back the cookie should not match anymore. 
+
+So we need some token which changes and which can be checked. This is what the ``get_token()`` method
+of the user object should implement. Usually it can be just the hashed userid. But it could also be
+e.g. hash(userid:password). If the user is inactive then it should return None. 
+
+The cookie itself stores both the userid and the token. This way we can fetch the user and
+check the token. We also use a secure cookie for it and you can set the cookie secret seperately 
+for the user.
+
+"""
+
+
+class BaseUserModule(Module):
     """a module for implementing the user manager"""
 
-    name = "userbase"
+    name = "users"
 
     routes = []
 
@@ -17,8 +50,22 @@ class UserModule(Module):
     jinja_loader = PackageLoader(__name__, "templates/")
 
     default_config = {
-        'login_handler' : handlers.EMailLoginHandler,
-        'user_obj'      : db.UserEMail,
+        'login_view'            : 'users.login',
+        'logout_view'           : 'users.logout',
+        'verification_view'     : 'users.verification',
+        'pw_forgotten_view'     : 'users.pw_forgotten',
+        'pw_forgotten_code_view' : 'users.pw_forgotten_code',
+        'login_message'         : u"You are now logged in",
+        'logout_message'        : u"You are now logged out",
+        'cookie_secret'         : None,
+        'cookie_name'           : "ru",
+        'cookie_domain'         : None, # means to use the domain from the app
+        'cookie_lifetime'       : datetime.timedelta(days=365)
+
+        'user_obj'              : db.UserEMail,
+        'user_id_field'         : 'email',
+        'handler.login'         : handlers.EMailLoginHandler,
+        'handler.logout'        : handlers.EMailLoginHandler,
     }
 
     ####
@@ -39,12 +86,30 @@ class UserModule(Module):
 
     def finalize(self):
         """finalize the configuration"""
-        # register the login handler we want to use
-        self.add_url_rule(URL("/login", "login", self.config.login_handler))
-        self.add_url_rule(URL("/logout", "logout", self.config.login_handler))
+        self.add_url_rule(URL("/login", "login", self.config['handler.login']))
+        self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
 
 
-userbase_module = UserModule(__name__)
+#userbase_module = UserModule(__name__)
 
 
+class EmailUserModule(Module):
 
+    default_config.update({
+        'user_id_field'         : 'email',
+        'handler.login'         : handlers.LoginHandler,
+        'handler.logout'        : handlers.LoginHandler,
+    })
+
+
+email_userbase = EMailUserModule(__name__)
+
+class UsernameBasedUserModule(Module):
+
+    default_config.update({
+        'user_id_field'         : 'username',
+        'handler.login'         : handlers.LoginHandler,
+        'handler.logout'        : handlers.LoginHandler,
+    })
+
+username_userbase = UsernameUserModule(__name__)
