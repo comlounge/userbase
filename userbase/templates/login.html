@@ -1,0 +1,28 @@
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as formmacros with context %}                                                                                                           
+
+{% block content %}
+<div id="index">
+    <div class="row">
+        <div class="span8">
+            <section class="form">
+                <h2>Please log in</h2>
+                <form class="horizontal-form validate" method="POST" action="{{url}}">
+                    {% for field in form %}
+                        {% if field.name != "remember" %}
+                            {{ formmacros.form_field(field) }}
+                        {% endif %}
+                    {% endfor %}
+                    {% if M.userbase.config.use_remember %}
+                        {{formmacros.form_field(form.remember)}}
+                    {% endif %}
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary large" value="Login">
+                 {#       <a href="{{url_for("pw_forgot")}}">Passwort vergessen?</a>#}
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

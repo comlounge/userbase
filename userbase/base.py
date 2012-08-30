@@ -2,10 +2,28 @@ from starflyer import Handler
 import datetime
 from werkzeug.contrib.securecookie import SecureCookie
 
-class UserbaseMixin(object):
+__all__ = ['UserbaseHandlerMixin', 'UserbaseHandler']
+
+class UserbaseHandlerMixin(object):
     """additional methods for using in userbase handlers for managing
     users and cookies
     """
+
+    ###
+    ### user handling
+    ###
+
+    def login(self, user, remember= False):
+        """log the user in by user object. This does not verification but only sets cookies and such"""
+        self.session['userid'] = user.id
+
+        if remember:
+            self._save_cookie(payload)
+
+    def logout(self):
+        """forget about a user"""
+        del self.session['userid']
+
 
     ###
     ### cookie handling
@@ -59,14 +77,12 @@ class UserbaseMixin(object):
 
     def remember_user(self, user, response):
         """remember a user"""
-        if not user.is_active()
+        if not user.is_active():
             return
         userid = user.get_id()
         token = user.get_auth_token()
 
-
-
-class UserbaseHandler(Handler, UserbaseMixin):
+class UserbaseHandler(Handler, UserbaseHandlerMixin):
     """base handler for userbase handlers implementing the userbase cookie interface"""
 
 

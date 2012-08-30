@@ -151,4 +151,45 @@ Issues
 
 
 
+How to set cookies and read them again
+======================================
+
+Problem: 
+
+- We want to set cookies in the code but want it to be only set after complete processing. Eventually we only do this
+  in our own module handler but a generic solution would be welcome. E.g. some module hook might want to set some
+  cookie but the app's handler is used.
+- We want to retrieve some cookie in every handler and maybe set something on the handler
+
+Handler:
+    - each handler has some space where module hooks can store something
+    - 
+
+Module hooks:
+
+    - before() -- will be called before processing of a request
+    - before_handler() -- will be called before calling a handler
+    - after_handler() -- will be called after calling a handler
+    - after() -- will be called last
+
+For storing cookies:
+
+If a module hook (like module.before(request)) wants to set a cookie it does that like this::
+
+    def before_handler(self, handler):
+        """called with an instantiated handler but before it is called"""
+        cookie = ....
+        handler.m.userbase.add_cookies = dict(
+            value = SecureCookie(value, secret), 
+            name = cookie_name, 
+            path=path,
+            expires=expires, 
+            httponly=httponly,
+            secure=secure, 
+            domain=domain)
+
+        handler.m.userbase.delete_cookie
+
+        
+
 

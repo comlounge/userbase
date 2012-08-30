@@ -1,6 +1,8 @@
 from starflyer import URL, Module, ConfigurationError
 from jinja2 import PackageLoader
 from mongoengine import Q
+import datetime
+import copy
 
 import handlers
 import forms
@@ -42,7 +44,7 @@ for the user.
 class BaseUserModule(Module):
     """a module for implementing the user manager"""
 
-    name = "users"
+    name = "userbase"
 
     routes = []
 
@@ -55,17 +57,25 @@ class BaseUserModule(Module):
         'verification_view'     : 'users.verification',
         'pw_forgotten_view'     : 'users.pw_forgotten',
         'pw_forgotten_code_view' : 'users.pw_forgotten_code',
-        'login_message'         : u"You are now logged in",
+        'login_message'         : u"You are now logged in, %(fullname)s",
         'logout_message'        : u"You are now logged out",
+        'use_remember'          : True, # whether the remember function/cookie is used
         'cookie_secret'         : None,
-        'cookie_name'           : "ru",
+        'cookie_name'           : "ru", # this cookie name is used as the remember cookie
         'cookie_domain'         : None, # means to use the domain from the app
-        'cookie_lifetime'       : datetime.timedelta(days=365)
+        'cookie_lifetime'       : datetime.timedelta(days=365),
+        'master_template'       : "master.html",
 
-        'user_obj'              : db.UserEMail,
-        'user_id_field'         : 'email',
-        'handler.login'         : handlers.EMailLoginHandler,
-        'handler.logout'        : handlers.EMailLoginHandler,
+        # endpoint to use after successful login
+        'login_success_url_params'  : {'endpoint' : 'root'},
+        # endpoint to use after successful logout
+        'logout_success_url_params' : {'endpoint' : 'root'},
+
+        'user_class'            : db.UserEMail,                 # the db class we use for the user
+        'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
+        'login_form'            : handlers.EMailLoginForm,      # the login form to use
+        'handler.login'         : handlers.LoginHandler,        # the login handler to use (the generic one)
+        'handler.logout'        : handlers.LogoutHandler,
     }
 
     ####
@@ -73,15 +83,20 @@ class BaseUserModule(Module):
     def get_render_context(self, handler):
         """inject something into the render context"""
         p = {}
-        if "user" in handler.session:
-            p['user'] = self.config.user_obj.objects(Q(_id = handler.session['user']), class_check = False)[0]
-            p['logged_in'] = True
+        if "userid" in handler.session:
+            user = self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
+            if user.is_active:
+                p['user'] = self.config.user_class.objects(Q(_id = handler.session['user']), class_check = False)[0]
+                p['logged_in'] = True
         return p
+
+
+    ### user related
 
     def get_user(self, handler):
         """retrieve the user from the handler session or None"""
         if "user" in handler.session:
-            return self.config.user_obj.objects(Q(_id = handler.session['user']), class_check = False)[0]
+            return self.config.user_class.objects(Q(_id = handler.session['user']), class_check = False)[0]
         return None
 
     def finalize(self):
@@ -89,27 +104,32 @@ class BaseUserModule(Module):
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
 
+    def before(self, request):
+        """before request handling"""
 
-#userbase_module = UserModule(__name__)
 
+class EMailUserModule(BaseUserModule):
 
-class EmailUserModule(Module):
-
+    default_config = copy.copy(BaseUserModule.default_config)
     default_config.update({
         'user_id_field'         : 'email',
+        'login_form'            : handlers.EMailLoginForm,
         'handler.login'         : handlers.LoginHandler,
-        'handler.logout'        : handlers.LoginHandler,
+        'handler.logout'        : handlers.LogoutHandler,
     })
 
 
 email_userbase = EMailUserModule(__name__)
 
-class UsernameBasedUserModule(Module):
+class UsernameUserModule(BaseUserModule):
 
+    default_config = copy.copy(BaseUserModule.default_config)
     default_config.update({
+        'user_class'            : db.UserUsername,                 # the db class we use for the user
         'user_id_field'         : 'username',
+        'login_form'            : handlers.UsernameLoginForm,
         'handler.login'         : handlers.LoginHandler,
-        'handler.logout'        : handlers.LoginHandler,
+        'handler.logout'        : handlers.LogoutHandler,
     })
 
 username_userbase = UsernameUserModule(__name__)

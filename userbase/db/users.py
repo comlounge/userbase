@@ -25,6 +25,11 @@ class UserBase(object):
         """return the userid we want to use in sessions etc."""
         return self._id
 
+    @property
+    def is_active(self):
+        """overwrite this if you want a different use case"""
+        return True
+
 class UserEMail(DynamicDocument, UserBase):
     """a user identified by email address and password"""
     email = EmailField(max_length=200, required=True, primary_key=True)
