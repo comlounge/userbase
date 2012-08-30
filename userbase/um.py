@@ -86,7 +86,7 @@ class BaseUserModule(Module):
         if "userid" in handler.session:
             user = self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
             if user.is_active:
-                p['user'] = self.config.user_class.objects(Q(_id = handler.session['user']), class_check = False)[0]
+                p['user'] = self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
                 p['logged_in'] = True
         return p
 
@@ -95,8 +95,8 @@ class BaseUserModule(Module):
 
     def get_user(self, handler):
         """retrieve the user from the handler session or None"""
-        if "user" in handler.session:
-            return self.config.user_class.objects(Q(_id = handler.session['user']), class_check = False)[0]
+        if "userid" in handler.session:
+            return self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
         return None
 
     def finalize(self):
