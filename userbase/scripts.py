@@ -17,8 +17,8 @@ class UserManager(ScriptBase):
         self.add_parser.add_argument('--fullname', dest="fullname", default="", help='the full name')
 
     def __call__(self):
-        m = self.app.app.app.module_map['userbase']
-        uo = m.config.user_obj
+        m = self.app.module_map['userbase']
+        uo = m.config.user_class
         data = vars(self.args)
         del data['config_file']
         user = uo(**data)
