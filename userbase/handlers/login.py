@@ -8,7 +8,7 @@ __all__ = ['UsernameLoginForm', 'EMailLoginForm', 'LoginHandler']
 
 class EMailLoginForm(Form):
     email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(min=5, max=35), validators.Required()])
+    password    = PasswordField('Password', [validators.Length(min=3, max=35), validators.Required()])
     remember    = BooleanField('remember me, please')
 
 class UsernameLoginForm(Form):
