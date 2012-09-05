@@ -51,7 +51,7 @@ class BaseUserModule(Module):
     module_jinja_loader = PackageLoader(__name__, "templates/")
     jinja_loader = PackageLoader(__name__, "templates/")
 
-    default_config = {
+    defaults = {
         'login_view'            : 'users.login',
         'logout_view'           : 'users.logout',
         'verification_view'     : 'users.verification',
@@ -110,8 +110,8 @@ class BaseUserModule(Module):
 
 class EMailUserModule(BaseUserModule):
 
-    default_config = copy.copy(BaseUserModule.default_config)
-    default_config.update({
+    defaults = copy.copy(BaseUserModule.defaults)
+    defaults.update({
         'user_id_field'         : 'email',
         'login_form'            : handlers.EMailLoginForm,
         'handler.login'         : handlers.LoginHandler,
@@ -123,8 +123,8 @@ email_userbase = EMailUserModule(__name__)
 
 class UsernameUserModule(BaseUserModule):
 
-    default_config = copy.copy(BaseUserModule.default_config)
-    default_config.update({
+    defaults = copy.copy(BaseUserModule.defaults)
+    defaults.update({
         'user_class'            : db.UserUsername,                 # the db class we use for the user
         'user_id_field'         : 'username',
         'login_form'            : handlers.UsernameLoginForm,
