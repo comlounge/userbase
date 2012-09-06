@@ -1,7 +1,8 @@
 from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
-from userbase.base import UserbaseHandler
 from userbase import db
+from userbase.exceptions import LoginFailed
+from userbase.base import UserbaseHandler
 from mongoengine import Q
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 'LoginHandler']
@@ -24,6 +25,7 @@ class LoginHandler(UserbaseHandler):
     def get(self):
         """show the login form"""
         cfg = self.module.config
+        mod = self.module
         form = cfg.login_form
         obj_class = cfg.user_class
 
@@ -31,21 +33,16 @@ class LoginHandler(UserbaseHandler):
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
-                userid = f[cfg.user_id_field]
-                password = f['password']
-
-                # try ot retrieve the user
-                users = cfg.user_class.objects(Q(**{cfg.user_id_field : userid}), class_check = False)
-                if len(users)==1:
-                    user = users[0]
-                    if user.check_password(password):
-                        url_for_params = self.module.config.login_success_url_params
-                        url = self.url_for(**url_for_params)
-                        remember = self.module.config.use_remember and self.request.form.get("remember")
-                        self.login(user, remember=remember)
-                        self.flash(cfg.login_message %user)
-                        return redirect(url)
-            self.flash("Login failed", category="danger")
+                try:
+                    user = mod.login(**f)
+                    url_for_params = self.module.config.login_success_url_params
+                    url = self.url_for(**url_for_params)
+                    remember = self.module.config.use_remember and self.request.form.get("remember")
+                    self.login(user, remember=remember)
+                    self.flash(cfg.login_message %user)
+                    return redirect(url)
+                except LoginFailed:
+                    self.flash("Login failed", category="danger")
         return self.render(form = form)
 
     post = get

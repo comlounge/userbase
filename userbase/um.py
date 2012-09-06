@@ -5,6 +5,7 @@ import datetime
 import copy
 
 import handlers
+from .exceptions import *
 import forms
 import db
 
@@ -90,6 +91,14 @@ class BaseUserModule(Module):
                 p['logged_in'] = True
         return p
 
+    def finalize(self):
+        """finalize the configuration"""
+        self.add_url_rule(URL("/login", "login", self.config['handler.login']))
+        self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
+
+    def before(self, request):
+        """before request handling"""
+
 
     ### user related
 
@@ -99,14 +108,26 @@ class BaseUserModule(Module):
             return self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
         return None
 
-    def finalize(self):
-        """finalize the configuration"""
-        self.add_url_rule(URL("/login", "login", self.config['handler.login']))
-        self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
+    def login(self, **user_credentials):
+        """login a user. What user credentials contains depends on the used data model. In case of very different
+        use cases you might also want to override this method. Usually it will be used by the generic login handler.
 
-    def before(self, request):
-        """before request handling"""
+        :param user_credentials: keyword params containing the credentials for the user
+        :return: Returns the user object or an exception in case the login failed
+        """
+        cfg = self.config
+        userid = user_credentials[cfg.user_id_field]
+        password = user_credentials['password']
 
+        users = cfg.user_class.objects(class_check = False, **{cfg.user_id_field : userid})
+        if len(users)==1:
+            user = users[0]
+            if user.check_password(password):
+                return user
+            else:
+                raise IncorrectPassword(u"User not found", user_credentials)
+        else:
+            raise UnknownUser(u"User not found", user_credentials)
 
 class EMailUserModule(BaseUserModule):
 
