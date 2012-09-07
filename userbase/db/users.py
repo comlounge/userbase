@@ -44,6 +44,13 @@ class UserBase(object):
         self.validationcode_sent = datetime.datetime.now()
         return code
 
+    def get_token(self):
+        """return a token to be used for remembering the user. Per default it's the hashed
+        userid:password tuple. So if the password changes this token is not valid anymore
+        and the user needs to login again
+        """
+        return hashlib.new("md5","%s:%s" %(self.get_id(), self.password)).hexdigest()
+
     
 
 class UserEMail(UserBase, DynamicDocument):

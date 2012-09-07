@@ -96,16 +96,17 @@ class BaseUserModule(Module):
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
 
-    def before(self, request):
-        """before request handling"""
 
+    def after_handler_init(self, handler):
+        """check the request for the remember cookie"""
+        print "!!!!", handler.request.cookies
 
     ### user related
 
     def get_user(self, handler):
         """retrieve the user from the handler session or None"""
         if "userid" in handler.session:
-            return self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
+            return self.config.user_class.objects(_id = handler.session['userid'], class_check = False)[0]
         return None
 
     def login(self, **user_credentials):
