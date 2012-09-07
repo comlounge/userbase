@@ -37,7 +37,6 @@ def test_no_remember_me(app):
 
 def test_remember_me(app):
     """check if we can delete the session cookie and still be logged in"""
-    return
     c = app.test_client()
 
     rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo", remember=1))

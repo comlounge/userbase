@@ -54,6 +54,3 @@ def pytest_funcarg__app(request):
         scope = "module")
 
 
-
-
-
