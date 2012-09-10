@@ -62,7 +62,7 @@ class BaseUserModule(Module):
         'logout_message'        : u"You are now logged out",
         'use_remember'          : True, # whether the remember function/cookie is used
         'cookie_secret'         : None,
-        'cookie_name'           : "ru", # this cookie name is used as the remember cookie
+        'cookie_name'           : "r", # this cookie name is used as the remember cookie
         'cookie_domain'         : None, # means to use the domain from the app
         'cookie_lifetime'       : datetime.timedelta(days=365),
         'master_template'       : "master.html",
@@ -70,7 +70,7 @@ class BaseUserModule(Module):
         # endpoint to use after successful login
         'login_success_url_params'  : {'endpoint' : 'root'},
         # endpoint to use after successful logout
-        'logout_success_url_params' : {'endpoint' : 'root'},
+        'logout_success_url_params' : {'endpoint' : 'userbase.login'},
 
         'user_class'            : db.UserEMail,                 # the db class we use for the user
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
@@ -80,6 +80,7 @@ class BaseUserModule(Module):
     }
 
     ####
+
 
     def get_render_context(self, handler):
         """inject something into the render context"""
@@ -99,7 +100,32 @@ class BaseUserModule(Module):
 
     def after_handler_init(self, handler):
         """check the request for the remember cookie"""
-        print "!!!!", handler.request.cookies
+        print "after handler init", handler
+        # TODO: Add some exceptions maybe to return more information
+        if self.config.cookie_name in handler.request.cookies and "userid" not in handler.session:
+            cookie = handler.load_cookie(self.config.cookie_name)
+        else:
+            print "cookie not found or userid not in session"
+            return
+        print handler.request.cookies
+        if "userid" not in cookie and "hash" not in cookie:
+            return
+        # now try to set the token again
+        user = self.get_user_by_id(cookie['userid'])
+        if user is None:
+            print "user is none"
+            return
+        if not user.is_active:
+            print "user not active"
+            return
+        if cookie['hash'] != user.get_token():
+            print "hash wrong"
+            return
+        print "setting userid"
+        handler.session['userid'] = user.id
+        # TODO: now reset the remember cookie
+        # this means to move save_session from handler to module, better anyway
+            
 
     ### user related
 
@@ -108,6 +134,14 @@ class BaseUserModule(Module):
         if "userid" in handler.session:
             return self.config.user_class.objects(_id = handler.session['userid'], class_check = False)[0]
         return None
+
+    def get_user_by_id(self, userid):
+        """returns the user or None if no user was found"""
+        users = self.config.user_class.objects(Q(_id = userid), class_check = False)
+        if len(users)==0:
+            return None
+        return users[0]
+
 
     def login(self, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different

@@ -12,10 +12,15 @@ class LogoutHandler(UserbaseHandler):
     def get(self):
         """show the login form"""
         cfg = self.module.config
-        self.logout()
+        del self.session['userid']
         self.flash(cfg.logout_message)
         url_for_params = self.module.config.logout_success_url_params
         url = self.url_for(**url_for_params)
-        return redirect(url)
+        domain = self.module.config.cookie_domain
+        if domain is None:
+            domain = self.app.config.session_cookie_domain
+        response = redirect(url)
+        response.delete_cookie(self.module.config.cookie_name, domain = domain)
+        return response
 
     post = get
