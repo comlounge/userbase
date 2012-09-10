@@ -1,9 +1,15 @@
-from mongoengine import *
+from mongokit import Document, Connection
 import hashlib
 import uuid
+import re
 import datetime
 
-__all__ = ['UserEMail', 'UserUsername']
+def email_validator(value):
+   email = re.compile(r'(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)',re.IGNORECASE)
+   return bool(email.match(value))
+
+
+__all__ = ['UserBase', 'UserEMail', 'UserUsername']
 
 class UserBase(object):
     """Base class for all users"""
@@ -53,25 +59,74 @@ class UserBase(object):
 
     
 
-class UserEMail(UserBase, DynamicDocument):
+class UserEMail(Document, UserBase):
     """a user identified by email address and password"""
-    email = EmailField(max_length=200, required=True, primary_key=True)
-    pw = StringField(max_length=200, required=True)
-    fullname = StringField(max_length=200, required=False)
-    meta = {'collection': 'users', 'allow_inheritance': True}
 
+    name = "UserEMail" # should be the same name as the class
+    use_dot_notation = True
+
+    structure = {
+        'fullname'                      : basestring,
+        'email'                         : basestring,
+        'pw'                            : basestring,
+        'date_creation'                 : datetime.datetime,
+        'active'                        : basestring,
+        'activation_time'               : datetime.datetime,
+        'last_login'                    : datetime.datetime,
+        'last_ip'                       : basestring,
+        'activation_code'               : basestring,
+        'password_code'                 : basestring,
+        'activation_code_expires'       : datetime.datetime,
+        'password_code_expires'         : datetime.datetime,
+        'fullname'                      : basestring,
+    }
+    
+    validators = {
+        'email': email_validator,
+    }
+
+    required_fields = ['email', 'pw', 'date_creation']
+    
+    default_values = {
+        'date_creation': datetime.datetime.utcnow
+    }
+    
     def get_id(self):
         """return the userid we want to use in sessions etc."""
         return self.email
     
     
-class UserUsername(UserBase, DynamicDocument):
+class UserUsername(Document, UserBase):
     """a user identified by a username and password"""
-    email = EmailField(max_length=200, required=True)
-    username = StringField(max_length=200, required=True)
-    pw = StringField(max_length=200, required=True)
-    fullname = StringField(max_length=200, required=False)
-    meta = {'collection': 'users', 'allow_inheritance': True}
+
+    name = "UserUsername" # should be the same name as the class
+    use_dot_notation = True
+
+    structure = {
+        'email'                         : basestring,
+        'username'                      : basestring,
+        'pw'                            : basestring,
+        'date_creation'                 : datetime.datetime,
+        'active'                        : basestring,
+        'activation_time'               : datetime.datetime,
+        'last_login'                    : datetime.datetime,
+        'last_ip'                       : basestring,
+        'activation_code'               : basestring,
+        'password_code'                 : basestring,
+        'activation_code_expires'       : datetime.datetime,
+        'password_code_expires'         : datetime.datetime,
+        'fullname'                      : basestring,
+    }
+    
+    required_fields = ['email', 'username', 'pw', 'date_creation']
+
+    validators = {
+        'email': email_validator,
+    }
+    
+    default_values = {
+        'date_creation': datetime.datetime.utcnow
+    }
 
     def get_id(self):
         """return the userid we want to use in sessions etc."""

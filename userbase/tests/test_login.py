@@ -48,3 +48,22 @@ def test_remember_me(app):
     assert "userid" in app.last_handler.session
 
 
+def test_logout(app):
+    c = app.test_client()
+
+    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
+    rv = c.get("/")
+    assert "userid" in app.last_handler.session
+    rv = c.post("/userbase/logout")
+    rv = c.get("/")
+    assert "userid" not in app.last_handler.session
+
+def test_logout_with_remember(app):
+    c = app.test_client()
+
+    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo", remember=1))
+    rv = c.get("/")
+    assert "userid" in app.last_handler.session
+    rv = c.post("/userbase/logout")
+    rv = c.get("/")
+    assert "userid" not in app.last_handler.session

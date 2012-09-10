@@ -24,21 +24,20 @@ class MyApp(Application):
     ]
     modules = [
         username_userbase(
+            mongodb_name = DB_NAME,
             login_success_url_params = {'endpoint' : 'root'},
             logout_success_url_params = {'endpoint' : 'root'},
         ),
     ]
 
 def setup_db():
-    mongoengine.connect(db=DB_NAME) # hopefully nobody uses this
+    #mongoengine.connect(db=DB_NAME) # hopefully nobody uses this
     db = pymongo.Connection()[DB_NAME]
-    db.users.insert({ "_id" : ObjectId("5049c63707afeda89a000002"), "username" : "foobar", "_types" : [ "UserUsername" ], "pw" : "96948aad3fcae80c08a35c9b5958cd89", "_cls" : "UserUsername", "fullname" : "Foo Baz", "email" : "barfoo@example.com" })
+    db.users.insert({ "_id" : u"foobar", "username": u"foobar", "pw" : "96948aad3fcae80c08a35c9b5958cd89", "email" : "barfoo@example.com", "fullname": "Foo bar" })
     return db
 
 def teardown_db(db):
-    #pymongo.Connection().drop_database(DB_NAME)
     pymongo.Connection()[DB_NAME].users.remove()
-    #db.users.insert({ "_id" : ObjectId("5049c63707afeda89a000002"), "username" : "foobar", "_types" : [ "UserUsername" ], "pw" : "96948aad3fcae80c08a35c9b5958cd89", "_cls" : "UserUsername", "fullname" : "Foo Baz", "email" : "barfoo@example.com" })
 
 def pytest_funcarg__db(request):
     return request.cached_setup(

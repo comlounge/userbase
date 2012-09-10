@@ -1,6 +1,7 @@
 from starflyer import URL, Module, ConfigurationError
 from jinja2 import PackageLoader
-from mongoengine import Q
+#from mongoengine import Q
+import mongokit
 import datetime
 import copy
 
@@ -67,6 +68,13 @@ class BaseUserModule(Module):
         'cookie_lifetime'       : datetime.timedelta(days=365),
         'master_template'       : "master.html",
 
+        # database related
+        'mongodb_host'          : "localhost",
+        'mongodb_port'          : 27017,
+        'mongodb_name'          : None,
+        'mongodb_collection'    : "users",
+        'mongodb_kwargs'        : {},
+
         # endpoint to use after successful login
         'login_success_url_params'  : {'endpoint' : 'root'},
         # endpoint to use after successful logout
@@ -79,71 +87,77 @@ class BaseUserModule(Module):
         'handler.logout'        : handlers.LogoutHandler,
     }
 
+
+    ####
+    #### hooks
     ####
 
-
-    def get_render_context(self, handler):
-        """inject something into the render context"""
-        p = {}
-        if "userid" in handler.session:
-            user = self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
-            if user.is_active:
-                p['user'] = self.config.user_class.objects(Q(_id = handler.session['userid']), class_check = False)[0]
-                p['logged_in'] = True
-        return p
-
+    # module hook
     def finalize(self):
         """finalize the configuration"""
+        # open database
+        conn = self.connection = mongokit.Connection(
+            self.config.mongodb_host,
+            self.config.mongodb_port)
+        self.collection = conn[self.config.mongodb_name][self.config.mongodb_collection]
+        conn.register(self.config.user_class)
+        self.users = getattr(self.collection, self.config.user_class.name)
+
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
 
+    # handler hooks
+    def get_render_context(self, handler):
+        """inject something into the render context"""
+        p = {}
+        user = self.get_user(handler)
+        if user is not None and user.is_active:
+            p['user'] = user
+            p['logged_in'] = True
+        return p
 
-    def after_handler_init(self, handler):
-        """check the request for the remember cookie"""
-        print "after handler init", handler
-        # TODO: Add some exceptions maybe to return more information
+    def before_handler(self, handler):
         if self.config.cookie_name in handler.request.cookies and "userid" not in handler.session:
-            cookie = handler.load_cookie(self.config.cookie_name)
+            cookie = self.app.load_cookie(handler.request, self.config.cookie_name)
         else:
-            print "cookie not found or userid not in session"
             return
-        print handler.request.cookies
         if "userid" not in cookie and "hash" not in cookie:
             return
+
         # now try to set the token again
         user = self.get_user_by_id(cookie['userid'])
         if user is None:
-            print "user is none"
             return
         if not user.is_active:
-            print "user not active"
             return
         if cookie['hash'] != user.get_token():
-            print "hash wrong"
             return
-        print "setting userid"
-        handler.session['userid'] = user.id
+        handler.session['userid'] = user.get_id()
+        handler.user = user
+
         # TODO: now reset the remember cookie
         # this means to move save_session from handler to module, better anyway
             
+    def after_handler(self, handler, response):
+        """check if we need to do a logout"""
+        if handler.session.has_key("remember"):
+            expires = datetime.datetime.utcnow() + self.config.cookie_lifetime
+            self.app.set_cookie(response, self.config.cookie_name, handler.session['remember'], expires = expires)
+            del handler.session['remember']
+        if handler.session.has_key("remember_forget"):
+            self.app.delete_cookie(response, self.config.cookie_name)
 
     ### user related
 
     def get_user(self, handler):
         """retrieve the user from the handler session or None"""
-        if "userid" in handler.session:
-            return self.config.user_class.objects(_id = handler.session['userid'], class_check = False)[0]
-        return None
+        return self.get_user_by_id(handler.session.get("userid", None))
 
     def get_user_by_id(self, userid):
         """returns the user or None if no user was found"""
-        users = self.config.user_class.objects(Q(_id = userid), class_check = False)
-        if len(users)==0:
-            return None
-        return users[0]
+        return self.users.find_one({self.config.user_id_field : userid})
 
-
-    def login(self, **user_credentials):
+    def login(self, handler, remember = False, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different
         use cases you might also want to override this method. Usually it will be used by the generic login handler.
 
@@ -153,18 +167,25 @@ class BaseUserModule(Module):
         cfg = self.config
         userid = user_credentials[cfg.user_id_field]
         password = user_credentials['password']
-
-        users = cfg.user_class.objects(class_check = False, **{cfg.user_id_field : userid})
-        if len(users)==1:
-            user = users[0]
-            if user.check_password(password):
-                return user
-            else:
-                raise IncorrectPassword(u"User not found", user_credentials)
-        else:
+        user = self.get_user_by_id(userid)
+        if user is None:
             raise UnknownUser(u"User not found", user_credentials)
+        if not user.check_password(password):
+            raise IncorrectPassword(u"User not found", user_credentials)
 
-    # hooks
+        handler.session['userid'] = user.get_id()
+
+        if remember:
+            handler.session['remember'] = {
+                'userid' : user.get_id(),
+                'hash'   : user.get_token(),
+            }
+        return user
+
+    def logout(self, handler):
+        """log the user out and remove any remaining cookies"""
+        del handler.session['userid']
+        handler.session['remember_forget'] = True
 
 class EMailUserModule(BaseUserModule):
 
