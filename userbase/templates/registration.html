@@ -3,28 +3,23 @@
     <div class="row">
         <div class="span8">
             <div class="form">
-                <h2>Registriere Dich!</h2>
+                <h2>Please register</h2>
                 <form class="boxform horizontal-form validate" method="POST" action="/register">
-                    {{ macros.field(form.name, form.name(class="span4 required")) }}
-                    {{ macros.field(form.username, form.username(class="span4 required")) }}
-                    {{ macros.field(form.email, form.email(class="span4 required email", remote=url_for('register.validate'))) }}
-                    {{ macros.field(form.password, form.password(class="span4 pw required", id="password")) }}
-                    {{ macros.field(form.password2, form.password2(class="span4 required", equalTo="#password")) }}
+                    {% for field in form %}
+                        {% if field.name != "remember" %}
+                            {{ formmacros.form_field(field) }}
+                        {% endif %}
+                    {% endfor %}
 
                     <fieldset class="form-actions">
                         <div class="input">
-                            <input type="submit" class="button large" value="Registrieren">
+                            <input type="submit" class="button large" value="Register">
                         </div>
                     </fieldset>
                 </form>
             </div>
         </div>
         <div class="span4">
-            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
-            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
-            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
-            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
-            uhushsuhsiuhs iuhcos iuc icuh couhai uchio csuhioschu coiuhc 
         </div>
     </div>
 {% endblock %}

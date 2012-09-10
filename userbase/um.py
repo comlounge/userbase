@@ -74,17 +74,26 @@ class BaseUserModule(Module):
         'mongodb_name'          : None,
         'mongodb_collection'    : "users",
         'mongodb_kwargs'        : {},
-
-        # endpoint to use after successful login
-        'login_success_url_params'  : {'endpoint' : 'root'},
-        # endpoint to use after successful logout
-        'logout_success_url_params' : {'endpoint' : 'userbase.login'},
-
         'user_class'            : db.UserEMail,                 # the db class we use for the user
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
-        'login_form'            : handlers.EMailLoginForm,      # the login form to use
+
+        # endpoints for redirects
+        'login_success_url_params'  : {'endpoint' : 'root'},
+        'logout_success_url_params' : {'endpoint' : 'userbase.login'},
+
+        # in case you want your own handlers
         'handler.login'         : handlers.LoginHandler,        # the login handler to use (the generic one)
         'handler.logout'        : handlers.LogoutHandler,
+        'handler.register'      : handlers.RegistrationHandler,        # the login handler to use (the generic one)
+
+        # form related
+        'login_form'            : handlers.EMailLoginForm,          # the login form to use
+        'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
+        
+        # further settings
+        'use_double_opt_in'     : True,                             # use double opt-in?
+        'email_sender_name'     : "Your System",                    # which is the user who sends out codes etc.?
+        'email_sender_address'  : "noreply@example.org",            # which is the user who sends out codes etc.?
     }
 
 
@@ -105,6 +114,7 @@ class BaseUserModule(Module):
 
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
+        self.add_url_rule(URL("/register", "register", self.config['handler.register']))
 
     # handler hooks
     def get_render_context(self, handler):
