@@ -146,6 +146,7 @@ class BaseUserModule(Module):
             del handler.session['remember']
         if handler.session.has_key("remember_forget"):
             self.app.delete_cookie(response, self.config.cookie_name)
+            del handler.session['remember_forget']
 
     ### user related
 
