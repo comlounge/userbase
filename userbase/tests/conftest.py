@@ -1,8 +1,8 @@
 from starflyer import Module, Application, Handler, URL
 from userbase import username_userbase
-import mongoengine
 import py.path
 import pymongo
+import datetime
 from bson.objectid import ObjectId
 
 DB_NAME = "userbase_testing_cbsjszcg8cs7tsc"
@@ -31,9 +31,21 @@ class MyApp(Application):
     ]
 
 def setup_db():
-    #mongoengine.connect(db=DB_NAME) # hopefully nobody uses this
     db = pymongo.Connection()[DB_NAME]
-    db.users.insert({ "_id" : u"foobar", "username": u"foobar", "pw" : "96948aad3fcae80c08a35c9b5958cd89", "email" : "barfoo@example.com", "fullname": "Foo bar" })
+    db.users.insert({ "_id" : u"foobar", 
+        "username": u"foobar", 
+        "pw" : "96948aad3fcae80c08a35c9b5958cd89", 
+        "email" : "barfoo@example.com", 
+        "fullname": "Foo bar",
+        "last_ip": "",
+        "last_login": None,
+        "activation_time": None,
+        "activation_code_expires": None,
+        "activation_code": None,
+        "password_code": None,
+        "password_code_expires": None,
+        "active": True,
+        'date_creation' : datetime.datetime.utcnow()})
     return db
 
 def teardown_db(db):

@@ -8,14 +8,14 @@ class UsernameRegistrationForm(Form):
     email       = TextField('E-Mail',       [validators.Length(max=200), validators.Email(), validators.Required()])
     password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
     password2   = PasswordField('Password confirmation', [validators.Length(max=135), validators.Required()])
-    fullname    = TextField('Full name',    [validators.Length(, max=200), validators.Required()])
+    fullname    = TextField('Full name',    [validators.Length(max=200), validators.Required()])
 
 class EMailRegistrationForm(Form):
     username    = TextField('Username',     [validators.Length(max=200), validators.Required()])
     email       = TextField('E-Mail',       [validators.Length(max=200), validators.Email(), validators.Required()])
     password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
     password2   = PasswordField('Password confirmation', [validators.Length(max=135), validators.Required()])
-    fullname    = TextField('Full name',    [validators.Length(, max=200), validators.Required()])
+    fullname    = TextField('Full name',    [validators.Length(max=200), validators.Required()])
 
 class RegistrationHandler(Handler):
     """show the registration form and process it"""

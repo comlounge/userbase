@@ -185,6 +185,9 @@ class BaseUserModule(Module):
             raise IncorrectPassword(u"User not found", user_credentials)
 
         handler.session['userid'] = user.get_id()
+        handler.user = user
+        user.last_login = datetime.datetime.utcnow()
+        user.save()
 
         if remember:
             handler.session['remember'] = {

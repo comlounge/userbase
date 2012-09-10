@@ -70,7 +70,7 @@ class UserEMail(Document, UserBase):
         'email'                         : basestring,
         'pw'                            : basestring,
         'date_creation'                 : datetime.datetime,
-        'active'                        : basestring,
+        'active'                        : bool,
         'activation_time'               : datetime.datetime,
         'last_login'                    : datetime.datetime,
         'last_ip'                       : basestring,
@@ -88,7 +88,15 @@ class UserEMail(Document, UserBase):
     required_fields = ['email', 'pw', 'date_creation']
     
     default_values = {
-        'date_creation': datetime.datetime.utcnow
+        'date_creation'                 : datetime.datetime.utcnow,
+        "last_ip"                       : "",
+        "last_login"                    : None,
+        "activation_time"               : None,
+        "activation_code_expires"       : None,
+        "activation_code"               : None,
+        "password_code"                 : None,
+        "password_code_expires"         : None,
+        "active"                        : False,
     }
     
     def get_id(self):
@@ -107,7 +115,7 @@ class UserUsername(Document, UserBase):
         'username'                      : basestring,
         'pw'                            : basestring,
         'date_creation'                 : datetime.datetime,
-        'active'                        : basestring,
+        'active'                        : bool,
         'activation_time'               : datetime.datetime,
         'last_login'                    : datetime.datetime,
         'last_ip'                       : basestring,
@@ -125,7 +133,15 @@ class UserUsername(Document, UserBase):
     }
     
     default_values = {
-        'date_creation': datetime.datetime.utcnow
+        'date_creation'                 : datetime.datetime.utcnow,
+        "last_ip"                       : "",
+        "last_login"                    : None,
+        "activation_time"               : None,
+        "activation_code_expires"       : None,
+        "activation_code"               : None,
+        "password_code"                 : None,
+        "password_code_expires"         : None,
+        "active"                        : False,
     }
 
     def get_id(self):

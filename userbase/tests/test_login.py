@@ -67,3 +67,12 @@ def test_logout_with_remember(app):
     rv = c.post("/userbase/logout")
     rv = c.get("/")
     assert "userid" not in app.last_handler.session
+
+def test_last_login(app):
+    c = app.test_client()
+
+    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
+    ll = app.last_handler.user.last_login
+
+    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
+    assert ll < app.last_handler.user.last_login
