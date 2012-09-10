@@ -18,10 +18,13 @@ class UserManager(ScriptBase):
 
     def __call__(self):
         m = self.app.module_map['userbase']
-        uo = m.config.user_class
         data = vars(self.args)
         del data['config_file']
-        user = uo(**data)
+        user = m.users()
+        print data
+        user.update(data)
+        #data = vars(self.args)
+        #user = uo(data)
         user.save()
         print "user created"
 

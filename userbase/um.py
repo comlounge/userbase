@@ -1,6 +1,5 @@
 from starflyer import URL, Module, ConfigurationError
 from jinja2 import PackageLoader
-#from mongoengine import Q
 import mongokit
 import datetime
 import copy
@@ -74,7 +73,7 @@ class BaseUserModule(Module):
         'mongodb_name'          : None,
         'mongodb_collection'    : "users",
         'mongodb_kwargs'        : {},
-        'user_class'            : db.UserEMail,                 # the db class we use for the user
+        'user_class'            : db.UserUsername,              # the db class we use for the user
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
 
         # endpoints for redirects
@@ -218,7 +217,6 @@ class UsernameUserModule(BaseUserModule):
 
     defaults = copy.copy(BaseUserModule.defaults)
     defaults.update({
-        'user_class'            : db.UserUsername,                 # the db class we use for the user
         'user_id_field'         : 'username',
         'login_form'            : handlers.UsernameLoginForm,
         'handler.login'         : handlers.LoginHandler,

@@ -1,7 +1,6 @@
 from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, validators
 from userbase import db
-from mongoengine import Q
 
 __all__ = ['LogoutHandler']
 

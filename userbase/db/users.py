@@ -1,4 +1,4 @@
-from mongokit import Document, Connection
+from mongokit import Document, Connection, CustomType
 import hashlib
 import uuid
 import re
@@ -8,6 +8,18 @@ def email_validator(value):
    email = re.compile(r'(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)',re.IGNORECASE)
    return bool(email.match(value))
 
+class Password(CustomType):
+    mongo_type = basestring
+    python_type = basestring # optional, just for more validation
+    init_type = None # optional, fill the first empty value
+
+    def to_bson(self, value):
+        """convert type to a mongodb type"""
+        return hashlib.new("md5",value).hexdigest()
+
+    def to_python(self, value):
+        """convert type to a python object"""
+        return value
 
 __all__ = ['UserBase', 'UserEMail', 'UserUsername']
 
@@ -15,19 +27,10 @@ class UserBase(object):
     """Base class for all users"""
 
 
-    def set_password(self, pw):
-        self.pw = hashlib.new("md5",pw).hexdigest()
-        # TODO: generate code
-
-    def get_password(self):
-        return self.pw
-
-    password = property(get_password, set_password)
-
     def check_password(self, pw):
         """check password"""
         hash = hashlib.new("md5",pw).hexdigest()
-        return hash == self.pw
+        return hash == self.password
 
     def create_pw(self):
         """create a password"""
@@ -68,7 +71,7 @@ class UserEMail(Document, UserBase):
     structure = {
         'fullname'                      : basestring,
         'email'                         : basestring,
-        'pw'                            : basestring,
+        'password'                      : Password(),
         'date_creation'                 : datetime.datetime,
         'active'                        : bool,
         'activation_time'               : datetime.datetime,
@@ -85,7 +88,7 @@ class UserEMail(Document, UserBase):
         'email': email_validator,
     }
 
-    required_fields = ['email', 'pw', 'date_creation']
+    required_fields = ['email', 'password', 'date_creation']
     
     default_values = {
         'date_creation'                 : datetime.datetime.utcnow,
@@ -113,7 +116,7 @@ class UserUsername(Document, UserBase):
     structure = {
         'email'                         : basestring,
         'username'                      : basestring,
-        'pw'                            : basestring,
+        'password'                      : Password(),
         'date_creation'                 : datetime.datetime,
         'active'                        : bool,
         'activation_time'               : datetime.datetime,
@@ -126,7 +129,7 @@ class UserUsername(Document, UserBase):
         'fullname'                      : basestring,
     }
     
-    required_fields = ['email', 'username', 'pw', 'date_creation']
+    required_fields = ['email', 'username', 'password', 'date_creation']
 
     validators = {
         'email': email_validator,
