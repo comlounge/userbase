@@ -2,18 +2,17 @@ from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from userbase import db
 from userbase.exceptions import LoginFailed
-from mongoengine import Q
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 'LoginHandler']
 
 class EMailLoginForm(Form):
     email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(min=3, max=35), validators.Required()])
+    password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
     remember    = BooleanField('remember me, please')
 
 class UsernameLoginForm(Form):
     username    = TextField('Username', [validators.Length(max=200), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(min=1, max=35), validators.Required()])
+    password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
     remember    = BooleanField('remember me, please')
 
 class LoginHandler(Handler):
