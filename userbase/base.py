@@ -38,10 +38,11 @@ class UserbaseHandlerMixin(object):
         config = self.module.config
         app = self.app
         cookie_name = config.cookie_name
-        duration = config.cookie_lifetime
-        expires = datetime.datetime.utcnow() + duration
-        secret_key = config.get("secret_key", self.app.config.secret_key)
-        self.set_cookie(cookie_name, data, expires = expires, secret_key = secret_key)
+        expires = datetime.datetime.utcnow() + config.cookie_lifetime
+        self.set_cookie(config.cookie_name, 
+            data, 
+            expires = expires, 
+            secret_key = self.app.config.secret_key)
 
     def _load_cookie(self):
         """load a cookie from the response"""

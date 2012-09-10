@@ -130,6 +130,8 @@ class BaseUserModule(Module):
         else:
             raise UnknownUser(u"User not found", user_credentials)
 
+    # hooks
+
 class EMailUserModule(BaseUserModule):
 
     defaults = copy.copy(BaseUserModule.defaults)
