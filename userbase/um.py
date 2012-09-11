@@ -9,6 +9,7 @@ import handlers
 from .exceptions import *
 import forms
 import db
+import hooks
 
 __all__ = [
     'BaseUserModule', 
@@ -94,6 +95,9 @@ class BaseUserModule(Module):
         'use_double_opt_in'     : True,                             # use double opt-in?
         'email_sender_name'     : "Your System",                    # which is the user who sends out codes etc.?
         'email_sender_address'  : "noreply@example.org",            # which is the user who sends out codes etc.?
+
+        # hooks
+        'hooks'                 : hooks.Hooks,
     }
 
 
@@ -115,6 +119,9 @@ class BaseUserModule(Module):
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
         self.add_url_rule(URL("/register", "register", self.config['handler.register']))
+
+        # attach the global hooks
+        self.hooks = self.config.hooks(self)
 
     # handler hooks
     def get_render_context(self, handler):
