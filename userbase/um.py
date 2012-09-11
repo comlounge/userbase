@@ -3,6 +3,7 @@ from jinja2 import PackageLoader
 import mongokit
 import datetime
 import copy
+import bson
 
 import handlers
 from .exceptions import *
@@ -73,7 +74,7 @@ class BaseUserModule(Module):
         'mongodb_name'          : None,
         'mongodb_collection'    : "users",
         'mongodb_kwargs'        : {},
-        'user_class'            : db.UserUsername,              # the db class we use for the user
+        'user_class'            : db.User,                      # the db class we use for the user
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
 
         # endpoints for redirects
@@ -126,6 +127,13 @@ class BaseUserModule(Module):
         return p
 
     def before_handler(self, handler):
+        """check if we have a logged in user in the session. If not, check the remember cookie
+        and maybe re-login the user
+        """
+        user = self.get_user_by_id(handler.session.get("userid", None))
+        if user is not None:
+            handler.user = user
+            return
         if self.config.cookie_name in handler.request.cookies and "userid" not in handler.session:
             cookie = self.app.load_cookie(handler.request, self.config.cookie_name)
         else:
@@ -163,9 +171,15 @@ class BaseUserModule(Module):
         """retrieve the user from the handler session or None"""
         return self.get_user_by_id(handler.session.get("userid", None))
 
+    def get_user_by_credential(self, cred):
+        """try to retrieve the user by the configured credential field"""
+        return self.users.find_one({self.config.user_id_field : cred})
+
     def get_user_by_id(self, userid):
         """returns the user or None if no user was found"""
-        return self.users.find_one({self.config.user_id_field : userid})
+        if not isinstance(userid, bson.ObjectId):
+            userid = bson.ObjectId(userid)
+        return self.users.get_from_id(userid)
 
     def login(self, handler, remember = False, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different
@@ -175,15 +189,15 @@ class BaseUserModule(Module):
         :return: Returns the user object or an exception in case the login failed
         """
         cfg = self.config
-        userid = user_credentials[cfg.user_id_field]
+        cred = user_credentials[cfg.user_id_field]
         password = user_credentials['password']
-        user = self.get_user_by_id(userid)
+        user = self.get_user_by_credential(cred)
         if user is None:
             raise UnknownUser(u"User not found", user_credentials)
         if not user.check_password(password):
-            raise IncorrectPassword(u"User not found", user_credentials)
+            raise IncorrectPassword(u"Password is wrong", user_credentials)
 
-        handler.session['userid'] = user.get_id()
+        handler.session['userid'] = str(user.get_id())
         handler.user = user
         user.last_login = datetime.datetime.utcnow()
         user.save()
