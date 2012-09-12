@@ -53,11 +53,6 @@ class User(Document):
         """return the userid we want to use in sessions etc."""
         return self._id
 
-    @property
-    def is_active(self):
-        """overwrite this if you want a different use case"""
-        return True
-
     def create_validation_code(self):
         """create a new validation code"""
         code = self.validationcode = unicode(uuid.uuid4())
