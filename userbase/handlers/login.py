@@ -36,11 +36,14 @@ class LoginHandler(Handler):
                     user = mod.login(self, **f)
                     url_for_params = self.module.config.login_success_url_params
                     url = self.url_for(**url_for_params)
-                    #self.login(user, remember=remember)
-                    self.flash(cfg.login_message %user)
+                    self.flash(cfg.messages['login_success'] %user)
                     return redirect(url)
-                except LoginFailed:
-                    self.flash("Login failed", category="danger")
+                except PasswordIncorrect, e:
+                    self.flash(cfg.messages['password_incorrect'], category="danger")
+                except UserUnknown, e:
+                    self.flash(cfg.messages['user_unknown'], category="danger")
+                except LoginFailed, e:
+                    self.flash(cfg.messages['login_failed'], category="danger")
         return self.render(form = form)
 
     post = get

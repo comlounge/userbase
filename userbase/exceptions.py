@@ -1,7 +1,7 @@
 __all__ = [
     'LoginFailed',
-    'UnknownUser',
-    'IncorrectPassword',
+    'UserUnknown',
+    'PasswordIncorrect',
 ]
 
 class LoginFailed(Exception):
@@ -12,10 +12,10 @@ class LoginFailed(Exception):
         self.msg = msg
         self.user_credentials = user_credentials
 
-class UnknownUser(LoginFailed):
+class UserUnknown(LoginFailed):
     """a user was not found"""
 
-class IncorrectPassword(LoginFailed):
+class PasswordIncorrect(LoginFailed):
     """password was incorrect (or any other given credential)"""
 
 

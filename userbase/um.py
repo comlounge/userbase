@@ -98,6 +98,14 @@ class BaseUserModule(Module):
 
         # hooks
         'hooks'                 : hooks.Hooks,
+
+        'messages'              : {
+            'user_unknown'      : 'User unknown',
+            'password_incorrect': 'Your password is not correct',
+            'login_failed'      : 'Login failed',
+            'login_success'     : 'Welcome, %(fullname)s',
+            'logout_success'    : 'Your are now logged out',
+        }
     }
 
 
@@ -200,9 +208,9 @@ class BaseUserModule(Module):
         password = user_credentials['password']
         user = self.get_user_by_credential(cred)
         if user is None:
-            raise UnknownUser(u"User not found", user_credentials)
+            raise UserUnknown(u"User not found", user_credentials)
         if not user.check_password(password):
-            raise IncorrectPassword(u"Password is wrong", user_credentials)
+            raise PasswordIncorrect(u"Password is wrong", user_credentials)
 
         handler.session['userid'] = str(user.get_id())
         handler.user = user
