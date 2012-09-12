@@ -142,7 +142,7 @@ class BaseUserModule(Module):
         """inject something into the render context"""
         p = {}
         user = self.get_user(handler)
-        if user is not None and user.is_active:
+        if user is not None and user.active:
             p['user'] = user
             p['logged_in'] = True
         return p
@@ -166,7 +166,7 @@ class BaseUserModule(Module):
         user = self.get_user_by_id(cookie['userid'])
         if user is None:
             return
-        if not user.is_active:
+        if not user.active:
             return
         if cookie['hash'] != user.get_token():
             return
@@ -219,7 +219,7 @@ class BaseUserModule(Module):
             raise UserUnknown(u"User not found", user_credentials)
         if not user.check_password(password):
             raise PasswordIncorrect(u"Password is wrong", user_credentials)
-        if not user.is_active and not force:
+        if not user.active and not force:
             raise UserNotActive(u"the user has not been activated yet", user = user)
 
         handler.session['userid'] = str(user.get_id())
