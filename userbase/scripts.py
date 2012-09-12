@@ -21,12 +21,8 @@ class UserManager(ScriptBase):
         data = vars(self.args)
         del data['config_file']
         user = m.users()
-        print 1
         user.update(data)
-        print 2
         user.save()
-        print "user created"
-        print user
 
 
 

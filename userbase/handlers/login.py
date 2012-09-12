@@ -34,13 +34,15 @@ class LoginHandler(Handler):
                 try:
                     remember = self.module.config.use_remember and self.request.form.get("remember")
                     user = mod.login(self, **f)
-                    url_for_params = self.module.config.login_success_url_params
+                    url_for_params = cfg.urls.login_success
                     url = self.url_for(**url_for_params)
-                    self.flash(cfg.messages['login_success'] %user)
+                    self.flash(cfg.messages.login_success %user)
                     return redirect(url)
                 except PasswordIncorrect, e:
                     self.flash(cfg.messages['password_incorrect'], category="danger")
                 except UserUnknown, e:
+                    self.flash(cfg.messages['user_unknown'], category="danger")
+                except UserNotActive, e:
                     self.flash(cfg.messages['user_unknown'], category="danger")
                 except LoginFailed, e:
                     self.flash(cfg.messages['login_failed'], category="danger")

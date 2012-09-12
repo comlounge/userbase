@@ -57,9 +57,15 @@ class RegistrationHandler(Handler):
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
-                user, message = mod.register(self, **f)
-                self.flash(message)
-                url_for_params = self.module.config.login_success_url_params
+                user = mod.register(f)
+                self.flash(cfg.messages.registration_success %user)
+                if cfg.login_after_registration:
+                    user = mod.login(self, force=True, **f)
+                    self.flash(cfg.messages.login_success %user)
+                    url_for_params = cfg.urls.login_success
+                    url = self.url_for(**url_for_params)
+                    return redirect(url)
+                url_for_params = cfg.urls['registration_success']
                 url = self.url_for(**url_for_params)
                 return redirect(url)
         return self.render(form = form)

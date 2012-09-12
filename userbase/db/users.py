@@ -30,6 +30,13 @@ __all__ = ['UserBase', 'User']
 class UserBase(object):
     """Base class for all users"""
 
+    
+
+class User(Document):
+    """a user identified by email address and password"""
+
+    name = "User" # should be the same name as the class
+    use_dot_notation = True
 
     def check_password(self, pw):
         """check password"""
@@ -64,13 +71,6 @@ class UserBase(object):
         """
         return hashlib.new("md5","%s:%s" %(self.get_id(), self.password)).hexdigest()
 
-    
-
-class User(Document, UserBase):
-    """a user identified by email address and password"""
-
-    name = "User" # should be the same name as the class
-    use_dot_notation = True
 
     structure = {
         'username'                      : basestring,

@@ -1,4 +1,4 @@
-from starflyer import URL, Module, ConfigurationError
+from starflyer import URL, Module, ConfigurationError, AttributeMapper
 from jinja2 import PackageLoader
 import mongokit
 import datetime
@@ -79,8 +79,11 @@ class BaseUserModule(Module):
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
 
         # endpoints for redirects
-        'login_success_url_params'  : {'endpoint' : 'root'},
-        'logout_success_url_params' : {'endpoint' : 'userbase.login'},
+        'urls'                  : AttributeMapper({
+            'login_success'         : {'endpoint' : 'root'},
+            'registration_success'  : {'endpoint' : 'root'},
+            'logout_success'        : {'endpoint' : 'userbase.login'},
+        }),
 
         # in case you want your own handlers
         'handler.login'         : handlers.LoginHandler,        # the login handler to use (the generic one)
@@ -93,19 +96,21 @@ class BaseUserModule(Module):
         
         # further settings
         'use_double_opt_in'     : True,                             # use double opt-in?
+        'login_after_registration'     : False,                     # directly log in (even without activation)?
         'email_sender_name'     : "Your System",                    # which is the user who sends out codes etc.?
         'email_sender_address'  : "noreply@example.org",            # which is the user who sends out codes etc.?
 
         # hooks
         'hooks'                 : hooks.Hooks,
 
-        'messages'              : {
-            'user_unknown'      : 'User unknown',
-            'password_incorrect': 'Your password is not correct',
-            'login_failed'      : 'Login failed',
-            'login_success'     : 'Welcome, %(fullname)s',
-            'logout_success'    : 'Your are now logged out',
-        }
+        'messages'              : AttributeMapper({
+            'user_unknown'              : 'User unknown',
+            'password_incorrect'        : 'Your password is not correct',
+            'login_failed'              : 'Login failed',
+            'login_success'             : 'Welcome, %(fullname)s',
+            'logout_success'            : 'Your are now logged out',
+            'registration_success'      : 'Your user registration has been successful',
+        })
     }
 
 
@@ -196,11 +201,13 @@ class BaseUserModule(Module):
             userid = bson.ObjectId(userid)
         return self.users.get_from_id(userid)
 
-    def login(self, handler, remember = False, **user_credentials):
+    def login(self, handler, remember = False, force = False, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different
         use cases you might also want to override this method. Usually it will be used by the generic login handler.
 
         :param user_credentials: keyword params containing the credentials for the user
+        :param remember: If ``True`` the remember cookie will be set, defaults to ``False``
+        :param force: If ``True`` the active check for a user will be skipper, defaults to ``False``
         :return: Returns the user object or an exception in case the login failed
         """
         cfg = self.config
@@ -211,6 +218,8 @@ class BaseUserModule(Module):
             raise UserUnknown(u"User not found", user_credentials)
         if not user.check_password(password):
             raise PasswordIncorrect(u"Password is wrong", user_credentials)
+        if not user.is_active and not force:
+            raise UserNotActive(u"the user has not been activated yet", user = user)
 
         handler.session['userid'] = str(user.get_id())
         handler.user = user
@@ -228,6 +237,23 @@ class BaseUserModule(Module):
         """log the user out and remove any remaining cookies"""
         del handler.session['userid']
         handler.session['remember_forget'] = True
+
+    def register(self, user_data):
+        """register a new user. ``data`` needs to include all necessary elements for a new user object.
+        Depending on the configuration, an activation code will be sent and the user will eventually be logged
+        in
+
+        :param user_data: dictionary containing the data for the new user. All required fields need to be present, otherwise a RegistrationFailed exception will be raised. 
+        :return: Returns the user object or an exception in case the registration failed
+        """
+        user_data = self.hooks.process_registration_user_data(user_data)
+        user = self.users()
+        user.update(user_data)
+        user.save()
+
+        
+        return user
+
 
 class EMailUserModule(BaseUserModule):
 

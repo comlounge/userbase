@@ -13,3 +13,12 @@ class Hooks(object):
         self.app = userbase.app
         self.config = userbase.config
 
+    def process_registration_user_data(self, user_data):
+        """process the incoming user data (usually from a form) and e.g. fill in username in case an email based 
+        form is used"""
+        if "username" not in user_data and self.config.user_id_field == "email":
+            user_data['username'] = user_data['email']
+        if "password2" in user_data:
+            del user_data['password2']
+        return user_data
+            
