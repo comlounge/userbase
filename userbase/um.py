@@ -106,6 +106,7 @@ class BaseUserModule(Module):
         'messages'              : AttributeMapper({
             'user_unknown'              : 'User unknown',
             'password_incorrect'        : 'Your password is not correct',
+            'user_not_active'           : 'Your user has not yet been activated.', # maybe provide link here? Needs to be constructed in handler
             'login_failed'              : 'Login failed',
             'login_success'             : 'Welcome, %(fullname)s',
             'logout_success'            : 'Your are now logged out',
