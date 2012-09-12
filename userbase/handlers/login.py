@@ -1,7 +1,7 @@
 from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from userbase import db
-from userbase.exceptions import LoginFailed
+from userbase.exceptions import *
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 'LoginHandler']
 
@@ -39,13 +39,13 @@ class LoginHandler(Handler):
                     self.flash(cfg.messages.login_success %user)
                     return redirect(url)
                 except PasswordIncorrect, e:
-                    self.flash(cfg.messages['password_incorrect'], category="danger")
+                    self.flash(cfg.messages.password_incorrect, category="danger")
                 except UserUnknown, e:
-                    self.flash(cfg.messages['user_unknown'], category="danger")
+                    self.flash(cfg.messages.user_unknown, category="danger")
                 except UserNotActive, e:
-                    self.flash(cfg.messages['user_unknown'], category="danger")
+                    self.flash(cfg.messages.user_not_active %e.user, category="warning")
                 except LoginFailed, e:
-                    self.flash(cfg.messages['login_failed'], category="danger")
+                    self.flash(cfg.messages.login_failed, category="danger")
         return self.render(form = form)
 
     post = get
