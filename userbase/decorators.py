@@ -12,7 +12,7 @@ class logged_in(object):
         """check user"""
         @functools.wraps(method)
         def wrapper(self, *args, **kwargs):
-            if not self.logged_in:
+            if self.user is None:
                 self.flash('Please log in.', category="danger")
                 return redirect(self.url_for("userbase.login", force_external=True))
             return method(self, *args, **kwargs)
