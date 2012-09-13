@@ -1,0 +1,59 @@
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as formmacros with context %}                                                                                                           
+
+{% block content %}
+<div id="index">
+    <div class="row">
+        <div class="span12">
+            <h2>User Manager</h2>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>    
+                            Username
+                        </th>
+                        <th>    
+                            E-Mail
+                        </th>
+                        <th>    
+                            Fullname
+                        </th>
+                        <th>    
+                            Permissions
+                        </th>
+                        <th>    
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            {{user.user.username}}
+                        </td>
+                        <td>
+                            <a href="mailto:{{user.user.email}}">{{user.user.email}}</a>
+                        </td>
+                        <td>
+                            {{user.user.fullname}}
+                        </td>
+                        <td>
+                            {{user.readable_permissions}}
+                        </td>
+                        <td>
+                            <a href="{{url_for(".useredit", uid = user.id)}}" class="btn btn-mini"><i class="icon icon-pencil"></i></a>
+                            <a href="#" class="btn btn-mini"><i class="icon icon-trash"></i></a>
+                            <a href="#" class="btn btn-success btn-mini">ACTIVATE</a>
+                            <a href="#" class="btn btn-danger btn-mini">DEACTIVATE</a>
+                            <a href="#" class="btn btn-mini">SEND PW</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <a href="#" class="btn btn-large btn-primary"><i class="icon icon-white icon-plus"></i> Add user</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

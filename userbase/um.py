@@ -98,11 +98,13 @@ class BaseUserModule(Module):
         # form related
         'login_form'            : handlers.EMailLoginForm,          # the login form to use
         'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
+        'edit_form'             : handlers.UserEditForm,            # the registration form to use
         
         # further settings
         'enable_registration'   : False,                            # global switch for allowing new users or not
+        'enable_usereditor'     : True,                             # global switch for registering the handlers for the user management
         'use_double_opt_in'     : True,                             # use double opt-in?
-        'use_html_mail'         : True,                             # use double opt-in?
+        'use_html_mail'         : True,                             # use HTML mail? If False, only text mail will be used
         'login_after_registration'     : False,                     # directly log in (even without activation)?
         'email_sender_name'     : "Your System",                    # which is the user who sends out codes etc.?
         'email_sender_address'  : "noreply@example.org",            # which is the user who sends out codes etc.?
@@ -132,6 +134,10 @@ class BaseUserModule(Module):
             'activation_failed'         : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
             'activation_code_sent'      : 'A new activation code has been sent out, please check your email',
             'already_active'            : 'The user is already active. Please log in.',
+        }),
+
+        'permissions'           : AttributeMapper({
+            'userbase.admin'    : "manage users",
         })
     }
 
@@ -157,6 +163,9 @@ class BaseUserModule(Module):
             self.add_url_rule(URL("/register", "register", self.config['handler.register']))
             self.add_url_rule(URL("/activate", "activate", self.config['handler.activate']))
             self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler.activation_code']))
+        if self.config.enable_usereditor:
+            self.add_url_rule(URL("/users/", "userlist", handlers.UserList))
+            self.add_url_rule(URL("/users/<uid>", "useredit", handlers.UserEdit))
 
         # attach the global hooks
         self.hooks = self.config.hooks(self)
@@ -175,6 +184,7 @@ class BaseUserModule(Module):
         """check if we have a logged in user in the session. If not, check the remember cookie
         and maybe re-login the user
         """
+        handler.user = None
         user = self.get_user_by_id(handler.session.get("userid", None))
         if user is not None:
             handler.user = user

@@ -1,19 +1,9 @@
 from starflyer import Handler, redirect
-from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from userbase import db
 from userbase.exceptions import *
 
-__all__ = ['UsernameLoginForm', 'EMailLoginForm', 'LoginHandler']
+__all__ = ['LoginHandler']
 
-class EMailLoginForm(Form):
-    email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
-    remember    = BooleanField('remember me, please')
-
-class UsernameLoginForm(Form):
-    username    = TextField('Username', [validators.Length(max=200), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
-    remember    = BooleanField('remember me, please')
 
 class LoginHandler(Handler):
     """show the user login form and process it"""
