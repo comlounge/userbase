@@ -65,7 +65,7 @@ class RegistrationHandler(Handler):
                     url_for_params = cfg.urls.login_success
                     url = self.url_for(**url_for_params)
                     return redirect(url)
-                url_for_params = cfg.urls['registration_success']
+                url_for_params = cfg.urls.registration_success
                 url = self.url_for(**url_for_params)
                 return redirect(url)
         return self.render(form = form)

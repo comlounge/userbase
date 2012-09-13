@@ -1,3 +1,4 @@
+import uuid 
 
 class Hooks(object):
     """This is a class for holding all kinds of hooks for the user manager related to login, logout, registration
@@ -22,3 +23,6 @@ class Hooks(object):
             del user_data['password2']
         return user_data
             
+    def create_activation_code(self, user):
+        """create an activation code. Default is a simple uuid"""
+        return unicode(uuid.uuid4())

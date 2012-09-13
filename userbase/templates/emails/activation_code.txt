@@ -1,0 +1,7 @@
+Hi {{user.fullname}},
+
+in order to activate your account you have to click on the following link:
+
+{{url}}
+
+

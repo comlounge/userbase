@@ -80,15 +80,20 @@ class BaseUserModule(Module):
 
         # endpoints for redirects
         'urls'                  : AttributeMapper({
+            'activation'            : {'endpoint' : 'userbase.activate'},
+            'activation_success'    : {'endpoint' : 'root'},
+            'activation_code_sent'  : {'endpoint' : 'root'},
             'login_success'         : {'endpoint' : 'root'},
             'registration_success'  : {'endpoint' : 'root'},
             'logout_success'        : {'endpoint' : 'userbase.login'},
         }),
 
-        # in case you want your own handlers
-        'handler.login'         : handlers.LoginHandler,        # the login handler to use (the generic one)
+        # in case you want your own handlers define them here. They will be set on finalize
+        'handler.login'         : handlers.LoginHandler,
         'handler.logout'        : handlers.LogoutHandler,
-        'handler.register'      : handlers.RegistrationHandler,        # the login handler to use (the generic one)
+        'handler.register'      : handlers.RegistrationHandler,     
+        'handler.activate'      : handlers.ActivationHandler,      
+        'handler.activation_code': handlers.ActivationCodeHandler,
 
         # form related
         'login_form'            : handlers.EMailLoginForm,          # the login form to use
@@ -96,21 +101,36 @@ class BaseUserModule(Module):
         
         # further settings
         'use_double_opt_in'     : True,                             # use double opt-in?
+        'use_html_mail'         : True,                             # use double opt-in?
         'login_after_registration'     : False,                     # directly log in (even without activation)?
         'email_sender_name'     : "Your System",                    # which is the user who sends out codes etc.?
         'email_sender_address'  : "noreply@example.org",            # which is the user who sends out codes etc.?
-
+        'subjects'              : AttributeMapper({
+            'registration'      : 'Your registration is nearly finished',
+            'welcome'           : 'Welcome to our system',
+            'password'          : 'Password reminder',
+        }),
+        'emails'                : AttributeMapper({
+            'activation_code'   : '_m/userbase/emails/activation_code',
+            'welcome'           : '_m/userbase/emails/welcome',
+        }),
+            
         # hooks
         'hooks'                 : hooks.Hooks,
 
         'messages'              : AttributeMapper({
             'user_unknown'              : 'User unknown',
+            'email_unknown'             : 'This email address cannot not be found in our user database',
             'password_incorrect'        : 'Your password is not correct',
             'user_not_active'           : 'Your user has not yet been activated.', # maybe provide link here? Needs to be constructed in handler
             'login_failed'              : 'Login failed',
             'login_success'             : 'Welcome, %(fullname)s',
             'logout_success'            : 'Your are now logged out',
             'registration_success'      : 'Your user registration has been successful',
+            'activation_success'        : 'Your account has been activated',
+            'activation_failed'         : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
+            'activation_code_sent'      : 'A new activation code has been sent out, please check your email',
+            'already_active'            : 'The user is already active. Please log in.',
         })
     }
 
@@ -133,6 +153,8 @@ class BaseUserModule(Module):
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
         self.add_url_rule(URL("/register", "register", self.config['handler.register']))
+        self.add_url_rule(URL("/activate", "activate", self.config['handler.activate']))
+        self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler.activation_code']))
 
         # attach the global hooks
         self.hooks = self.config.hooks(self)
@@ -196,29 +218,42 @@ class BaseUserModule(Module):
         """try to retrieve the user by the configured credential field"""
         return self.users.find_one({self.config.user_id_field : cred})
 
+    def get_user_by_activation_code(self, code):
+        """try to retrieve the user by the configured credential field"""
+        if code is None:
+            return None
+        return self.users.find_one({'activation_code': code})
+
+    def get_user_by_email(self, email):
+        """try to retrieve the user by the email address"""
+        return self.users.find_one({'email': email})
+
     def get_user_by_id(self, userid):
         """returns the user or None if no user was found"""
         if not isinstance(userid, bson.ObjectId):
             userid = bson.ObjectId(userid)
         return self.users.get_from_id(userid)
 
-    def login(self, handler, remember = False, force = False, **user_credentials):
+    def login(self, handler, remember = False, force = False, user = None, save = True, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different
         use cases you might also want to override this method. Usually it will be used by the generic login handler.
 
+        :param user: in case you already have the user object you can use this to login. credentials are ignored in this case. Usually used on registration etc.
+        :param save: if ``True`` the user object will be saved (after setting last login date). ``False`` means that you will do it anyway (e.g. on registration). Defaults to ``True``
         :param user_credentials: keyword params containing the credentials for the user
         :param remember: If ``True`` the remember cookie will be set, defaults to ``False``
         :param force: If ``True`` the active check for a user will be skipper, defaults to ``False``
         :return: Returns the user object or an exception in case the login failed
         """
         cfg = self.config
-        cred = user_credentials[cfg.user_id_field]
-        password = user_credentials['password']
-        user = self.get_user_by_credential(cred)
         if user is None:
-            raise UserUnknown(u"User not found", user_credentials)
-        if not user.check_password(password):
-            raise PasswordIncorrect(u"Password is wrong", user_credentials)
+            cred = user_credentials[cfg.user_id_field]
+            password = user_credentials['password']
+            user = self.get_user_by_credential(cred)
+            if user is None:
+                raise UserUnknown(u"User not found", user_credentials)
+            if not user.check_password(password):
+                raise PasswordIncorrect(u"Password is wrong", user_credentials)
         if not user.active and not force:
             raise UserNotActive(u"the user has not been activated yet", user = user)
 
@@ -250,10 +285,44 @@ class BaseUserModule(Module):
         user_data = self.hooks.process_registration_user_data(user_data)
         user = self.users()
         user.update(user_data)
+        if self.config.double_opt_in:
+            user.active = False
+            self.send_activation_code(user)
+        else:
+            user.active = True
         user.save()
-
-        
         return user
+
+    def send_activation_code(self, user):
+        cfg = self.config
+        code = self.hooks.create_activation_code(user)
+        user.set_activation_code(code)
+        user.save()
+        url = self.app.url_for(_append = True, _full = True, code = code, **self.config.urls.activation)
+        self.send_email(cfg.emails.activation_code, cfg.subjects.registration, user.email, user = user, url = url, code = code)
+
+    def send_welcome_mail(self, user):
+        url = self.app.url_for(_full = True, **self.config.urls.welcome)
+        self.send_email(self.config.emails.welcome, cfg.subjects.welcheom, user.email, user = user, url = url)
+
+    def send_email(self, tmplname, subject, to, **kw):
+        """send an email template out. 
+
+        :param subject: The subject to use
+        :param template: The name of the template without any extension. This will be added depending on whether we send html emails or not
+        :param user: the user for which we want to send the template
+        """
+        print self.app.module_map
+        mailer = self.app.module_map['mail']
+        if self.config.use_html_mail:
+            html = self.app.jinja_env.get_or_select_template(tmplname+".html").render(**kw)
+            txt = self.app.jinja_env.get_or_select_template(tmplname+".txt").render(**kw)
+            mailer.mail_html(to, subject, txt, html)
+        else:
+            txt = self.app.jinja_env.get_or_select_template(tmplname+".txt").render(**kw)
+            mailer.mail(to, subject, txt)
+
+
 
 
 class EMailUserModule(BaseUserModule):

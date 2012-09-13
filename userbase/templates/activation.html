@@ -1,0 +1,28 @@
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as formmacros with context %}                                                                                                           
+{% block content %}
+    <div class="row">
+        <div class="span8">
+            <div class="form">
+                <h2>You need to register your account</h2>
+                <div>
+                    You have received a code by email. You can either click the link provided in the email or 
+                    you can manually enter the code below.
+                <div/>
+                
+                <form class="boxform horizontal-form validate" method="POST" action="{{url}}">
+                    <label>Activation Code*</label>
+                    <input type="text" class="span10" placeholder="please enter your code here">
+                    <span class="help-block">Enter the code from the activation email here</span>
+                    <fieldset class="form-actions">
+                        <div class="input">
+                            <input type="submit" class="btn btn-primary btn-large" value="Activate your account">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="span4">
+        </div>
+    </div>
+{% endblock %}

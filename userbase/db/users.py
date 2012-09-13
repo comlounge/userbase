@@ -66,6 +66,23 @@ class User(Document):
         """
         return hashlib.new("md5","%s:%s" %(self.get_id(), self.password)).hexdigest()
 
+    def set_activation_code(self, code, duration = None):
+        if duration is None:
+            duration = datetime.timedelta(days=1)
+        if type(duration) == type(2):
+            duration = datetime.timedelta(seconds = duration)
+        expires = datetime.datetime.utcnow() + duration
+        self.activation_code = code
+        self.activation_code_sent = datetime.datetime.utcnow()
+        self.activation_code_expires = expires
+
+    def activate(self):
+        """activate the user"""
+        self.active = True
+        self.activation_time = datetime.datetime.utcnow()
+        self.activation_code = None
+        self.activation_expires = None
+
 
     structure = {
         'username'                      : basestring,
@@ -78,8 +95,10 @@ class User(Document):
         'last_login'                    : datetime.datetime,
         'last_ip'                       : basestring,
         'activation_code'               : basestring,
-        'password_code'                 : basestring,
+        'activation_code_sent'          : datetime.datetime,
         'activation_code_expires'       : datetime.datetime,
+        'password_code'                 : basestring,
+        'password_code_sent'            : datetime.datetime,
         'password_code_expires'         : datetime.datetime,
         'fullname'                      : basestring,
     }

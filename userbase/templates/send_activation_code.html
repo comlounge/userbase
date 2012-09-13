@@ -1,0 +1,22 @@
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as formmacros with context %}                                                                                                           
+
+{% block content %}
+<div id="index">
+    <div class="row">
+        <div class="span8">
+            <section class="form">
+                <h2>Receive a new activation code</h2>
+                <form class="horizontal-form validate" method="POST" action="{{url}}">
+                    {% for field in form %}
+                        {{ formmacros.form_field(field) }}
+                    {% endfor %}
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary large" value="Get a new activation code">
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
