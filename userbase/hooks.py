@@ -21,8 +21,21 @@ class Hooks(object):
             user_data['username'] = user_data['email']
         if "password2" in user_data:
             del user_data['password2']
+        user_data['permissions'] = [] # you can set default permissions in your own hook 
         return user_data
             
     def create_activation_code(self, user):
         """create an activation code. Default is a simple uuid"""
         return unicode(uuid.uuid4())
+
+    def get_permissions_for_user(self, user, handler=None):
+        """this hook is used to retrieve a list of permissions for a given user. You can extend
+        this to whatever you want, e.g. based on roles but need to return a list of strings.
+
+        permissions for modules should be prefixed.
+
+        :param user: the user for which we want to retrieve permissions
+        :param handler: optional handler which can be passed to get permissions for e.g. a specific location/handler/url
+        :return: list of strings describing permissions
+        """
+        return user.permissions

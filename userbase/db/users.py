@@ -101,6 +101,7 @@ class User(Document):
         'password_code_sent'            : datetime.datetime,
         'password_code_expires'         : datetime.datetime,
         'fullname'                      : basestring,
+        'permissions'                   : [basestring],
     }
     
     validators = {
@@ -119,6 +120,7 @@ class User(Document):
         "password_code"                 : None,
         "password_code_expires"         : None,
         "active"                        : False,
+        "permissions"                   : [],
     }
     
     def get_id(self):

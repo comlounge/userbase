@@ -23,6 +23,8 @@ class UserManager(ScriptBase):
         user = m.users()
         user.update(data)
         user.save()
+        user.activate()
+        user.save()
 
 
 
