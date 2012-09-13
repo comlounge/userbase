@@ -100,6 +100,7 @@ class BaseUserModule(Module):
         'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
         
         # further settings
+        'enable_registration'   : False,                            # global switch for allowing new users or not
         'use_double_opt_in'     : True,                             # use double opt-in?
         'use_html_mail'         : True,                             # use double opt-in?
         'login_after_registration'     : False,                     # directly log in (even without activation)?
@@ -152,9 +153,10 @@ class BaseUserModule(Module):
 
         self.add_url_rule(URL("/login", "login", self.config['handler.login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
-        self.add_url_rule(URL("/register", "register", self.config['handler.register']))
-        self.add_url_rule(URL("/activate", "activate", self.config['handler.activate']))
-        self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler.activation_code']))
+        if self.config.enable_registration:
+            self.add_url_rule(URL("/register", "register", self.config['handler.register']))
+            self.add_url_rule(URL("/activate", "activate", self.config['handler.activate']))
+            self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler.activation_code']))
 
         # attach the global hooks
         self.hooks = self.config.hooks(self)
