@@ -4,6 +4,7 @@ import mongokit
 import datetime
 import copy
 import bson
+import pymongo
 
 import handlers
 from .exceptions import *
@@ -243,7 +244,10 @@ class BaseUserModule(Module):
     def get_user_by_id(self, userid):
         """returns the user or None if no user was found"""
         if not isinstance(userid, bson.ObjectId):
-            userid = bson.ObjectId(userid)
+            try:
+                userid = bson.ObjectId(userid)
+            except pymongo.errors.InvalidId:
+                return None
         return self.users.get_from_id(userid)
 
     def login(self, handler, remember = False, force = False, user = None, save = True, **user_credentials):
