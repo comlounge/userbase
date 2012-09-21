@@ -99,6 +99,7 @@ class BaseUserModule(Module):
         'login_form'            : handlers.EMailLoginForm,          # the login form to use
         'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
         'edit_form'             : handlers.UserEditForm,            # the registration form to use
+        'add_form'              : handlers.UserAddForm,            # the registration form to use
         
         # further settings
         'enable_registration'   : False,                            # global switch for allowing new users or not
@@ -134,6 +135,13 @@ class BaseUserModule(Module):
             'activation_failed'         : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
             'activation_code_sent'      : 'A new activation code has been sent out, please check your email',
             'already_active'            : 'The user is already active. Please log in.',
+            
+            # for user manager
+            'user_edited'               : 'The user has been updated.',
+            'user_added'                : 'The user has been added.',
+            'user_deleted'              : 'The user has been deleted.',
+            'user_activated'            : 'The user has been activated.',
+            'user_deactivated'          : 'The user has been deactivated.',
         }),
 
         'permissions'           : AttributeMapper({
@@ -164,8 +172,10 @@ class BaseUserModule(Module):
             self.add_url_rule(URL("/activate", "activate", self.config['handler.activate']))
             self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler.activation_code']))
         if self.config.enable_usereditor:
-            self.add_url_rule(URL("/users/", "userlist", handlers.UserList))
-            self.add_url_rule(URL("/users/<uid>", "useredit", handlers.UserEdit))
+            self.add_url_rule(URL("/admin/", "userlist", handlers.UserList))
+            self.add_url_rule(URL("/admin/new", "useradd", handlers.UserAdd))
+            self.add_url_rule(URL("/admin/<uid>", "useredit", handlers.UserEdit))
+            self.add_url_rule(URL("/admin/<uid>/activate", "useractivate", handlers.UserActivate))
 
         # attach the global hooks
         self.hooks = self.config.hooks(self)
@@ -286,22 +296,26 @@ class BaseUserModule(Module):
         del handler.session['userid']
         handler.session['remember_forget'] = True
 
-    def register(self, user_data):
+    def register(self, user_data, force = False, create_pw = True):
         """register a new user. ``data`` needs to include all necessary elements for a new user object.
         Depending on the configuration, an activation code will be sent and the user will eventually be logged
         in
 
         :param user_data: dictionary containing the data for the new user. All required fields need to be present, otherwise a RegistrationFailed exception will be raised. 
+        :param force: If ``True`` it does not send any opt in and the user is active directly. Defaults to ``False``. 
+        :param create_pw: If ``True`` a password for the user is created by calling the user object's ``create_pw()``. Defaults to ``False``
         :return: Returns the user object or an exception in case the registration failed
         """
         user_data = self.hooks.process_registration_user_data(user_data)
         user = self.users()
         user.update(user_data)
-        if self.config.double_opt_in:
+        if self.config.double_opt_in and not force:
             user.active = False
             self.send_activation_code(user)
         else:
             user.active = True
+        if create_pw:
+            user.create_pw()
         user.save()
         return user
 

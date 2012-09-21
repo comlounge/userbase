@@ -17,6 +17,8 @@ class Password(CustomType):
         """convert type to a mongodb type"""
         # for some reason this is called twice and thus the password is encoded twice. 
         # so this is a workaround
+        if value is None:
+            return None
         if value.startswith("HASH:"):
             return value
         return "HASH:"+hashlib.new("md5",value).hexdigest()
@@ -43,9 +45,12 @@ class User(Document):
         hash = hashlib.new("md5",pw).hexdigest()
         return "HASH:"+hash == self.password
 
-    def create_pw(self):
-        """create a password"""
-        pw = unicode(uuid.uuid4())[:8]
+    def create_pw(self, l=8):
+        """create a password for the user and store it in the password field
+
+        :param l: The length of the password to generate. Defaults to 8.
+        """
+        pw = unicode(uuid.uuid4())[:l]
         self.password = pw
         return pw
 

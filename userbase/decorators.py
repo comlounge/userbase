@@ -2,6 +2,7 @@ import werkzeug
 import functools
 import json
 import datetime
+from werkzeug.utils import redirect
 
 __all__ = ['logged_in', 'permission']
 

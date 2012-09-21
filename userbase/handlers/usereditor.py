@@ -5,7 +5,7 @@ from userbase import db
 from userbase.decorators import logged_in, permission
 import werkzeug.exceptions
 
-__all__ = ['UserList', 'UserEdit']
+__all__ = ['UserList', 'UserEdit', 'UserAdd', 'UserActivate']
 
 class UserAdapter(object):
     """extend the user with some additional attributes we compute via module and handler"""
@@ -68,18 +68,59 @@ class UserEdit(Handler):
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
-                user = mod.register(f)
-                self.flash(cfg.messages.registration_success %user)
-                if cfg.login_after_registration:
-                    user = mod.login(self, force=True, **f)
-                    self.flash(cfg.messages.login_success %user)
-                    url_for_params = cfg.urls.login_success
-                    url = self.url_for(**url_for_params)
-                    return redirect(url)
-                url_for_params = cfg.urls.registration_success
-                url = self.url_for(**url_for_params)
+                user.update(**f)
+                user.save()
+                url = self.url_for("userbase.userlist")
                 return redirect(url)
         return self.render(form = form)
 
     post = get
+
+class UserAdd(Handler):
+    """add a user"""
+
+    template = "_m/userbase/editor/add.html"
+
+    @logged_in()
+    @permission("userbase.admin")
+    def get(self):
+        """show the user list"""
+        cfg = self.module.config
+        mod = self.module
+
+        form = cfg.add_form(self.request.form, module = self.module)
+        if self.request.method == 'POST':
+            if form.validate():
+                f = form.data
+                user = mod.register(f, force = True, create_pw = True)
+                user.update(**f)
+                user.save()
+                # TODO: send password and user info 
+                self.flash(cfg.messages.user_added %user)
+                url = self.url_for("userbase.userlist")
+                return redirect(url)
+        return self.render(form = form)
+
+    post = get
+
+class UserActivate(Handler):
+    """activate or deactivate a user"""
+
+    @logged_in()
+    @permission("userbase.admin")
+    def post(self, uid = None):
+        """depending on the old state you either activate or deactivate a user here. It's a toggle."""
+        cfg = self.module.config
+        mod = self.module
+        user = mod.get_user_by_id(uid)
+        if user is None:
+            raise werkzeug.exceptions.NotFound()
+        user.active = not user.active
+        user.save()
+        if user.active:
+            self.flash(cfg.messages.user_activated %user)
+        else:
+            self.flash(cfg.messages.user_deactivated %user)
+        url = self.url_for("userbase.userlist")
+        return redirect(url)
 

@@ -1,0 +1,23 @@
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as formmacros with context %}                                                                                                           
+{% block content %}
+    <div class="row">
+        <div class="span8">
+            <div class="form">
+                <h2>Edit user</h2>
+                <form class="boxform horizontal-form validate" method="POST" action="{{url}}">
+                    {% for field in form %}
+                        {{ formmacros.form_field(field) }}
+                    {% endfor %}
+                    <fieldset class="form-actions">
+                        <div class="input">
+                            <input type="submit" class="btn btn-primary btn-large" value="Update">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="span4">
+        </div>
+    </div>
+{% endblock %}
