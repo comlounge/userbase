@@ -328,7 +328,6 @@ class BaseUserModule(Module):
         :param template: The name of the template without any extension. This will be added depending on whether we send html emails or not
         :param user: the user for which we want to send the template
         """
-        print self.app.module_map
         mailer = self.app.module_map['mail']
         if self.config.use_html_mail:
             html = self.app.jinja_env.get_or_select_template(tmplname+".html").render(**kw)
