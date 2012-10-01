@@ -52,7 +52,7 @@ class BaseUserModule(Module):
 
     routes = []
 
-    module_jinja_loader = PackageLoader(__name__, "templates/")
+    module_jinja_loader = PackageLoader(__name__, "module_templates/")
     jinja_loader = PackageLoader(__name__, "templates/")
 
     defaults = {

@@ -8,7 +8,7 @@ __all__ = ['LoginHandler']
 class LoginHandler(Handler):
     """show the user login form and process it"""
 
-    template = "_m/userbase/login.html"
+    template = "userbase/login.html"
 
     def get(self):
         """show the login form"""
