@@ -376,6 +376,7 @@ class UsernameUserModule(BaseUserModule):
         'login_form'            : handlers.UsernameLoginForm,
         'handler.login'         : handlers.LoginHandler,
         'handler.logout'        : handlers.LogoutHandler,
+        'registration_form'     : handlers.UsernameRegistrationForm,
     })
 
 username_userbase = UsernameUserModule(__name__)
