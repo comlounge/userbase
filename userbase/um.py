@@ -87,6 +87,7 @@ class BaseUserModule(Module):
             'login_success'         : {'endpoint' : 'root'},
             'registration_success'  : {'endpoint' : 'root'},
             'logout_success'        : {'endpoint' : 'userbase.login'},
+            'double_opt_in_pending' : {'endpoint' : 'root'},
         }),
 
         # in case you want your own handlers define them here. They will be set on finalize
@@ -131,6 +132,7 @@ class BaseUserModule(Module):
             'login_failed'              : 'Login failed',
             'login_success'             : 'Welcome, %(fullname)s',
             'logout_success'            : 'Your are now logged out',
+            'double_opt_in_pending'     : 'To finish the registration process please check your email with instructions on how to activate your account.',
             'registration_success'      : 'Your user registration has been successful',
             'activation_success'        : 'Your account has been activated',
             'activation_failed'         : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
