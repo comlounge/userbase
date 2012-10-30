@@ -91,11 +91,11 @@ class BaseUserModule(Module):
         }),
 
         # in case you want your own handlers define them here. They will be set on finalize
-        'handler.login'         : handlers.LoginHandler,
-        'handler.logout'        : handlers.LogoutHandler,
-        'handler.register'      : handlers.RegistrationHandler,     
-        'handler.activate'      : handlers.ActivationHandler,      
-        'handler.activation_code': handlers.ActivationCodeHandler,
+        'handler:login'         : handlers.LoginHandler,
+        'handler:logout'        : handlers.LogoutHandler,
+        'handler:register'      : handlers.RegistrationHandler,     
+        'handler:activate'      : handlers.ActivationHandler,      
+        'handler:activation_code': handlers.ActivationCodeHandler,
 
         # form related
         'login_form'            : handlers.EMailLoginForm,          # the login form to use
@@ -148,7 +148,7 @@ class BaseUserModule(Module):
         }),
 
         'permissions'           : AttributeMapper({
-            'userbase.admin'    : "manage users",
+            'userbase:admin'    : "manage users",
         })
     }
 
@@ -168,12 +168,12 @@ class BaseUserModule(Module):
         conn.register(self.config.user_class)
         self.users = getattr(self.collection, self.config.user_class.name)
 
-        self.add_url_rule(URL("/login", "login", self.config['handler.login']))
-        self.add_url_rule(URL("/logout", "logout", self.config['handler.logout']))
+        self.add_url_rule(URL("/login", "login", self.config['handler:login']))
+        self.add_url_rule(URL("/logout", "logout", self.config['handler:logout']))
         if self.config.enable_registration:
-            self.add_url_rule(URL("/register", "register", self.config['handler.register']))
-            self.add_url_rule(URL("/activate", "activate", self.config['handler.activate']))
-            self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler.activation_code']))
+            self.add_url_rule(URL("/register", "register", self.config['handler:register']))
+            self.add_url_rule(URL("/activate", "activate", self.config['handler:activate']))
+            self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler:activation_code']))
         if self.config.enable_usereditor:
             self.add_url_rule(URL("/admin/", "userlist", handlers.UserList))
             self.add_url_rule(URL("/admin/new", "useradd", handlers.UserAdd))
@@ -362,8 +362,8 @@ class EMailUserModule(BaseUserModule):
     defaults.update({
         'user_id_field'         : 'email',
         'login_form'            : handlers.EMailLoginForm,
-        'handler.login'         : handlers.LoginHandler,
-        'handler.logout'        : handlers.LogoutHandler,
+        'handler:login'         : handlers.LoginHandler,
+        'handler:logout'        : handlers.LogoutHandler,
     })
 
 
@@ -375,8 +375,8 @@ class UsernameUserModule(BaseUserModule):
     defaults.update({
         'user_id_field'         : 'username',
         'login_form'            : handlers.UsernameLoginForm,
-        'handler.login'         : handlers.LoginHandler,
-        'handler.logout'        : handlers.LogoutHandler,
+        'handler:login'         : handlers.LoginHandler,
+        'handler:logout'        : handlers.LogoutHandler,
         'registration_form'     : handlers.UsernameRegistrationForm,
     })
 
