@@ -42,7 +42,7 @@ class UserList(Handler):
     template = "_m/userbase/editor/list.html"
 
     @logged_in()
-    @permission("userbase.admin")
+    @permission("userbase:admin")
     def get(self):
         """show the user list"""
         mod = self.module
@@ -55,7 +55,7 @@ class UserEdit(Handler):
     template = "_m/userbase/editor/edit.html"
 
     @logged_in()
-    @permission("userbase.admin")
+    @permission("userbase:admin")
     def get(self, uid=None):
         """show the user list"""
         cfg = self.module.config
@@ -82,7 +82,7 @@ class UserAdd(Handler):
     template = "_m/userbase/editor/add.html"
 
     @logged_in()
-    @permission("userbase.admin")
+    @permission("userbase:admin")
     def get(self):
         """show the user list"""
         cfg = self.module.config
@@ -107,7 +107,7 @@ class UserActivate(Handler):
     """activate or deactivate a user"""
 
     @logged_in()
-    @permission("userbase.admin")
+    @permission("userbase:admin")
     def post(self, uid = None):
         """depending on the old state you either activate or deactivate a user here. It's a toggle."""
         cfg = self.module.config
