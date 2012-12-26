@@ -101,7 +101,7 @@ class BaseUserModule(Module):
         'login_form'            : handlers.EMailLoginForm,          # the login form to use
         'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
         'edit_form'             : handlers.UserEditForm,            # the registration form to use
-        'add_form'              : handlers.UserAddForm,            # the registration form to use
+        'add_form'              : handlers.UserAddForm,             # the registration form to use
         
         # further settings
         'enable_registration'   : False,                            # global switch for allowing new users or not
@@ -253,6 +253,14 @@ class BaseUserModule(Module):
         """try to retrieve the user by the email address"""
         return self.users.find_one({'email': email})
 
+    def get_user_by_username(self, username):
+        """try to retrieve the user by the username"""
+        return self.users.find_one({'username': username})
+
+    def get_users_by(self, key, value):
+        """return a list of users which field ``key`` matches ``value``"""
+        return self.users.find({key: value})
+
     def get_user_by_id(self, userid):
         """returns the user or None if no user was found"""
         if not isinstance(userid, bson.ObjectId):
@@ -352,8 +360,6 @@ class BaseUserModule(Module):
         else:
             txt = self.app.jinja_env.get_or_select_template(tmplname+".txt").render(**kw)
             mailer.mail(to, subject, txt)
-
-
 
 
 class EMailUserModule(BaseUserModule):
