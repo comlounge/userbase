@@ -22,7 +22,7 @@ class UserAdapter(object):
     def readable_permissions(self):
         """return permissions in a readable format"""
         perms = self.userbase.config.permissions
-        return ",".join([perms.get(p, "n/a") for p in self.user.permissions])
+        return "<br>".join([perms.get(p, "n/a") for p in self.user.permissions])
 
 class UserWrapper(object):
     """class for producing wrapped users by being some funky iterator"""
