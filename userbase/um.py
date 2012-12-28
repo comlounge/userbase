@@ -261,14 +261,19 @@ class BaseUserModule(Module):
         """return a list of users which field ``key`` matches ``value``"""
         return self.users.find({key: value})
 
-    def get_user_by_id(self, userid):
+    def get_user_by_id(self, user_id):
         """returns the user or None if no user was found"""
-        if not isinstance(userid, bson.ObjectId):
+        if not isinstance(user_id, bson.ObjectId):
             try:
-                userid = bson.ObjectId(userid)
+                userid = bson.ObjectId(user_id)
             except pymongo.errors.InvalidId:
                 return None
-        return self.users.get_from_id(userid)
+        return self.users.get_from_id(user_id)
+
+    def get_users_by_ids(self, user_ids):
+        """returns a list of users for a list of ids"""
+        user_ids = [bson.ObjectId(user_id) for user_id in user_ids]
+        return self.users.find({'_id': {'$in' : user_ids}})
 
     def login(self, handler, remember = False, force = False, user = None, save = True, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different

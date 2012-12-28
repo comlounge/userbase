@@ -131,4 +131,10 @@ class User(Document):
     def get_id(self):
         """return the userid we want to use in sessions etc."""
         return self._id
+
+    def has_permission(self, permission):
+        """checks if the user has a given permission. Returns ``True`` if so otherwise ``False``
+        """
+        return permission in self.permissions
+
     
