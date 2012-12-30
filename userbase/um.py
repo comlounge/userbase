@@ -188,6 +188,7 @@ class BaseUserModule(Module):
         """inject something into the render context"""
         p = {}
         user = self.get_user(handler)
+        print user
         if user is not None and user.active:
             p['user'] = user
             p['logged_in'] = True
@@ -265,7 +266,7 @@ class BaseUserModule(Module):
         """returns the user or None if no user was found"""
         if not isinstance(user_id, bson.ObjectId):
             try:
-                userid = bson.ObjectId(user_id)
+                user_id = bson.ObjectId(user_id)
             except pymongo.errors.InvalidId:
                 return None
         return self.users.get_from_id(user_id)
