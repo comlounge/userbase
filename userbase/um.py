@@ -188,7 +188,6 @@ class BaseUserModule(Module):
         """inject something into the render context"""
         p = {}
         user = self.get_user(handler)
-        print user
         if user is not None and user.active:
             p['user'] = user
             p['logged_in'] = True
