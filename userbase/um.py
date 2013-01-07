@@ -101,7 +101,7 @@ class BaseUserModule(Module):
         'login_form'            : handlers.EMailLoginForm,          # the login form to use
         'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
         'edit_form'             : handlers.UserEditForm,            # the registration form to use
-        'add_form'              : handlers.UserAddForm,            # the registration form to use
+        'add_form'              : handlers.UserAddForm,             # the registration form to use
         
         # further settings
         'enable_registration'   : False,                            # global switch for allowing new users or not
@@ -253,14 +253,27 @@ class BaseUserModule(Module):
         """try to retrieve the user by the email address"""
         return self.users.find_one({'email': email})
 
-    def get_user_by_id(self, userid):
+    def get_user_by_username(self, username):
+        """try to retrieve the user by the username"""
+        return self.users.find_one({'username': username})
+
+    def get_users_by(self, key, value):
+        """return a list of users which field ``key`` matches ``value``"""
+        return self.users.find({key: value})
+
+    def get_user_by_id(self, user_id):
         """returns the user or None if no user was found"""
-        if not isinstance(userid, bson.ObjectId):
+        if not isinstance(user_id, bson.ObjectId):
             try:
-                userid = bson.ObjectId(userid)
+                user_id = bson.ObjectId(user_id)
             except pymongo.errors.InvalidId:
                 return None
-        return self.users.get_from_id(userid)
+        return self.users.get_from_id(user_id)
+
+    def get_users_by_ids(self, user_ids):
+        """returns a list of users for a list of ids"""
+        user_ids = [bson.ObjectId(user_id) for user_id in user_ids]
+        return self.users.find({'_id': {'$in' : user_ids}})
 
     def get_users_by_ids(self, ids):
         """return a list of users identified by the given ids"""
@@ -358,8 +371,6 @@ class BaseUserModule(Module):
         else:
             txt = self.app.jinja_env.get_or_select_template(tmplname+".txt").render(**kw)
             mailer.mail(to, subject, txt)
-
-
 
 
 class EMailUserModule(BaseUserModule):
