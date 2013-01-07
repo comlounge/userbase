@@ -262,6 +262,12 @@ class BaseUserModule(Module):
                 return None
         return self.users.get_from_id(userid)
 
+    def get_users_by_ids(self, ids):
+        """return a list of users identified by the given ids"""
+        oids = [bson.ObjectId(o) for o in ids] # convert them to objectids
+        return self.users.find({'_id' : {'$in' : oids}})
+
+
     def login(self, handler, remember = False, force = False, user = None, save = True, **user_credentials):
         """login a user. What user credentials contains depends on the used data model. In case of very different
         use cases you might also want to override this method. Usually it will be used by the generic login handler.
