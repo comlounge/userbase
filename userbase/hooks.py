@@ -28,6 +28,10 @@ class Hooks(object):
         """create an activation code. Default is a simple uuid"""
         return unicode(uuid.uuid4())
 
+    def create_pw_code(self, user):
+        """create a code for pw reset. Default is a simple uuid"""
+        return unicode(uuid.uuid4())
+
     def get_permissions_for_user(self, user, handler=None):
         """this hook is used to retrieve a list of permissions for a given user. You can extend
         this to whatever you want, e.g. based on roles but need to return a list of strings.

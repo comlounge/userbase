@@ -1,0 +1,22 @@
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as macros with context %}                                                                                                           
+
+{% block content %}
+<div id="index">
+    <div class="row">
+        <div class="span8">
+            <section class="form">
+                <h2>Send new Password</h2>
+                <form class="horizontal-form validate" method="POST" action="{{url}}">
+                    {{ macros.form_field(form.email, class="required email") }}
+                    <fieldset class="form-actions">
+                        <input type="submit" class="btn btn-large btn-primary" value="Send">
+                    </fieldset>
+                </form>
+            </section>
+        </div>
+        <div class="span4">
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -88,6 +88,15 @@ class User(Document):
         self.activation_code = None
         self.activation_expires = None
 
+    def set_pw_code(self, code, duration = None):
+        if duration is None:
+            duration = datetime.timedelta(days=1)
+        if type(duration) == type(2):
+            duration = datetime.timedelta(seconds = duration)
+        expires = datetime.datetime.utcnow() + duration
+        self.pw_code = code
+        self.pw_code_sent = datetime.datetime.utcnow()
+        self.pw_code_expires = expires
 
     structure = {
         'username'                      : basestring,
@@ -102,9 +111,9 @@ class User(Document):
         'activation_code'               : basestring,
         'activation_code_sent'          : datetime.datetime,
         'activation_code_expires'       : datetime.datetime,
-        'password_code'                 : basestring,
-        'password_code_sent'            : datetime.datetime,
-        'password_code_expires'         : datetime.datetime,
+        'pw_code'                       : basestring,
+        'pw_code_sent'                  : datetime.datetime,
+        'pw_code_expires'               : datetime.datetime,
         'fullname'                      : basestring,
         'permissions'                   : [basestring],
     }
@@ -122,8 +131,8 @@ class User(Document):
         "activation_time"               : None,
         "activation_code_expires"       : None,
         "activation_code"               : None,
-        "password_code"                 : None,
-        "password_code_expires"         : None,
+        "pw_code"                       : None,
+        "pw_code_expires"               : None,
         "active"                        : False,
         "permissions"                   : [],
     }

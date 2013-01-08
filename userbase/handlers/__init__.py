@@ -4,3 +4,4 @@ from registration import *
 from activation import *
 from forms import *
 from usereditor import *
+from pw_forgot import *

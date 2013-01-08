@@ -1,17 +1,21 @@
-{% extends "master/master.html" %}
+{% extends M.userbase.config.master_template %}
+{% import "_m/userbase/macros.html" as formmacros with context %}
 
 {% block content %}
 <div id="index">
     <div class="row">
         <div class="span8">
             <section class="form">
-                <h2>Neues Passwort setzen</h2>
-                <h3>Hier kannst Du jetzt ein neues Passwort setzen.</h3>
+                <h2>Set new password</h2>
+                <h3>You can set a new password here.</h3>
                 <form class="horizontal-form validate" method="POST" action="{{url}}">
-                    {{ macros.field(form.password, form.password(class="span4 pw required", id="password")) }}
-                    {{ macros.field(form.password2, form.password2(class="span4 required", equalTo="#password")) }}
+                    <input type="hidden" name="code" value="{{code}}">
+                    {{ formmacros.form_field(form.password, class="span4 pw required", id="password") }}
+                    {{ formmacros.form_field(form.password2, class="span4 required", equalTo="#password") }}
                     <fieldset class="form-actions">
-                        <input type="submit" class="button large" value="Neues Passwort speichern">
+                        <div class="input">
+                            <input type="submit" class="btn btn-primary btn-large" value="Save new password">
+                        </div>
                     </fieldset>
                 </form>
             </section>

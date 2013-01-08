@@ -19,6 +19,12 @@
             </div>
         </div>
         <div class="span4">
+            {% if use_double_opt_in %}
+                <div>
+                    <h4>Mission activation email?</h4>
+                    <a href="{{url_for('.activation_code')}}">Please send me a new activation code</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

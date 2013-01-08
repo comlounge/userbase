@@ -20,6 +20,7 @@ class ActivationHandler(Handler):
         else:
             code = self.request.args.get("code", None)
         if code is not None:
+            # TODO: check expiration time
             user = mod.get_user_by_activation_code(code)
             if user is not None:
                 user.activate()

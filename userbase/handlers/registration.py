@@ -36,6 +36,6 @@ class RegistrationHandler(Handler):
                     url_for_params = cfg.urls.registration_success
                 url = self.url_for(**url_for_params)
                 return redirect(url)
-        return self.render(form = form)
+        return self.render(form = form, use_double_opt_in = cfg.use_double_opt_in)
 
     post = get

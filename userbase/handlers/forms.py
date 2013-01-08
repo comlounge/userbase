@@ -1,4 +1,5 @@
 from wtforms import Form, TextField, PasswordField, BooleanField, validators, SelectMultipleField, widgets
+from wtforms import ValidationError
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 
     'UsernameRegistrationForm', 'EMailRegistrationForm', 
@@ -100,9 +101,6 @@ class UserEditForm(BaseForm):
 
 class UserAddForm(UserEditForm):
     """user add form is the same as user edit form for now"""
-
-
-
 
 class PasswordChangeForm(BaseForm):
     password    = PasswordField('New Password', [validators.Required(), validators.EqualTo('password2', message='Passwords must match')])

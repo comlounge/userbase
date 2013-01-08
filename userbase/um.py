@@ -88,67 +88,77 @@ class BaseUserModule(Module):
             'registration_success'  : {'endpoint' : 'root'},
             'logout_success'        : {'endpoint' : 'userbase.login'},
             'double_opt_in_pending' : {'endpoint' : 'root'},
+            'pw_code_success'       : {'endpoint' : 'userbase.login'}, # url to which to redirect after user has entered email address
+            'pw_code_enter'         : {'endpoint' : 'userbase.pw_code_enter'}, # url to be sent via mail where the user can set the new password
         }),
 
         # in case you want your own handlers define them here. They will be set on finalize
-        'handler:login'         : handlers.LoginHandler,
-        'handler:logout'        : handlers.LogoutHandler,
-        'handler:register'      : handlers.RegistrationHandler,     
-        'handler:activate'      : handlers.ActivationHandler,      
-        'handler:activation_code': handlers.ActivationCodeHandler,
+        'handler:login'             : handlers.LoginHandler,
+        'handler:logout'            : handlers.LogoutHandler,
+        'handler:pw_forgot'         : handlers.PasswordForgotHandler,
+        'handler:pw_code_enter'     : handlers.PasswordCodeHandler,
+        'handler:register'          : handlers.RegistrationHandler,     
+        'handler:activate'          : handlers.ActivationHandler,      
+        'handler:activation_code'   : handlers.ActivationCodeHandler,
 
         # form related
-        'login_form'            : handlers.EMailLoginForm,          # the login form to use
-        'registration_form'     : handlers.EMailRegistrationForm,   # the registration form to use
-        'edit_form'             : handlers.UserEditForm,            # the registration form to use
-        'add_form'              : handlers.UserAddForm,             # the registration form to use
+        'login_form'                : handlers.EMailLoginForm,          # the login form to use
+        'registration_form'         : handlers.EMailRegistrationForm,   # the registration form to use
+        'edit_form'                 : handlers.UserEditForm,            # the registration form to use
+        'add_form'                  : handlers.UserAddForm,             # the registration form to use
+        'pw_forgot_form'            : handlers.PWEMailForm,             # pw forgot form to use
+        'pw_change_form'            : handlers.PasswordChangeForm,      # for setting a new password
         
         # further settings
-        'enable_registration'   : False,                            # global switch for allowing new users or not
-        'enable_usereditor'     : True,                             # global switch for registering the handlers for the user management
-        'use_double_opt_in'     : True,                             # use double opt-in?
-        'use_html_mail'         : True,                             # use HTML mail? If False, only text mail will be used
-        'login_after_registration'     : False,                     # directly log in (even without activation)?
-        'email_sender_name'     : "Your System",                    # which is the user who sends out codes etc.?
-        'email_sender_address'  : "noreply@example.org",            # which is the user who sends out codes etc.?
-        'subjects'              : AttributeMapper({
-            'registration'      : 'Your registration is nearly finished',
-            'welcome'           : 'Welcome to our system',
-            'password'          : 'Password reminder',
+        'enable_registration'       : False,                            # global switch for allowing new users or not
+        'enable_usereditor'         : True,                             # global switch for registering the handlers for the user management
+        'use_double_opt_in'         : True,                             # use double opt-in?
+        'use_html_mail'             : True,                             # use HTML mail? If False, only text mail will be used
+        'login_after_registration'  : False,                            # directly log in (even without activation)?
+        'email_sender_name'         : "Your System",                    # which is the user who sends out codes etc.?
+        'email_sender_address'      : "noreply@example.org",            # which is the user who sends out codes etc.?
+        'subjects'                  : AttributeMapper({
+            'registration'          : 'Your registration is nearly finished',
+            'welcome'               : 'Welcome to our system',
+            'password'              : 'Password reminder',
+            'pw_code'               : 'Your password reset code',
         }),
-        'emails'                : AttributeMapper({
-            'activation_code'   : '_m/userbase/emails/activation_code',
-            'welcome'           : '_m/userbase/emails/welcome',
+        'emails'                    : AttributeMapper({
+            'activation_code'       : '_m/userbase/emails/activation_code',
+            'welcome'               : '_m/userbase/emails/welcome',
+            'pw_code'               : '_m/userbase/emails/pw_code',
         }),
             
         # hooks
-        'hooks'                 : hooks.Hooks,
+        'hooks'                     : hooks.Hooks,
 
-        'messages'              : AttributeMapper({
-            'user_unknown'              : 'User unknown',
-            'email_unknown'             : 'This email address cannot not be found in our user database',
-            'password_incorrect'        : 'Your password is not correct',
-            'user_not_active'           : 'Your user has not yet been activated.', # maybe provide link here? Needs to be constructed in handler
-            'login_failed'              : 'Login failed',
-            'login_success'             : 'Welcome, %(fullname)s',
-            'logout_success'            : 'Your are now logged out',
-            'double_opt_in_pending'     : 'To finish the registration process please check your email with instructions on how to activate your account.',
-            'registration_success'      : 'Your user registration has been successful',
-            'activation_success'        : 'Your account has been activated',
-            'activation_failed'         : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
-            'activation_code_sent'      : 'A new activation code has been sent out, please check your email',
-            'already_active'            : 'The user is already active. Please log in.',
+        'messages'                  : AttributeMapper({
+            'user_unknown'          : 'User unknown',
+            'email_unknown'         : 'This email address cannot not be found in our user database',
+            'password_incorrect'    : 'Your password is not correct',
+            'user_not_active'       : 'Your user has not yet been activated.', # maybe provide link here? Needs to be constructed in handler
+            'login_failed'          : 'Login failed',
+            'login_success'         : 'Welcome, %(fullname)s',
+            'logout_success'        : 'Your are now logged out',
+            'double_opt_in_pending' : 'To finish the registration process please check your email with instructions on how to activate your account.',
+            'registration_success'  : 'Your user registration has been successful',
+            'activation_success'    : 'Your account has been activated',
+            'activation_failed'     : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
+            'activation_code_sent'  : 'A new activation code has been sent out, please check your email',
+            'already_active'        : 'The user is already active. Please log in.',
+            'pw_code_sent'          : 'A link to set a new password has been sent to you',
+            'pw_changed'            : 'Your password has been changed',
             
             # for user manager
-            'user_edited'               : 'The user has been updated.',
-            'user_added'                : 'The user has been added.',
-            'user_deleted'              : 'The user has been deleted.',
-            'user_activated'            : 'The user has been activated.',
-            'user_deactivated'          : 'The user has been deactivated.',
+            'user_edited'           : 'The user has been updated.',
+            'user_added'            : 'The user has been added.',
+            'user_deleted'          : 'The user has been deleted.',
+            'user_activated'        : 'The user has been activated.',
+            'user_deactivated'      : 'The user has been deactivated.',
         }),
 
-        'permissions'           : AttributeMapper({
-            'userbase:admin'    : "manage users",
+        'permissions'               : AttributeMapper({
+            'userbase:admin'        : "manage users",
         })
     }
 
@@ -170,10 +180,13 @@ class BaseUserModule(Module):
 
         self.add_url_rule(URL("/login", "login", self.config['handler:login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler:logout']))
+        self.add_url_rule(URL("/pw_forgot", "pw_forgot", self.config['handler:pw_forgot']))
+        self.add_url_rule(URL("/pw_code_enter", "pw_code_enter", self.config['handler:pw_code_enter']))
         if self.config.enable_registration:
             self.add_url_rule(URL("/register", "register", self.config['handler:register']))
-            self.add_url_rule(URL("/activate", "activate", self.config['handler:activate']))
-            self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler:activation_code']))
+            if self.config.use_double_opt_in:
+                self.add_url_rule(URL("/activate", "activate", self.config['handler:activate']))
+                self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler:activation_code']))
         if self.config.enable_usereditor:
             self.add_url_rule(URL("/admin/", "userlist", handlers.UserList))
             self.add_url_rule(URL("/admin/new", "useradd", handlers.UserAdd))
@@ -249,6 +262,12 @@ class BaseUserModule(Module):
             return None
         return self.users.find_one({'activation_code': code})
 
+    def get_user_by_pw_code(self, code):
+        """try to retrieve the user by the given password code"""
+        if code is None:
+            return None
+        return self.users.find_one({'pw_code': code})
+
     def get_user_by_email(self, email):
         """try to retrieve the user by the email address"""
         return self.users.find_one({'email': email})
@@ -318,7 +337,8 @@ class BaseUserModule(Module):
 
     def logout(self, handler):
         """log the user out and remove any remaining cookies"""
-        del handler.session['userid']
+        if 'userid' in handler.session:
+            del handler.session['userid']
         handler.session['remember_forget'] = True
 
     def register(self, user_data, force = False, create_pw = True):
@@ -351,6 +371,14 @@ class BaseUserModule(Module):
         user.save()
         url = self.app.url_for(_append = True, _full = True, code = code, **self.config.urls.activation)
         self.send_email(cfg.emails.activation_code, cfg.subjects.registration, user.email, user = user, url = url, code = code)
+
+    def send_pw_code(self, user):
+        cfg = self.config
+        code = self.hooks.create_pw_code(user)
+        user.set_pw_code(code)
+        user.save()
+        url = self.app.url_for(_append = True, _full = True, code = code, **self.config.urls.pw_code_enter)
+        self.send_email(cfg.emails.pw_code, cfg.subjects.pw_code, user.email, user = user, url = url, code = code)
 
     def send_welcome_mail(self, user):
         url = self.app.url_for(_full = True, **self.config.urls.welcome)
