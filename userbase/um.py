@@ -235,7 +235,7 @@ class BaseUserModule(Module):
 
         # TODO: now reset the remember cookie
         # this means to move save_session from handler to module, better anyway
-            
+    
     def after_handler(self, handler, response):
         """check if we need to do a logout"""
         if handler.session.has_key("remember"):
