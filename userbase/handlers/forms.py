@@ -1,5 +1,6 @@
 from wtforms import Form, TextField, PasswordField, BooleanField, validators, SelectMultipleField, widgets
 from wtforms import ValidationError
+from sfext.babel import T
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 
     'UsernameRegistrationForm', 'EMailRegistrationForm', 
@@ -19,25 +20,25 @@ class BaseForm(Form):
 ###
 
 class UsernameRegistrationForm(BaseForm):
-    username    = TextField('Username',     [validators.Length(max=200), validators.Required()])
-    email       = TextField('E-Mail',       [validators.Length(max=200), validators.Email(), validators.Required()])
-    password    = PasswordField('New Password', [validators.Required(), validators.EqualTo('password2', message='Passwords must match')])
-    password2   = PasswordField('Password confirmation', [validators.Length(max=135), validators.Required()])
-    fullname    = TextField('Full name',    [validators.Length(max=200), validators.Required()])
+    username    = TextField(T('Username'),     [validators.Length(max=200), validators.Required()])
+    email       = TextField(T('E-Mail'),       [validators.Length(max=200), validators.Email(), validators.Required()])
+    password    = PasswordField(T('Password'), [validators.Required(), validators.EqualTo('password2', message='Passwords must match')])
+    password2   = PasswordField(T('Password confirmation'), [validators.Length(max=135), validators.Required()])
+    fullname    = TextField(T('Full name'),    [validators.Length(max=200), validators.Required()])
 
     def validate_email(form, field):
         if form.module.users.find({'email' : field.data}).count() > 0:
-            raise ValidationError('this email is already taken')
+            raise ValidationError(T('this email is already taken'))
 
     def validate_username(form, field):
         if form.module.users.find({'username' : field.data}).count() > 0:
-            raise ValidationError('this username is already taken')
+            raise ValidationError(T('this username is already taken'))
 
 
 class UsernameLoginForm(Form):
-    username    = TextField('Username', [validators.Length(max=200), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
-    remember    = BooleanField('remember me, please')
+    username    = TextField(T('Username'), [validators.Length(max=200), validators.Required()])
+    password    = PasswordField(T('Password'), [validators.Length(max=135), validators.Required()])
+    remember    = BooleanField(T('stay logged in'))
 
 
 ###
@@ -46,7 +47,7 @@ class UsernameLoginForm(Form):
 
 class EMailRegistrationForm(BaseForm):
     email       = TextField('E-Mail',       [validators.Length(max=200), validators.Email(), validators.Required()])
-    password    = PasswordField('New Password', [validators.Required(), validators.EqualTo('password2', message='Passwords must match')])
+    password    = PasswordField('Password', [validators.Required(), validators.EqualTo('password2', message='Passwords must match')])
     password2   = PasswordField('Password confirmation', [validators.Length(max=135), validators.Required()])
     fullname    = TextField('Full name',    [validators.Length(max=200), validators.Required()])
 
@@ -56,9 +57,9 @@ class EMailRegistrationForm(BaseForm):
 
 
 class EMailLoginForm(Form):
-    email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()])
-    password    = PasswordField('Password', [validators.Length(max=135), validators.Required()])
-    remember    = BooleanField('remember me, please')
+    email       = TextField(T('E-Mail'), [validators.Length(max=200), validators.Email(), validators.Required()])
+    password    = PasswordField(T('Password'), [validators.Length(max=135), validators.Required()])
+    remember    = BooleanField(T('stay logged in'))
 
 
 
@@ -94,14 +95,14 @@ class PermissionSelectField(SelectMultipleField):
             yield (perm, name, self.coerce(perm) in d)
 
 class UserEditForm(BaseForm):
-    username    = TextField('Username',     [validators.Length(max=200), validators.Required()])
-    email       = TextField('E-Mail',       [validators.Length(max=200), validators.Email(), validators.Required()])
-    fullname    = TextField('Full name',    [validators.Length(max=200), validators.Required()])
+    username    = TextField(T('Username'),     [validators.Length(max=200), validators.Required()])
+    email       = TextField(T('E-Mail'),       [validators.Length(max=200), validators.Email(), validators.Required()])
+    fullname    = TextField(T('Full name'),    [validators.Length(max=200), validators.Required()])
     permissions = PermissionSelectField('Permissions')
 
 class UserAddForm(UserEditForm):
     """user add form is the same as user edit form for now"""
 
 class PasswordChangeForm(BaseForm):
-    password    = PasswordField('New Password', [validators.Required(), validators.EqualTo('password2', message='Passwords must match')])
-    password2   = PasswordField('Password confirmation', [validators.Length(max=135), validators.Required()])
+    password    = PasswordField(T('New Password'), [validators.Required(), validators.EqualTo('password2', message=T('Passwords must match'))])
+    password2   = PasswordField(T('Password confirmation'), [validators.Length(max=135), validators.Required()])

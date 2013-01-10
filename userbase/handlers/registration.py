@@ -2,6 +2,7 @@ from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from wtforms import ValidationError
 from userbase import db
+from sfext.babel import T
 
 __all__ = ['RegistrationHandler']
 

@@ -1,0 +1,80 @@
+# Translations template for PROJECT.
+# Copyright (C) 2013 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2013-01-10 15:46+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: handlers/forms.py:23 handlers/forms.py:39 handlers/forms.py:98
+msgid "Username"
+msgstr ""
+
+#: handlers/forms.py:24 handlers/forms.py:60 handlers/forms.py:99
+msgid "E-Mail"
+msgstr ""
+
+#: handlers/forms.py:25 handlers/forms.py:40 handlers/forms.py:61
+msgid "Password"
+msgstr ""
+
+#: handlers/forms.py:26 handlers/forms.py:108
+msgid "Password confirmation"
+msgstr ""
+
+#: handlers/forms.py:27 handlers/forms.py:100
+msgid "Full name"
+msgstr ""
+
+#: handlers/forms.py:31
+msgid "this email is already taken"
+msgstr ""
+
+#: handlers/forms.py:35
+msgid "this username is already taken"
+msgstr ""
+
+#: handlers/forms.py:41 handlers/forms.py:62
+msgid "stay logged in"
+msgstr ""
+
+#: handlers/forms.py:84
+#, python-format
+msgid "'%(value)s' is not a valid choice for this field"
+msgstr ""
+
+#: handlers/forms.py:107
+msgid "New Password"
+msgstr ""
+
+#: handlers/forms.py:107
+msgid "Passwords must match"
+msgstr ""
+
+#: templates/userbase/registration.html:7
+msgid "Please register"
+msgstr ""
+
+#: templates/userbase/registration.html:15
+msgid "Register"
+msgstr ""
+
+#: templates/userbase/registration.html:24
+msgid "missing activation email?"
+msgstr ""
+
+#: templates/userbase/registration.html:25
+msgid "Please send me a new activation code"
+msgstr ""
+

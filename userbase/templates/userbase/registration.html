@@ -4,15 +4,15 @@
     <div class="row">
         <div class="span8">
             <div class="form">
-                <h2>Please register</h2>
+                <h2>{{_('Please register')}}</h2>
                 <form class="boxform horizontal-form validate" method="POST" action="{{url}}">
                     {% for field in form %}
-                        {{ formmacros.form_field(field) }}
+                        {{ formmacros.form_field(field, class="span6 required" if field.flags.required else "span6") }}
                     {% endfor %}
 
                     <fieldset class="form-actions">
                         <div class="input">
-                            <input type="submit" class="btn btn-primary btn-large" value="Register">
+                            <input type="submit" class="btn btn-primary btn-large" value="{{_('Register')}}">
                         </div>
                     </fieldset>
                 </form>
@@ -21,8 +21,8 @@
         <div class="span4">
             {% if use_double_opt_in %}
                 <div>
-                    <h4>Mission activation email?</h4>
-                    <a href="{{url_for('.activation_code')}}">Please send me a new activation code</a>
+                    <h4>{{_('missing activation email?')}}</h4>
+                    <a href="{{url_for('.activation_code')}}">{{_('Please send me a new activation code')}}</a>
                 </div>
             {% endif %}
         </div>

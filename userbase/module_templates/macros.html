@@ -61,7 +61,7 @@
 {# old _bootstrap.html code #}
 
 {%- macro form_field_label(field) -%}
-    <label for="{{ field.id }}">{{ field.label.text }}
+    <label for="{{ field.id }}">{{ _(field.label.text) }}
     {%- if field.flags.required -%}*{%- endif %}</label>
 {% endmacro %}
 
