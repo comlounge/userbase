@@ -203,6 +203,7 @@ class BaseUserModule(Module):
         user = self.get_user(handler)
         if user is not None and user.active:
             p['user'] = user
+            p['user_id'] = str(user._id)
             p['logged_in'] = True
         return p
 
@@ -211,9 +212,11 @@ class BaseUserModule(Module):
         and maybe re-login the user
         """
         handler.user = None
+        handler.user_id = None
         user = self.get_user_by_id(handler.session.get("userid", None))
         if user is not None:
             handler.user = user
+            handler.user_id = str(user._id)
             return
         if self.config.cookie_name in handler.request.cookies and "userid" not in handler.session:
             cookie = self.app.load_cookie(handler.request, self.config.cookie_name)
