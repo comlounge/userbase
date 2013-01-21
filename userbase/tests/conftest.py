@@ -17,7 +17,8 @@ class MyApp(Application):
 
     defaults = {
         'secret_key'    : "182827",
-        'testing'       : True
+        'testing'       : True,
+        'force_exceptions' : True,
     }
     routes = [
         URL("/", "root", TestHandler)
@@ -32,6 +33,7 @@ class MyApp(Application):
 
 def setup_db():
     db = pymongo.Connection()[DB_NAME]
+    """
     db.users.insert({ "_id" : u"foobar", 
         "username": u"foobar", 
         "pw" : "96948aad3fcae80c08a35c9b5958cd89", 
@@ -46,6 +48,7 @@ def setup_db():
         "password_code_expires": None,
         "active": True,
         'date_creation' : datetime.datetime.utcnow()})
+    """
     return db
 
 def teardown_db(db):
@@ -60,8 +63,19 @@ def pytest_funcarg__db(request):
 def pytest_funcarg__app(request):
     """create the simplest app with uploader support ever"""
     db = request.getfuncargvalue("db")
+
+    def init_app():
+        app = MyApp(__name__)
+        ub = app.module_map['userbase']
+        ub.register({
+            "username": u"foobar", 
+            "password" : "barfoo", 
+            "email" : "barfoo@example.com", 
+            "fullname": "Foo bar",
+        }, force = True, create_pw = False)
+        return app
     return request.cached_setup(
-        setup = lambda: MyApp(__name__),
+        setup = init_app,
         scope = "module")
 
 

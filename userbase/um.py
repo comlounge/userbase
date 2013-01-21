@@ -366,7 +366,7 @@ class BaseUserModule(Module):
         user_data = self.hooks.process_registration_user_data(user_data)
         user = self.users()
         user.update(user_data)
-        if self.config.double_opt_in and not force:
+        if self.config.use_double_opt_in and not force:
             user.active = False
             self.send_activation_code(user)
         else:
