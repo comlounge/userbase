@@ -248,8 +248,17 @@ class BaseUserModule(Module):
         if handler.session.has_key("remember_forget"):
             self.app.delete_cookie(response, self.config.cookie_name)
             del handler.session['remember_forget']
-
+    ###
     ### user related
+    ###
+
+    def user_class(self):
+        """return the user class"""
+        return self.config.user_class
+
+    def new_user(self):
+        """return an empty new user """
+        return self.config.user_class()
 
     def get_user(self, handler):
         """retrieve the user from the handler session or None"""
