@@ -258,7 +258,7 @@ class BaseUserModule(Module):
 
     def new_user(self, *args, **kwargs):
         """return an empty new user """
-        return self.config.user_class(*args, *kwargs)
+        return self.config.user_class(*args, **kwargs)
 
     def get_user(self, handler):
         """retrieve the user from the handler session or None"""
