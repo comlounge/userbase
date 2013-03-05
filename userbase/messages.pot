@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-01-10 15:46+0100\n"
+"POT-Creation-Date: 2013-03-05 15:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,6 +60,54 @@ msgstr ""
 
 #: handlers/forms.py:107
 msgid "Passwords must match"
+msgstr ""
+
+#: module_templates/activation.html:7
+msgid "You need to activate our account"
+msgstr ""
+
+#: module_templates/activation.html:9
+msgid ""
+"You have received a code by email. You can either click the link provided"
+" in the email or you can manually enter the code below."
+msgstr ""
+
+#: module_templates/activation.html:13
+msgid "Activation Code"
+msgstr ""
+
+#: module_templates/activation.html:14
+msgid "please enter your code here"
+msgstr ""
+
+#: module_templates/activation.html:15
+msgid "Enter the code from the activation email here"
+msgstr ""
+
+#: module_templates/activation.html:18
+msgid "Activate your account"
+msgstr ""
+
+#: module_templates/invalid_code.html:8
+msgid "The activation code is incorrect"
+msgstr ""
+
+#: module_templates/invalid_code.html:9
+msgid ""
+"Please enter your e-mail address and we will send you a new activation "
+"code"
+msgstr ""
+
+#: module_templates/invalid_code.html:13
+msgid "Send new activation code"
+msgstr ""
+
+#: module_templates/send_activation_code.html:9
+msgid "Receive a new activation code"
+msgstr ""
+
+#: module_templates/send_activation_code.html:15
+msgid "Get a new activation code"
 msgstr ""
 
 #: templates/userbase/registration.html:7

@@ -5,12 +5,12 @@
     <div class="row">
         <div class="span8">
             <section class="form">
-                <h2>Der Aktivierungscode ist leider nicht korrekt</h2>
-                <h3>Bitte gebe Deine E-Mail-Adresse ein und wir senden Dir einen neuen Code zu.</h3>
+                <h2>{{_("The activation code is incorrect")}}</h2>
+                <h3>{{_("Please enter your e-mail address and we will send you a new activation code")}}</h3>
                 <form class="horizontal-form validate" method="POST" action="{{url}}">
                     {{ macros.field(form.email, form.email(class="required")) }}
                     <fieldset class="form-actions">
-                        <input type="submit" class="button large" value="Neuen Aktivierungscode senden">
+                        <input type="submit" class="button large" value="{{_("Send new activation code")}}">
                     </fieldset>
                 </form>
             </section>

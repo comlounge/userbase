@@ -6,13 +6,13 @@
     <div class="row">
         <div class="span8">
             <section class="form">
-                <h2>Receive a new activation code</h2>
+                <h2>{{_('Receive a new activation code')}}</h2>
                 <form class="horizontal-form validate" method="POST" action="{{url}}">
                     {% for field in form %}
                         {{ formmacros.form_field(field) }}
                     {% endfor %}
                     <div class="form-actions">
-                        <input type="submit" class="btn btn-primary large" value="Get a new activation code">
+                        <input type="submit" class="btn btn-primary large" value="{{_('Get a new activation code')}}">
                     </div>
                 </form>
             </section>

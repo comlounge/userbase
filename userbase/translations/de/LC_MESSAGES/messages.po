@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-01-10 15:46+0100\n"
+"POT-Creation-Date: 2013-03-05 15:02+0100\n"
 "PO-Revision-Date: 2013-01-10 12:33+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -61,6 +61,60 @@ msgstr "Neues Passwort"
 #: handlers/forms.py:107
 msgid "Passwords must match"
 msgstr "Passwort und Wiederholung stimmen nicht überein"
+
+#: module_templates/activation.html:7
+msgid "You need to activate our account"
+msgstr "Du musst Deinen Account aktivieren"
+
+#: module_templates/activation.html:9
+msgid ""
+"You have received a code by email. You can either click the link provided"
+" in the email or you can manually enter the code below."
+msgstr ""
+"Du hast einen Aktivierungscode per E-Mail erhalten. Du kannst entweder "
+"den Link in der Mail anklicken oder den Code manuell in das Feld unten "
+"eingeben."
+
+#: module_templates/activation.html:13
+#, fuzzy
+msgid "Activation Code"
+msgstr "Keine Aktivierungsmail bekommen?"
+
+#: module_templates/activation.html:14
+msgid "please enter your code here"
+msgstr "Bitte gebe den Code unten ein"
+
+#: module_templates/activation.html:15
+msgid "Enter the code from the activation email here"
+msgstr "Bitte gebe hier den Code aus der Aktivierungs-Mail ein"
+
+#: module_templates/activation.html:18
+msgid "Activate your account"
+msgstr "Aktiviere den Account"
+
+#: module_templates/invalid_code.html:8
+msgid "The activation code is incorrect"
+msgstr "Der Aktivierungscode ist nicht korrekt"
+
+#: module_templates/invalid_code.html:9
+msgid ""
+"Please enter your e-mail address and we will send you a new activation "
+"code"
+msgstr ""
+"Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir einen neuen Code "
+"zusenden können"
+
+#: module_templates/invalid_code.html:13
+msgid "Send new activation code"
+msgstr "Bitte sende mir einen neuen Aktivierungscode"
+
+#: module_templates/send_activation_code.html:9
+msgid "Receive a new activation code"
+msgstr "Bitte sende mir einen neuen Aktivierungscode"
+
+#: module_templates/send_activation_code.html:15
+msgid "Get a new activation code"
+msgstr "Bitte sende mir einen neuen Aktivierungscode"
 
 #: templates/userbase/registration.html:7
 msgid "Please register"
