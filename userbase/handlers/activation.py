@@ -2,10 +2,11 @@ from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from wtforms import ValidationError
 from userbase import db
+from ..base import BaseHandler
 
 __all__ = ['ActivationHandler', 'ActivationCodeHandler']
 
-class ActivationHandler(Handler):
+class ActivationHandler(BaseHandler):
     """perform the activation process"""
 
     template = "_m/userbase/activation.html"
@@ -33,7 +34,9 @@ class ActivationHandler(Handler):
             else:
                 url = self.url_for(endpoint=".activation_code")
                 params = {'url': url, 'code' : code}
-                self.flash(cfg.messages.activation_failed %params, category="danger")
+                print "wrong"
+                self.flash(self._("""The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.""") %params, category="danger")
+                print 3
         return self.render()
 
     post = get

@@ -2,11 +2,12 @@ from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from wtforms import ValidationError
 from userbase import db
+from userbase.base import BaseHandler
 from sfext.babel import T
 
 __all__ = ['RegistrationHandler']
 
-class RegistrationHandler(Handler):
+class RegistrationHandler(BaseHandler):
     """show the registration form and process it"""
 
     template = "userbase/registration.html"

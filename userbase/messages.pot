@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-03-05 15:02+0100\n"
+"POT-Creation-Date: 2013-03-06 12:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+#: handlers/activation.py:38
+#, python-format
+msgid ""
+"The activation code is not valid. Please try again or click <a "
+"href=\"%(url)s\">here</a> to get a new one."
+msgstr ""
 
 #: handlers/forms.py:23 handlers/forms.py:39 handlers/forms.py:98
 msgid "Username"

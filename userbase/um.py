@@ -143,7 +143,6 @@ class BaseUserModule(Module):
             'double_opt_in_pending' : 'To finish the registration process please check your email with instructions on how to activate your account.',
             'registration_success'  : 'Your user registration has been successful',
             'activation_success'    : 'Your account has been activated',
-            'activation_failed'     : 'The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.',
             'activation_code_sent'  : 'A new activation code has been sent out, please check your email',
             'already_active'        : 'The user is already active. Please log in.',
             'pw_code_sent'          : 'A link to set a new password has been sent to you',
