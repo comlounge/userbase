@@ -34,9 +34,7 @@ class ActivationHandler(BaseHandler):
             else:
                 url = self.url_for(endpoint=".activation_code")
                 params = {'url': url, 'code' : code}
-                print "wrong"
                 self.flash(self._("""The activation code is not valid. Please try again or click <a href="%(url)s">here</a> to get a new one.""") %params, category="danger")
-                print 3
         return self.render()
 
     post = get
