@@ -134,7 +134,6 @@ class BaseUserModule(Module):
 
         'messages'                  : AttributeMapper({
             'user_unknown'          : 'User unknown',
-            'email_unknown'         : 'This email address cannot not be found in our user database',
             'password_incorrect'    : 'Your password is not correct',
             'user_not_active'       : 'Your user has not yet been activated.', # maybe provide link here? Needs to be constructed in handler
             'login_failed'          : 'Login failed',
@@ -142,9 +141,6 @@ class BaseUserModule(Module):
             'logout_success'        : 'Your are now logged out',
             'double_opt_in_pending' : 'To finish the registration process please check your email with instructions on how to activate your account.',
             'registration_success'  : 'Your user registration has been successful',
-            'activation_success'    : 'Your account has been activated',
-            'activation_code_sent'  : 'A new activation code has been sent out, please check your email',
-            'already_active'        : 'The user is already active. Please log in.',
             'pw_code_sent'          : 'A link to set a new password has been sent to you',
             'pw_changed'            : 'Your password has been changed',
             

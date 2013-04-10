@@ -1,98 +1,55 @@
-{% macro render_errors(field) %}
-    {% if field.errors %}
-    <ul class="errors">
-        {% for error in field.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-{% endmacro %}
-
-{% macro input(field) -%}
-<div class="control-group {% if field.errors %}error{% endif %}">
-    <label class="control-label" for="{{ field.id }}"><span>{{ field.label.text }}{%- if field.flags.required -%}*{%- endif %} :</span></label>
-    <div class="controls">
-        {{ field(**kwargs)|safe }} {{ render_errors(field) }}
-    </div>
-</div>        
-{%- endmacro %}
-
-{%- macro textarea(field, value='', rows=7, cols=40) -%}
-<div class="control-group {% if field.errors %}error{% endif %}">
-    <label class="control-label" for="{{ field.id }}"><span>{{ field.label.text }}{%- if field.flags.required -%}*{%- endif %} :</span></label>
-    <div class="controls">
-        {{ field(**kwargs)|safe }} {{ render_errors(field) }}
-    </div>
-</div>   
-{%- endmacro %}
-
-{%- macro submit(submit_title, cancel_title="", class="btn-primary") -%}
-<div class="form-actions">
-    <button class="btn {{ class }}" type="submit">{{ submit_title }}</button>                    
-</div>
-{%- endmacro -%}
-
-
-{%- macro fields(fields, submit_title, class=None, legend=None) -%}
-    <fieldset {% if class %}class="{{class}}"{% endif %}>
-        {% if legend %}
-            <legend>{{legend}}</legend>
-        {% endif %}
-        
-        {% for field in fields %}
-            {% if field.type == 'HiddenField' %}
-                {{ field() }}
-            {% else %}
-                {% if field.type == 'StringField' %}
-                    {{ input(field) }}
-                {% elif field.type == 'TextAreaField' %}
-                    {{ textarea(field) }}
+{% macro my_field(field, prepend=None, append=None) -%}
+            <div class="input {{'input-prepend' if prepend}} {{'input-append' if append}}">
+                {% if prepend %}
+                    <span class="add-on">{{prepend}}</span>
                 {% endif %}
-            {% endif %}
-        {% endfor %}
-    
-        {{ submit(submit_title) }}
-  </fieldset>
-{%- endmacro -%}
 
+                {{ field(**kwargs) }}
 
-
-
-{# old _bootstrap.html code #}
+                {% if append %}
+                    <span class="add-on">{{append}}</span>
+                {% endif %}
+                
+          </div>
+{%- endmacro %}
 
 {%- macro form_field_label(field) -%}
-    <label for="{{ field.id }}">{{ _(field.label.text) }}
-    {%- if field.flags.required -%}*{%- endif %}</label>
+    <label class="control-label" for="{{ field.id }}">{{ _(field.label.text) }}
+    {%- if field.flags.required -%}
+        <abbr title="{{_('Diese Feld muss angegeben werden')}}">*</abbr>
+    {%- endif %}</label>
 {% endmacro %}
 
 {%- macro form_field_description(field) -%}
     {% if field.description %}
-        <span class="descr">{{ field.description }}</span>
+        <p class="help-block">{{ field.description }}</p>
     {% endif %}
 {%- endmacro -%}
 
 {%- macro form_field_errors(field) -%}
     {% if field.errors %}
-    <div>
         {%- for error in field.errors -%}
-        <span class="label important">{{ error }}</span>
+        <span class="label label-important">{{ error }}</span>
         {%- endfor -%}
-    </div>
     {% endif %}
 {%- endmacro -%}
 
 {%- macro form_field_boolean(field) -%}
-        <div class="input">
-                <label>
-                        {{ field(**kwargs) }}
-                        <span>{{ field.label.text }}</span>
-                        {{ form_field_description(field) }}
-                        {{ form_field_errors(field) }}
-                </label>
-        </div>
+<label class="checkbox" for="{{ field.id }}" id="field-{{field.id}}">
+    {{field(**kwargs)}}
+    {{ field.label.text }}
+</label>
+{%- endmacro -%}
+{%- macro form_field_multicheckbox(field) -%}
+    {% for subfield in field %}
+        <label class="checkbox">
+            {{ subfield() }}
+            {{ subfield.label.text }}
+        </label>
+    {% endfor %}
 {%- endmacro -%}
 
-{%- macro action_buttons(submit_title, cancel_title="Cancel", submit_class="primary") -%}
+{%- macro action_buttons(submit_title, cancel_title="Zurück setzten", submit_class="primary") -%}
 <div class="actions">
     <input type="submit" class="btn {{submit_class}}" value="{{submit_title}}">
     &nbsp;
@@ -101,7 +58,7 @@
 {%- endmacro -%}
 
 {%- macro form_field(field) -%}
-<div class="clearfix">
+    <div class="control-group {{'error' if field.errors}}" id="field-{{field.id}}">
     {% if field.type == 'HiddenField' %}
         {{ field() }}
     {% else %}
@@ -109,32 +66,62 @@
             {{ form_field_boolean(field, **kwargs) }}
         {% else%}
             {{ form_field_label(field) }}
-                <div class="input" id="{{field.id}}-div">
-            {% if field.type == 'RadioField' %}
-                {{ field(class='radio-group', **kwargs) }}
-            {% else %}
-                {{ field(**kwargs) }}
-            {% endif %}
-            {{ form_field_description(field) }}
-            {{ form_field_errors(field) }}
-                </div>
+            <div class="controls" id="{{field.id}}-div">
+                {% if field.type == 'RadioField' %}
+                    {{ field(class='radio-group', **kwargs) }}
+                {% elif field.type == 'MultiCheckboxField' %}
+                    {{ form_field_multicheckbox(field) }}
+                {% else %}
+                    {{ my_field(field, **kwargs) }}
+                {% endif %}
+                {{ form_field_errors(field) }}
+                {{ form_field_description(field) }}
+            </div>
         {% endif %}
     {% endif %}
-</div>
+    </div>
 {%- endmacro -%}
 
 {%- macro form_fields(fields, class=None, legend=None) -%}
-<fieldset {% if class %}class="{{class}}"{% endif %}>
-    {% if legend %}
+    <fieldset {% if class %}class="{{class}}"{% endif %}>
+        {% if legend %}
             <legend>{{legend}}</legend>
-    {% endif %}
+        {% endif %}
     {% for field in fields %}
         {% if field.type == 'HiddenField' %}
             {{ field() }}
-        {% else %}
+                {% else %}
             {{ form_field(field) }}
         {% endif %}
     {% endfor %}
-</fieldset>
+  </fieldset>
+{%- endmacro -%}
+
+
+
+{#
+## CLIENT WIDGETS
+#}
+
+
+{%- macro address(client, full=True) -%}
+    <address>
+        <strong>{{client.fullname}}</strong> <br>
+        {% if client.d.company %}{{client.d.company}}<br>{%endif %}
+        {{client.d.address}} <br>
+        {% if client.d.address_comment %}Kommentar: {{client.d.address_comment}}<br>{%endif %}
+        {{client.d.zip}} {{client.d.city}}<br>
+        {{client.country}}<br>
+        {% if full %}
+            {% if client.d.phone %}Telefon: {{client.d.phone}}<br>{%endif %}
+            {% if client.d.mobile %}Mobil: {{client.d.mobile}}<br>{%endif %}
+            {% if client.d.fax %}Fax: {{client.d.fax}}<br>{%endif %}
+            {% if client.d.email %}E-Mail: <a href="mailto:{{client.d.email}}">{{client.d.email}}</a><br>{%endif %}
+            Steuernummer: {{client.d.taxnr}}<br>
+            Mehrwertsteuer: {{client.d.mwst}} %<br>
+        {% endif %}
+    </address>
+{%- endmacro -%}
+{%- macro shipping_address(client) -%}
 {%- endmacro -%}
 

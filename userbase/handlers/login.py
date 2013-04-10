@@ -26,16 +26,21 @@ class LoginHandler(Handler):
                     user = mod.login(self, **f)
                     url_for_params = cfg.urls.login_success
                     url = self.url_for(**url_for_params)
-                    self.flash(cfg.messages.login_success %user)
+                    self.flash(self._("Hello %(fullname)s, you are now logged in.") %user)
                     return redirect(url)
                 except PasswordIncorrect, e:
-                    self.flash(cfg.messages.password_incorrect, category="danger")
+                    self.flash(self._("Incorrect password. You might have mistyped your password, please check your spelling."), category="danger")
                 except UserUnknown, e:
-                    self.flash(cfg.messages.user_unknown, category="danger")
+                    self.flash("Unknown username. You might have mistyped your name, please check your spelling.", category="danger")
                 except UserNotActive, e:
-                    self.flash(cfg.messages.user_not_active %e.user, category="warning")
+                    if cfg.use_double_opt_in:
+                        print self._("""Your user account has not been activated. In order to receive a new activation email <a href="%s">click here</a>""") 
+                        self.flash(self._("""Your user account has not been activated. In order to receive a new activation email <a href="%s">click here</a>""") 
+                                %self.url_for(".activation_code"), category="warning")
+                    else:
+                        self.flash(self._("Unknown username. You might have mistyped your name, please check your spelling."), category="danger")
                 except LoginFailed, e:
-                    self.flash(cfg.messages.login_failed, category="danger")
+                    self.flash(self._("Login failed, please try again."), category="danger")
         return self.render(form = form)
 
     post = get

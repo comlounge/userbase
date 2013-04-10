@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-03-06 12:41+0100\n"
+"POT-Creation-Date: 2013-04-05 16:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: handlers/activation.py:38
+#: handlers/activation.py:30
+msgid "Your account has been successfully activated."
+msgstr ""
+
+#: handlers/activation.py:37
 #, python-format
 msgid ""
 "The activation code is not valid. Please try again or click <a "
 "href=\"%(url)s\">here</a> to get a new one."
+msgstr ""
+
+#: handlers/activation.py:66
+msgid "The user is already active. Please log in."
+msgstr ""
+
+#: handlers/activation.py:71
+msgid "A new activation code has been sent out, please check your email"
+msgstr ""
+
+#: handlers/activation.py:76
+msgid "This email address cannot not be found in our user database"
 msgstr ""
 
 #: handlers/forms.py:23 handlers/forms.py:39 handlers/forms.py:98
@@ -69,6 +85,34 @@ msgstr ""
 msgid "Passwords must match"
 msgstr ""
 
+#: handlers/login.py:29
+#, python-format
+msgid "Hello %(fullname)s, you are now logged in."
+msgstr ""
+
+#: handlers/login.py:32
+msgid ""
+"Incorrect password. You might have mistyped your password, please check "
+"your spelling."
+msgstr ""
+
+#: handlers/login.py:37 handlers/login.py:38
+#, python-format
+msgid ""
+"Your user account has not been activated. In order to receive a new "
+"activation email <a href=\"%s\">click here</a>"
+msgstr ""
+
+#: handlers/login.py:41
+msgid ""
+"Unknown username. You might have mistyped your name, please check your "
+"spelling."
+msgstr ""
+
+#: handlers/login.py:43
+msgid "Login failed, please try again."
+msgstr ""
+
 #: module_templates/activation.html:7
 msgid "You need to activate our account"
 msgstr ""
@@ -107,6 +151,10 @@ msgstr ""
 
 #: module_templates/invalid_code.html:13
 msgid "Send new activation code"
+msgstr ""
+
+#: module_templates/macros.html:19
+msgid "Diese Feld muss angegeben werden"
 msgstr ""
 
 #: module_templates/send_activation_code.html:9

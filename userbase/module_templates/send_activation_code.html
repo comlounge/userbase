@@ -7,7 +7,7 @@
         <div class="span8">
             <section class="form">
                 <h2>{{_('Receive a new activation code')}}</h2>
-                <form class="horizontal-form validate" method="POST" action="{{url}}">
+                <form class="form horizontal-form validate" method="POST" action="{{url}}">
                     {% for field in form %}
                         {{ formmacros.form_field(field) }}
                     {% endfor %}

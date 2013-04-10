@@ -146,4 +146,10 @@ class User(Document):
         """
         return permission in self.permissions
 
+    @property
+    def fullname(self):
+        """return the fullname or the username if no fullname is given"""
+        if self['fullname'] != '':
+            return self['fullname']
+        return self['username']
     

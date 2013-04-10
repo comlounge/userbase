@@ -27,7 +27,7 @@ class ActivationHandler(BaseHandler):
                 user.activate()
                 mod.login(self, user=user, save = False)
                 user.save()
-                self.flash(cfg.messages.activation_success %user)
+                self.flash(self._("Your account has been successfully activated.") %user)
                 url_for_params = cfg.urls.activation_success
                 url = self.url_for(**url_for_params)
                 return redirect(url)
@@ -43,8 +43,7 @@ class ActivationHandler(BaseHandler):
 class EMailForm(Form):
     """form for asking for an email address to send the code to"""
     email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()],
-        description = "Please enter the email address you registered with to receive a new activation code."
-    )
+                            description = "Please enter the email address you registered with to receive a new activation code.")
 
 class ActivationCodeHandler(Handler):
     """send out a new activation code in case a user is not yet activated and we have a valid email address"""
@@ -64,16 +63,16 @@ class ActivationCodeHandler(Handler):
                 if user is not None:
                     # send out new activation code and redirect to code sent success screen 
                     if user.active:
-                        self.flash(cfg.messages.already_active %user)
+                        self.flash(self._("The user is already active. Please log in.") %user)
                         url_for_params = cfg.urls.activation_success
                         url = self.url_for(**url_for_params)
                         return redirect(url)
                     mod.send_activation_code(user)
-                    self.flash(cfg.messages.activation_code_sent %user)
+                    self.flash(self._("A new activation code has been sent out, please check your email") %user)
                     url_for_params = cfg.urls.activation_code_sent
                     url = self.url_for(**url_for_params)
                     return redirect(url)
                 else:
-                    self.flash(cfg.messages.email_unknown, category="danger")
+                    self.flash(self._("This email address cannot not be found in our user database"), category="danger")
         return self.render(form = form)
     post = get
