@@ -10,7 +10,7 @@ __all__ = ['RegistrationHandler']
 class RegistrationHandler(BaseHandler):
     """show the registration form and process it"""
 
-    template = "userbase/registration.html"
+    template = "registration.html"
 
     def get(self):
         """show the registration form"""

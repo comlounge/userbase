@@ -9,7 +9,7 @@ __all__ = ['PasswordForgotHandler', 'PasswordSetHandler', 'PWEMailForm', "Passwo
 class PasswordSetHandler(Handler):
     """send a link for setting a new password"""
 
-    template = "_m/userbase/pw_set.html"
+    template = "pw_set.html"
 
     def get(self):
         """show the registration form"""
@@ -48,7 +48,7 @@ class PWEMailForm(Form):
 class PasswordForgotHandler(Handler):
     """send out a pw forgotten link in case a user has forgotten his password"""
 
-    template = "_m/userbase/send_pw_code.html"
+    template = "send_pw_code.html"
 
     def get(self):
         """show the form for entering your email address. The form can be overwritten in the userbase module"""
@@ -76,7 +76,7 @@ class PasswordForgotHandler(Handler):
 class PasswordCodeHandler(Handler):
     """verify the given password code and if ok, allow user to enter a new password"""
 
-    template = "_m/userbase/pw_new.html"
+    template = "pw_new.html"
 
     def get(self):
         """show the form for entering a new password."""

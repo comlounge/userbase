@@ -9,7 +9,7 @@ __all__ = ['ActivationHandler', 'ActivationCodeHandler']
 class ActivationHandler(BaseHandler):
     """perform the activation process"""
 
-    template = "_m/userbase/activation.html"
+    template = "/activation.html"
 
     def get(self):
         """show the registration form"""
@@ -48,7 +48,7 @@ class EMailForm(Form):
 class ActivationCodeHandler(Handler):
     """send out a new activation code in case a user is not yet activated and we have a valid email address"""
 
-    template = "_m/userbase/send_activation_code.html"
+    template = "send_activation_code.html"
 
     def get(self):
         """show the registration form"""
