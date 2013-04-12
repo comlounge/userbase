@@ -11,7 +11,7 @@ class LogoutHandler(Handler):
         """show the login form"""
         cfg = self.module.config
         self.module.logout(self)
-        self.flash(cfg.messages.logout_success)
+        self.flash(self._("You are now logged out.") %user)
         url_for_params = cfg.urls.logout_success
         url = self.url_for(**url_for_params)
         return redirect(url)
