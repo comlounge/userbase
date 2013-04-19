@@ -70,6 +70,7 @@ class UserEdit(Handler):
                 f = form.data
                 user.update(**f)
                 user.save()
+                self.flash(self._(u'user data has been updated') %user)
                 url = self.url_for("userbase.userlist")
                 return redirect(url)
         return self.render(form = form)
@@ -96,7 +97,7 @@ class UserAdd(Handler):
                 user.update(**f)
                 user.save()
                 # TODO: send password and user info 
-                self.flash(cfg.messages.user_added %user)
+                self.flash(self._(u'A new user has been added') %user)
                 url = self.url_for("userbase.userlist")
                 return redirect(url)
         return self.render(form = form)
@@ -118,9 +119,9 @@ class UserActivate(Handler):
         user.active = not user.active
         user.save()
         if user.active:
-            self.flash(cfg.messages.user_activated %user)
+            self.flash(self._(u'The user has been activated') %user)
         else:
-            self.flash(cfg.messages.user_deactivated %user)
+            self.flash(self._(u'The user has been deactivated') %user)
         url = self.url_for("userbase.userlist")
         return redirect(url)
 

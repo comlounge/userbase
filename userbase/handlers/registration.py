@@ -3,7 +3,10 @@ from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from wtforms import ValidationError
 from userbase import db
 from userbase.base import BaseHandler
-from sfext.babel import T
+try:
+    from sfext.babel import T
+except ImportError:
+    T = lambda x: x
 
 __all__ = ['RegistrationHandler']
 
@@ -26,15 +29,15 @@ class RegistrationHandler(BaseHandler):
                 user = mod.register(f, create_pw=False)
                 if cfg.login_after_registration and not cfg.use_double_opt_in:
                     user = mod.login(self, force=True, **f)
-                    self.flash(cfg.messages.login_success %user)
+                    self.flash(self._("Welcome, %(fullname)s") %user)
                     url_for_params = cfg.urls.login_success
                     url = self.url_for(**url_for_params)
                     return redirect(url)
                 if cfg.use_double_opt_in:
-                    self.flash(cfg.messages.double_opt_in_pending %user)
+                    self.flash(self._(u'To finish the registration process please check your email with instructions on how to activate your account.') %user)
                     url_for_params = cfg.urls.double_opt_in_pending
                 else:
-                    self.flash(cfg.messages.registration_success %user)
+                    self.flash(self._(u'Your user registration has been successful') %user)
                     url_for_params = cfg.urls.registration_success
                 url = self.url_for(**url_for_params)
                 return redirect(url)

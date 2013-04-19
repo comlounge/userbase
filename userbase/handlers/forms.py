@@ -1,6 +1,9 @@
 from wtforms import Form, TextField, PasswordField, BooleanField, validators, SelectMultipleField, widgets
 from wtforms import ValidationError
-from sfext.babel import T
+try:
+    from sfext.babel import T
+except ImportError:
+    T = lambda x: x
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 
     'UsernameRegistrationForm', 'EMailRegistrationForm', 

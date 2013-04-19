@@ -12,7 +12,7 @@ class PasswordSetHandler(Handler):
     template = "pw_set.html"
 
     def get(self):
-        """show the registration form"""
+        """show the password set form"""
         cfg = self.module.config
         mod = self.module
         code = self.request.args.get("code", None)
@@ -64,12 +64,12 @@ class PasswordForgotHandler(Handler):
 
                     # send out pw forgot code and redirect to code sent success screen 
                     mod.send_pw_code(user)
-                    self.flash(cfg.messages.pw_code_sent)
+                    self.flash(self._(u'A link to set a new password has been sent to you') %user)
                     url_for_params = cfg.urls.pw_code_success
                     url = self.url_for(**url_for_params)
                     return redirect(url)
                 else:
-                    self.flash(cfg.messages.email_unknown, category="danger")
+                    self.flash(self._(u'The email address is not in our database.'))
         return self.render(form = form)
     post = get
 
@@ -112,7 +112,7 @@ class PasswordCodeHandler(Handler):
                 user.password = f['password']
                 user.pw_code = None
                 user.save()
-                self.flash(cfg.messages.pw_changed)
+                self.flash(self._(u'Your password has been changed') %user)
                 url_for_params = cfg.urls.pw_code_success
                 url = self.url_for(**url_for_params)
                 return redirect(url)

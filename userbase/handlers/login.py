@@ -1,6 +1,9 @@
 from starflyer import Handler, redirect
 from userbase import db
 from userbase.exceptions import *
+from logbook import Logger
+log = Logger('userbase')
+
 
 __all__ = ['LoginHandler']
 
@@ -26,20 +29,25 @@ class LoginHandler(Handler):
                     user = mod.login(self, **f)
                     url_for_params = cfg.urls.login_success
                     url = self.url_for(**url_for_params)
+                    log.info("user logged in", user = user)
                     self.flash(self._("Hello %(fullname)s, you are now logged in.") %user)
                     return redirect(url)
                 except PasswordIncorrect, e:
+                    log.warn("login failed: incorrect password", username = e.username)
                     self.flash(self._("Incorrect password. You might have mistyped your password, please check your spelling."), category="danger")
                 except UserUnknown, e:
+                    log.warn("login failed: unknown user", username = e.username)
                     self.flash("Unknown username. You might have mistyped your name, please check your spelling.", category="danger")
                 except UserNotActive, e:
                     if cfg.use_double_opt_in:
-                        print self._("""Your user account has not been activated. In order to receive a new activation email <a href="%s">click here</a>""") 
+                        log.warn("login failed: user account not yet activated", user = user)
                         self.flash(self._("""Your user account has not been activated. In order to receive a new activation email <a href="%s">click here</a>""") 
                                 %self.url_for(".activation_code"), category="warning")
                     else:
-                        self.flash(self._("Unknown username. You might have mistyped your name, please check your spelling."), category="danger")
+                        log.warn("login failed: unknown error", user = user)
+                        self.flash(self._("Login failed, please try again."), category="danger")
                 except LoginFailed, e:
+                    log.error("login failed: unknown error - uncatched exception", username = e.username)
                     self.flash(self._("Login failed, please try again."), category="danger")
         return self.render(form = form)
 

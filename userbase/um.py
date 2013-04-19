@@ -61,8 +61,6 @@ class BaseUserModule(Module):
         'verification_view'     : 'users.verification',
         'pw_forgotten_view'     : 'users.pw_forgotten',
         'pw_forgotten_code_view' : 'users.pw_forgotten_code',
-        'login_message'         : u"You are now logged in, %(fullname)s",
-        'logout_message'        : u"You are now logged out",
         'use_remember'          : True, # whether the remember function/cookie is used
         'cookie_secret'         : None,
         'cookie_name'           : "r", # this cookie name is used as the remember cookie
@@ -73,9 +71,9 @@ class BaseUserModule(Module):
         # database related
         'mongodb_host'          : "localhost",
         'mongodb_port'          : 27017,
-        'mongodb_name'          : None,
-        'mongodb_collection'    : "users",
-        'mongodb_kwargs'        : {},
+        'mongodb_name'          : "userbase",                   # name of database to use
+        'mongodb_collection'    : "users",                      # name of the collection to use
+        'mongodb_kwargs'        : {},                           
         'user_class'            : db.User,                      # the db class we use for the user
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
 
@@ -131,26 +129,6 @@ class BaseUserModule(Module):
             
         # hooks
         'hooks'                     : hooks.Hooks,
-
-        'messages'                  : AttributeMapper({
-            'user_unknown'          : 'User unknown',
-            'password_incorrect'    : 'Your password is not correct',
-            'user_not_active'       : 'Your user has not yet been activated.', # maybe provide link here? Needs to be constructed in handler
-            'login_failed'          : 'Login failed',
-            'login_success'         : 'Welcome, %(fullname)s',
-            'logout_success'        : 'Your are now logged out',
-            'double_opt_in_pending' : 'To finish the registration process please check your email with instructions on how to activate your account.',
-            'registration_success'  : 'Your user registration has been successful',
-            'pw_code_sent'          : 'A link to set a new password has been sent to you',
-            'pw_changed'            : 'Your password has been changed',
-            
-            # for user manager
-            'user_edited'           : 'The user has been updated.',
-            'user_added'            : 'The user has been added.',
-            'user_deleted'          : 'The user has been deleted.',
-            'user_activated'        : 'The user has been activated.',
-            'user_deactivated'      : 'The user has been deactivated.',
-        }),
 
         'permissions'               : AttributeMapper({
             'userbase:admin'        : "manage users",
@@ -320,13 +298,13 @@ class BaseUserModule(Module):
         """
         cfg = self.config
         if user is None:
-            cred = user_credentials[cfg.user_id_field]
+            username = user_credentials[cfg.user_id_field]
             password = user_credentials['password']
-            user = self.get_user_by_credential(cred)
+            user = self.get_user_by_credential(username)
             if user is None:
-                raise UserUnknown(u"User not found", user_credentials)
+                raise UserUnknown(u"User not found", username = username)
             if not user.check_password(password):
-                raise PasswordIncorrect(u"Password is wrong", user_credentials)
+                raise PasswordIncorrect(u"Password is wrong", username = username)
         if not user.active and not force:
             raise UserNotActive(u"the user has not been activated yet", user = user)
 
@@ -389,7 +367,7 @@ class BaseUserModule(Module):
 
     def send_welcome_mail(self, user):
         url = self.app.url_for(_full = True, **self.config.urls.welcome)
-        self.send_email(self.config.emails.welcome, cfg.subjects.welcheom, user.email, user = user, url = url)
+        self.send_email(self.config.emails.welcome, cfg.subjects.welcome, user.email, user = user, url = url)
 
     def send_email(self, tmplname, subject, to, **kw):
         """send an email template out. 
@@ -400,6 +378,7 @@ class BaseUserModule(Module):
         """
         mailer = self.app.module_map['mail']
         if self.config.use_html_mail:
+            print tmplname
             html = self.app.jinja_env.get_or_select_template(tmplname+".html").render(**kw)
             txt = self.app.jinja_env.get_or_select_template(tmplname+".txt").render(**kw)
             mailer.mail_html(to, subject, txt, html)
