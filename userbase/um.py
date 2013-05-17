@@ -378,7 +378,6 @@ class BaseUserModule(Module):
         """
         mailer = self.app.module_map['mail']
         if self.config.use_html_mail:
-            print tmplname
             html = self.app.jinja_env.get_or_select_template(tmplname+".html").render(**kw)
             txt = self.app.jinja_env.get_or_select_template(tmplname+".txt").render(**kw)
             mailer.mail_html(to, subject, txt, html)
