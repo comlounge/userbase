@@ -8,7 +8,6 @@ import pymongo
 
 import handlers
 from .exceptions import *
-import forms
 import db
 import hooks
 
@@ -51,9 +50,6 @@ class BaseUserModule(Module):
     name = "userbase"
 
     routes = []
-
-    #module_jinja_loader = PackageLoader(__name__, "module_templates/")
-    #jinja_loader = PackageLoader(__name__, "templates/")
 
     defaults = {
         'login_view'            : 'users.login',
