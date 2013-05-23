@@ -7,7 +7,8 @@ except ImportError:
 
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 
     'UsernameRegistrationForm', 'EMailRegistrationForm', 
-    'UserAddForm', 'UserEditForm', 'PasswordChangeForm']
+    'UserAddForm', 'UserEditForm', 'PasswordChangeForm',
+    'ActivationEMailForm']
 
 class BaseForm(Form):
     """custom form class for passing in attributes so you can use them in validators. Here we
@@ -109,3 +110,11 @@ class UserAddForm(UserEditForm):
 class PasswordChangeForm(BaseForm):
     password    = PasswordField(T('New Password'), [validators.Required(), validators.EqualTo('password2', message=T('Passwords must match'))])
     password2   = PasswordField(T('Password confirmation'), [validators.Length(max=135), validators.Required()])
+
+
+### activation email form
+
+class ActivationEMailForm(Form):
+    """form for asking for an email address to send the code to"""
+    email       = TextField(T('E-Mail'), [validators.Length(max=200), validators.Email(), validators.Required()],
+                            description = T("Please enter the email address you registered with to receive a new activation code."))

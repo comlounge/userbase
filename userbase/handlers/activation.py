@@ -1,8 +1,7 @@
 from starflyer import Handler, redirect
-from wtforms import Form, TextField, PasswordField, BooleanField, validators
-from wtforms import ValidationError
 from userbase import db
 from ..base import BaseHandler
+from forms import ActivationEMailForm
 
 __all__ = ['ActivationHandler', 'ActivationCodeHandler']
 
@@ -39,12 +38,6 @@ class ActivationHandler(BaseHandler):
 
     post = get
 
-
-class EMailForm(Form):
-    """form for asking for an email address to send the code to"""
-    email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()],
-                            description = "Please enter the email address you registered with to receive a new activation code.")
-
 class ActivationCodeHandler(Handler):
     """send out a new activation code in case a user is not yet activated and we have a valid email address"""
 
@@ -54,7 +47,7 @@ class ActivationCodeHandler(Handler):
         """show the registration form"""
         cfg = self.module.config
         mod = self.module
-        form = EMailForm(self.request.form)
+        form = ActivationEMailForm(self.request.form)
 
         if self.request.method == 'POST':
             if form.validate():

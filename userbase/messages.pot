@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-04-05 16:11+0200\n"
+"POT-Creation-Date: 2013-05-23 16:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,126 +17,148 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: handlers/activation.py:30
+#: handlers/activation.py:29
 msgid "Your account has been successfully activated."
 msgstr ""
 
-#: handlers/activation.py:37
+#: handlers/activation.py:36
 #, python-format
 msgid ""
 "The activation code is not valid. Please try again or click <a "
 "href=\"%(url)s\">here</a> to get a new one."
 msgstr ""
 
-#: handlers/activation.py:66
+#: handlers/activation.py:59
 msgid "The user is already active. Please log in."
 msgstr ""
 
-#: handlers/activation.py:71
+#: handlers/activation.py:64
 msgid "A new activation code has been sent out, please check your email"
 msgstr ""
 
-#: handlers/activation.py:76
+#: handlers/activation.py:69
 msgid "This email address cannot not be found in our user database"
 msgstr ""
 
-#: handlers/forms.py:23 handlers/forms.py:39 handlers/forms.py:98
+#: handlers/forms.py:27 handlers/forms.py:43 handlers/forms.py:102
 msgid "Username"
 msgstr ""
 
-#: handlers/forms.py:24 handlers/forms.py:60 handlers/forms.py:99
+#: handlers/forms.py:28 handlers/forms.py:64 handlers/forms.py:103
+#: handlers/forms.py:119
 msgid "E-Mail"
 msgstr ""
 
-#: handlers/forms.py:25 handlers/forms.py:40 handlers/forms.py:61
+#: handlers/forms.py:29 handlers/forms.py:44 handlers/forms.py:65
 msgid "Password"
 msgstr ""
 
-#: handlers/forms.py:26 handlers/forms.py:108
+#: handlers/forms.py:30 handlers/forms.py:112
 msgid "Password confirmation"
 msgstr ""
 
-#: handlers/forms.py:27 handlers/forms.py:100
+#: handlers/forms.py:31 handlers/forms.py:104
 msgid "Full name"
 msgstr ""
 
-#: handlers/forms.py:31
+#: handlers/forms.py:35
 msgid "this email is already taken"
 msgstr ""
 
-#: handlers/forms.py:35
+#: handlers/forms.py:39
 msgid "this username is already taken"
 msgstr ""
 
-#: handlers/forms.py:41 handlers/forms.py:62
+#: handlers/forms.py:45 handlers/forms.py:66
 msgid "stay logged in"
 msgstr ""
 
-#: handlers/forms.py:84
+#: handlers/forms.py:88
 #, python-format
 msgid "'%(value)s' is not a valid choice for this field"
 msgstr ""
 
-#: handlers/forms.py:107
+#: handlers/forms.py:111
 msgid "New Password"
 msgstr ""
 
-#: handlers/forms.py:107
+#: handlers/forms.py:111
 msgid "Passwords must match"
 msgstr ""
 
-#: handlers/login.py:29
+#: handlers/forms.py:120
+msgid ""
+"Please enter the email address you registered with to receive a new "
+"activation code."
+msgstr ""
+
+#: handlers/login.py:33
 #, python-format
 msgid "Hello %(fullname)s, you are now logged in."
 msgstr ""
 
-#: handlers/login.py:32
+#: handlers/login.py:37
 msgid ""
 "Incorrect password. You might have mistyped your password, please check "
 "your spelling."
 msgstr ""
 
-#: handlers/login.py:37 handlers/login.py:38
+#: handlers/login.py:44
 #, python-format
 msgid ""
 "Your user account has not been activated. In order to receive a new "
 "activation email <a href=\"%s\">click here</a>"
 msgstr ""
 
-#: handlers/login.py:41
-msgid ""
-"Unknown username. You might have mistyped your name, please check your "
-"spelling."
-msgstr ""
-
-#: handlers/login.py:43
+#: handlers/login.py:48 handlers/login.py:51
 msgid "Login failed, please try again."
 msgstr ""
 
-#: module_templates/activation.html:7
-msgid "You need to activate our account"
+#: handlers/logout.py:14
+msgid "You are now logged out."
 msgstr ""
 
-#: module_templates/activation.html:9
+#: handlers/pw_forgot.py:67
+msgid "A link to set a new password has been sent to you"
+msgstr ""
+
+#: handlers/pw_forgot.py:72
+msgid "The email address is not in our database."
+msgstr ""
+
+#: handlers/pw_forgot.py:115
+msgid "Your password has been changed"
+msgstr ""
+
+#: handlers/registration.py:32
+#, python-format
+msgid "Welcome, %(fullname)s"
+msgstr ""
+
+#: handlers/registration.py:37
 msgid ""
-"You have received a code by email. You can either click the link provided"
-" in the email or you can manually enter the code below."
+"To finish the registration process please check your email with "
+"instructions on how to activate your account."
 msgstr ""
 
-#: module_templates/activation.html:13
-msgid "Activation Code"
+#: handlers/registration.py:40
+msgid "Your user registration has been successful"
 msgstr ""
 
-#: module_templates/activation.html:14
-msgid "please enter your code here"
+#: handlers/usereditor.py:73
+msgid "user data has been updated"
 msgstr ""
 
-#: module_templates/activation.html:15
-msgid "Enter the code from the activation email here"
+#: handlers/usereditor.py:100
+msgid "A new user has been added"
 msgstr ""
 
-#: module_templates/activation.html:18
-msgid "Activate your account"
+#: handlers/usereditor.py:122
+msgid "The user has been activated"
+msgstr ""
+
+#: handlers/usereditor.py:124
+msgid "The user has been deactivated"
 msgstr ""
 
 #: module_templates/invalid_code.html:8
@@ -153,31 +175,57 @@ msgstr ""
 msgid "Send new activation code"
 msgstr ""
 
-#: module_templates/macros.html:19
+#: templates/activation.html:7
+msgid "You need to activate our account"
+msgstr ""
+
+#: templates/activation.html:9
+msgid ""
+"You have received a code by email. You can either click the link provided"
+" in the email or you can manually enter the code below."
+msgstr ""
+
+#: templates/activation.html:13
+msgid "Activation Code"
+msgstr ""
+
+#: templates/activation.html:14
+msgid "please enter your code here"
+msgstr ""
+
+#: templates/activation.html:15
+msgid "Enter the code from the activation email here"
+msgstr ""
+
+#: templates/activation.html:18
+msgid "Activate your account"
+msgstr ""
+
+#: templates/macros.html:19
 msgid "Diese Feld muss angegeben werden"
 msgstr ""
 
-#: module_templates/send_activation_code.html:9
-msgid "Receive a new activation code"
-msgstr ""
-
-#: module_templates/send_activation_code.html:15
-msgid "Get a new activation code"
-msgstr ""
-
-#: templates/userbase/registration.html:7
+#: templates/registration.html:7
 msgid "Please register"
 msgstr ""
 
-#: templates/userbase/registration.html:15
+#: templates/registration.html:15
 msgid "Register"
 msgstr ""
 
-#: templates/userbase/registration.html:24
+#: templates/registration.html:24
 msgid "missing activation email?"
 msgstr ""
 
-#: templates/userbase/registration.html:25
+#: templates/registration.html:25
 msgid "Please send me a new activation code"
+msgstr ""
+
+#: templates/send_activation_code.html:9
+msgid "Receive a new activation code"
+msgstr ""
+
+#: templates/send_activation_code.html:15
+msgid "Get a new activation code"
 msgstr ""
 
