@@ -40,7 +40,7 @@ class LoginHandler(Handler):
                     self.flash("Unknown username. You might have mistyped your name, please check your spelling.", category="danger")
                 except UserNotActive, e:
                     if cfg.use_double_opt_in:
-                        log.warn("login failed: user account not yet activated", user = user)
+                        log.warn("login failed: user account not yet activated")
                         self.flash(self._("""Your user account has not been activated. In order to receive a new activation email <a href="%s">click here</a>""") 
                                 %self.url_for(".activation_code"), category="warning")
                     else:
