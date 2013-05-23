@@ -23,7 +23,9 @@ class RegistrationHandler(BaseHandler):
         obj_class = cfg.user_class
 
         form = form(self.request.form, module = self.module)
+        print form
         if self.request.method == 'POST':
+            print "ok"
             if form.validate():
                 f = form.data
                 user = mod.register(f, create_pw=False)

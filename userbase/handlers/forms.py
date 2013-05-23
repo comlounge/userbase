@@ -8,7 +8,7 @@ except ImportError:
 __all__ = ['UsernameLoginForm', 'EMailLoginForm', 
     'UsernameRegistrationForm', 'EMailRegistrationForm', 
     'UserAddForm', 'UserEditForm', 'PasswordChangeForm',
-    'ActivationEMailForm']
+    'ActivationEMailForm', 'PWEMailForm']
 
 class BaseForm(Form):
     """custom form class for passing in attributes so you can use them in validators. Here we
@@ -32,7 +32,7 @@ class UsernameRegistrationForm(BaseForm):
 
     def validate_email(form, field):
         if form.module.users.find({'email' : field.data}).count() > 0:
-            raise ValidationError(T('this email is already taken'))
+            raise ValidationError(T('this email address is already taken'))
 
     def validate_username(form, field):
         if form.module.users.find({'username' : field.data}).count() > 0:
@@ -57,7 +57,7 @@ class EMailRegistrationForm(BaseForm):
 
     def validate_email(form, field):
         if form.module.users.find({'email' : field.data}).count() > 0:
-            raise ValidationError('this email is already taken')
+            raise ValidationError(T('this email address is already taken'))
 
 
 class EMailLoginForm(Form):
@@ -118,3 +118,12 @@ class ActivationEMailForm(Form):
     """form for asking for an email address to send the code to"""
     email       = TextField(T('E-Mail'), [validators.Length(max=200), validators.Email(), validators.Required()],
                             description = T("Please enter the email address you registered with to receive a new activation code."))
+
+### password forgotten form
+
+class PWEMailForm(Form):
+    """form for asking for an email address to send the code to"""
+    email       = TextField(T('E-Mail'), [validators.Length(max=200), validators.Email(), validators.Required()],
+        description = T("Please enter the email address you registered with to receive a link to reset your password.")
+    )
+

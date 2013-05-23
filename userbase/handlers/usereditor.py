@@ -22,7 +22,7 @@ class UserAdapter(object):
     def readable_permissions(self):
         """return permissions in a readable format"""
         perms = self.userbase.config.permissions
-        return "<br>".join([perms.get(p, "n/a") for p in self.user.permissions])
+        return "<br>".join([str(perms.get(p, "n/a")) for p in self.user.permissions])
 
 class UserWrapper(object):
     """class for producing wrapped users by being some funky iterator"""
@@ -39,7 +39,7 @@ class UserWrapper(object):
 class UserList(Handler):
     """show the list of users"""
 
-    template = "_m/userbase/editor/list.html"
+    template = "editor/list.html"
 
     @logged_in()
     @permission("userbase:admin")
@@ -52,7 +52,7 @@ class UserList(Handler):
 class UserEdit(Handler):
     """edit a user"""
 
-    template = "_m/userbase/editor/edit.html"
+    template = "editor/edit.html"
 
     @logged_in()
     @permission("userbase:admin")
@@ -80,7 +80,7 @@ class UserEdit(Handler):
 class UserAdd(Handler):
     """add a user"""
 
-    template = "_m/userbase/editor/add.html"
+    template = "editor/add.html"
 
     @logged_in()
     @permission("userbase:admin")

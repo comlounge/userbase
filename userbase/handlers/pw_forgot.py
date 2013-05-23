@@ -2,9 +2,10 @@ from starflyer import Handler, redirect
 from wtforms import Form, TextField, PasswordField, BooleanField, validators
 from wtforms import ValidationError
 from userbase import db
+from forms import PWEMailForm
 import datetime
 
-__all__ = ['PasswordForgotHandler', 'PasswordSetHandler', 'PWEMailForm', "PasswordCodeHandler"]
+__all__ = ['PasswordForgotHandler', 'PasswordSetHandler', 'PasswordCodeHandler']
 
 class PasswordSetHandler(Handler):
     """send a link for setting a new password"""
@@ -26,24 +27,19 @@ class PasswordSetHandler(Handler):
                 user.activate()
                 mod.login(self, user=user, save = False)
                 user.save()
-                self.flash(cfg.messages.activation_success %user)
+                self.flash(self._("Your password has been successfully changed"))
                 url_for_params = cfg.urls.activation_success
                 url = self.url_for(**url_for_params)
                 return redirect(url)
             else:
                 url = self.url_for(endpoint=".activation_code")
                 params = {'url': url, 'code' : code}
+                self.flash(self._("Your password change has failed" %params), category="danger")
                 self.flash(cfg.messages.activation_failed %params, category="danger")
         return self.render()
 
     post = get
 
-
-class PWEMailForm(Form):
-    """form for asking for an email address to send the code to"""
-    email       = TextField('E-Mail', [validators.Length(max=200), validators.Email(), validators.Required()],
-        description = "Please enter the email address you registered with to receive a link to reset your password."
-    )
 
 class PasswordForgotHandler(Handler):
     """send out a pw forgotten link in case a user has forgotten his password"""

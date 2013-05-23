@@ -6,15 +6,17 @@
     <div class="row">
         <div class="span8">
             <section class="form">
-                <h2>Set new password</h2>
-                <h3>You can set a new password here.</h3>
+                <h2>{{_('Set new password')}}</h2>
+                <div class="description">
+                    {{_("Use the form below to set a new password for your account.")}}
+                </div>
                 <form class="horizontal-form validate" method="POST" action="{{url}}">
                     <input type="hidden" name="code" value="{{code}}">
                     {{ formmacros.form_field(form.password, class="span4 pw required", id="password") }}
                     {{ formmacros.form_field(form.password2, class="span4 required", equalTo="#password") }}
                     <fieldset class="form-actions">
                         <div class="input">
-                            <input type="submit" class="btn btn-primary btn-large" value="Save new password">
+                            <input type="submit" class="btn btn-primary btn-large" value="{{_("Save new password")}}">
                         </div>
                     </fieldset>
                 </form>

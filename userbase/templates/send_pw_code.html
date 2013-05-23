@@ -6,12 +6,13 @@
     <div class="row">
         <div class="span8">
             <section class="form">
-                <h2>Send new Password</h2>
-                <form class="horizontal-form validate" method="POST" action="{{url}}">
+                <h2>{{_('Set a new password')}}</h2>
+                <div class="description">
+                {{_('Please enter your email address below and we will send you instructions on how to set a new password.')}}
+                </div>
+                <form class="well horizontal-form validate" method="POST" action="{{url}}">
                     {{ macros.form_field(form.email, class="required email") }}
-                    <fieldset class="form-actions">
-                        <input type="submit" class="btn btn-large btn-primary" value="Send">
-                    </fieldset>
+                    <input type="submit" class="btn btn-primary" value="{{_('Request new password')}}">
                 </form>
             </section>
         </div>

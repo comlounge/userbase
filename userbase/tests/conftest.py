@@ -1,5 +1,6 @@
 from starflyer import Module, Application, Handler, URL
 from userbase import username_userbase
+from sfext.mail import mail_module
 import py.path
 import pymongo
 import datetime
@@ -20,11 +21,15 @@ class MyApp(Application):
         'testing'       : True,
         'force_exceptions' : True,
     }
+
     routes = [
         URL("/", "root", TestHandler)
     ]
+
     modules = [
+        mail_module(),
         username_userbase(
+            master_template = "master.html",
             mongodb_name = DB_NAME,
             login_success_url_params = {'endpoint' : 'root'},
             logout_success_url_params = {'endpoint' : 'root'},

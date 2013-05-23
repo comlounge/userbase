@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-05-23 16:05+0200\n"
+"POT-Creation-Date: 2013-05-23 16:16+0200\n"
 "PO-Revision-Date: 2013-01-10 12:33+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgid "Username"
 msgstr "Benutzername"
 
 #: handlers/forms.py:28 handlers/forms.py:64 handlers/forms.py:103
-#: handlers/forms.py:119
+#: handlers/forms.py:119 handlers/forms.py:126
 msgid "E-Mail"
 msgstr ""
 
@@ -98,6 +98,14 @@ msgstr ""
 "Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir einen neuen Code "
 "zusenden können"
 
+#: handlers/forms.py:127
+msgid ""
+"Please enter the email address you registered with to receive a link to "
+"reset your password."
+msgstr ""
+"Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir eine Anleitung zum "
+"Ändern Deines Passworted zusenden können."
+
 #: handlers/login.py:33
 #, python-format
 msgid "Hello %(fullname)s, you are now logged in."
@@ -129,15 +137,15 @@ msgstr "Login fehlgeschlaten, bitte versuche es noch einmal"
 msgid "You are now logged out."
 msgstr "Hallo %(fullname)s, Du bist jetzt eingeloggt."
 
-#: handlers/pw_forgot.py:67
+#: handlers/pw_forgot.py:62
 msgid "A link to set a new password has been sent to you"
 msgstr ""
 
-#: handlers/pw_forgot.py:72
+#: handlers/pw_forgot.py:67
 msgid "The email address is not in our database."
 msgstr ""
 
-#: handlers/pw_forgot.py:115
+#: handlers/pw_forgot.py:110
 msgid "Your password has been changed"
 msgstr ""
 
@@ -220,8 +228,20 @@ msgid "Activate your account"
 msgstr "Aktiviere den Account"
 
 #: templates/macros.html:19
-msgid "Diese Feld muss angegeben werden"
-msgstr ""
+msgid "this field is required"
+msgstr "Dieses Feld muss angegeben werden"
+
+#: templates/pw_new.html:9
+msgid "Set new password"
+msgstr "Neues Passwort setzen"
+
+#: templates/pw_new.html:11
+msgid "Use the form below to set a new password for your account."
+msgstr "Benutze das unten stehende Formular, um ein neues Passwort zu setzen"
+
+#: templates/pw_new.html:19
+msgid "Save new password"
+msgstr "Passwort speichern"
 
 #: templates/registration.html:7
 msgid "Please register"
@@ -246,4 +266,20 @@ msgstr "Bitte sende mir einen neuen Aktivierungscode"
 #: templates/send_activation_code.html:15
 msgid "Get a new activation code"
 msgstr "Bitte sende mir einen neuen Aktivierungscode"
+
+#: templates/send_pw_code.html:9
+msgid "Set a new password"
+msgstr "Neues Passwort setzen"
+
+#: templates/send_pw_code.html:11
+msgid ""
+"Please enter your email address below and we will send you instructions "
+"on how to set a new password."
+msgstr ""
+"Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir eine Anleitung "
+"zusenden können, um Dein Passwort zu ändern."
+
+#: templates/send_pw_code.html:15
+msgid "Request new password"
+msgstr "Neues Passwort anfordern"
 
