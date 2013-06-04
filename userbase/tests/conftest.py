@@ -1,9 +1,12 @@
 from starflyer import Module, Application, Handler, URL
 from userbase import username_userbase
 import py.path
+import pytest
+import werkzeug
 import pymongo
 import datetime
 from bson.objectid import ObjectId
+from sfext.mail import mail_module
 
 DB_NAME = "userbase_testing_cbsjszcg8cs7tsc"
 
@@ -18,13 +21,22 @@ class MyApp(Application):
     defaults = {
         'secret_key'    : "182827",
         'testing'       : True,
+        'debug'       : True,
         'force_exceptions' : True,
+        'secret_key' : "f00bar",
+        'server_name'    : 'dev.localhost',
+        'session_cookie_domain'    : 'dev.localhost',
     }
     routes = [
         URL("/", "root", TestHandler)
     ]
     modules = [
+        mail_module(debug = True),
         username_userbase(
+            url_prefix = "/users",
+            login_after_registration    = True,
+            double_opt_in               = True,
+            enable_registration         = True,
             mongodb_name = DB_NAME,
             login_success_url_params = {'endpoint' : 'root'},
             logout_success_url_params = {'endpoint' : 'root'},
@@ -60,7 +72,8 @@ def pytest_funcarg__db(request):
         teardown = teardown_db,
         scope = "module")
 
-def pytest_funcarg__app(request):
+@pytest.fixture
+def app(request):
     """create the simplest app with uploader support ever"""
     db = request.getfuncargvalue("db")
 
@@ -78,4 +91,7 @@ def pytest_funcarg__app(request):
         setup = init_app,
         scope = "module")
 
+@pytest.fixture
+def client(request, app):
+    return werkzeug.Client(app, werkzeug.BaseResponse)                                                                                                                                                                      
 
