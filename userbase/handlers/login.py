@@ -29,7 +29,6 @@ class LoginHandler(Handler):
                     user = mod.login(self, **f)
                     url_for_params = cfg.urls.login_success
                     url = self.url_for(**url_for_params)
-                    log.info("user logged in", user = user)
                     self.flash(self._("Hello %(fullname)s, you are now logged in.") %user)
                     return redirect(url)
                 except PasswordIncorrect, e:
