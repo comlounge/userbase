@@ -2,31 +2,8 @@
 
 import pytest
 import re
-pattern = """
-(
-  (?:
-    https?://
-    |
-    www\d{0,3}[.]
-    |
-    [a-z0-9.\-]+[.][a-z]{2,4}/
-  )
-  (?:
-    [^\s()<>]+
-    |
-    \(([^\s()<>]+|(\([^\s()<>]+\)))*\)
-  )+
-  (?:
-    \(([^\s()<>]+|(\([^\s()<>]+\)))*\)
-    |
-    [^\s`!()\[\]{};:'".,<>?«»“”‘’]
-  )
-)
-"""
-pattern = "".join([p.strip() for p in pattern.split()])
-lre_string = re.compile(pattern, re.S|re.M|re.I)                                                                        
-
-
+import urlparse
+from conftest import lre_string
 
 def test_registration(client, app):
     """log in as the dummy user"""
