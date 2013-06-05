@@ -8,7 +8,7 @@ __all__ = ['ActivationHandler', 'ActivationCodeHandler']
 class ActivationHandler(BaseHandler):
     """perform the activation process"""
 
-    template = "/activation.html"
+    template = "activation.html"
 
     def get(self):
         """show the registration form"""
