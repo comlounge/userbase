@@ -25,11 +25,8 @@ class UserbaseTestApp(Application):
     defaults = {
         'secret_key'    : "182827",
         'testing'       : True,
-        'debug'       : True,
-        'force_exceptions' : True,
-        'secret_key' : "f00bar",
-        'server_name'    : 'dev.localhost',
-        'session_cookie_domain'    : 'dev.localhost',
+        'debug'         : True,
+        'secret_key'    : "f00bar",
     }
 
     routes = [
