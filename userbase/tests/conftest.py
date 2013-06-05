@@ -1,3 +1,4 @@
+# coding=utf-8
 from starflyer import Module, Application, Handler, URL
 from userbase import username_userbase
 from sfext.mail import mail_module
@@ -12,12 +13,14 @@ from sfext.mail import mail_module
 DB_NAME = "userbase_testing_cbsjszcg8cs7tsc"
 
 class TestHandler(Handler):
+
+    template = "index.html"
     
     def get(self):
-        return "ok"
+        return self.render()
 
-class MyApp(Application):
-    """test app with uploader"""
+class UserbaseTestApp(Application):
+    """base app for testing"""
 
     defaults = {
         'secret_key'    : "182827",
