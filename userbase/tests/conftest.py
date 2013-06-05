@@ -46,55 +46,28 @@ class UserbaseTestApp(Application):
         ),
     ]
 
-def setup_db():
+@pytest.fixture
+def db(request): 
     db = pymongo.Connection()[DB_NAME]
-    """
-    db.users.insert({ "_id" : u"foobar", 
-        "username": u"foobar", 
-        "pw" : "96948aad3fcae80c08a35c9b5958cd89", 
-        "email" : "barfoo@example.com", 
-        "fullname": "Foo bar",
-        "last_ip": "",
-        "last_login": None,
-        "activation_time": None,
-        "activation_code_expires": None,
-        "activation_code": None,
-        "password_code": None,
-        "password_code_expires": None,
-        "active": True,
-        'date_creation' : datetime.datetime.utcnow()})
-    """
+    def fin():
+        db.users.remove()
+    request.addfinalizer(fin)
     return db
 
-def teardown_db(db):
-    pymongo.Connection()[DB_NAME].users.remove()
-
-def pytest_funcarg__db(request):
-    return request.cached_setup(
-        setup = setup_db,
-        teardown = teardown_db,
-        scope = "module")
-
 @pytest.fixture
-def app(request):
+def app(request, db):
     """create the simplest app with uploader support ever"""
-    db = request.getfuncargvalue("db")
-
-    def init_app():
-        app = MyApp(__name__)
-        ub = app.module_map['userbase']
-        ub.register({
-            "username": u"foobar", 
-            "password" : "barfoo", 
-            "email" : "barfoo@example.com", 
-            "fullname": "Foo bar",
-        }, force = True, create_pw = False)
-        return app
-    return request.cached_setup(
-        setup = init_app,
-        scope = "module")
+    app = UserbaseTestApp(__name__)
+    ub = app.module_map['userbase']
+    ub.register({
+        "username"      : u"foobar", 
+        "password"      : "barfoo", 
+        "email"         : "barfoo@example.com", 
+        "fullname"      : "Foo bar",
+    }, force = True, create_pw = False)
+    return app
 
 @pytest.fixture
 def client(request, app):
-    return werkzeug.Client(app, werkzeug.BaseResponse)                                                                                                                                                                      
+    return werkzeug.Client(app, werkzeug.BaseResponse)
 
