@@ -1,4 +1,7 @@
 <html lang="en">
+{% for m in get_flashes(with_categories=True) %}
+Flash: {{m[1]}}
+{% endfor %}
 {% block content %}
 {% block main_content %}
 {% endblock %}
