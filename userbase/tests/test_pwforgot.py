@@ -1,76 +1,56 @@
 import pytest
+import re
+import urlparse
+from conftest import lre_string
 
-def test_password_forgot(app):
+def test_password_forgot_complete(app):
     """retrieve a new password"""
     mail = app.module_map['mail']
     c = app.test_client()
-    rv = c.get("/userbase/pw_forgot")
+
+    # get pw forgot page
+    rv = c.get("/users/pw_forgot")
     assert rv.status_code == 200
-    rv = c.get("/userbase/pw_forgot", data = dict(email="barfoo@example.com"))
+    
+    # post our email address to it
+    rv = c.post("/users/pw_forgot", data = dict(email="barfoo@example.com"), follow_redirects = True)
     assert rv.status_code == 200
-    print mail.last_msg_txt
-    assert False
+    link = re.search(lre_string, mail.last_msg_txt).groups()[0]                                                         
+    assert "Flash: A link to set a new password" in rv.data
+    assert "to reset your password" in mail.last_msg_txt
 
-def test_login_logout(app):
-    # login
-    c = app.test_client()
+    # get the link from the email
+    parts = urlparse.urlsplit(link)
+    url = "%s?%s" %(parts.path, parts.query)
+    rv = c.get(url)
+    assert "Flash" not in rv.data 
+    rv = c.post(url, data = dict(password="trololol", password2="trololol"), follow_redirects = True)
+    assert u"Flash: Your password has been changed" in rv.data 
 
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
-    assert "userid" in app.last_handler.session
-
-    rv = c.get("/userbase/logout")
+    # now test login with the new password
     assert "userid" not in app.last_handler.session
-
-def test_no_remember_me(app):
-    """check if we can delete the session cookie and still be logged in"""
-    c = app.test_client()
-
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
+    rv = c.post("/users/login", data = dict(username="foobar", password="trololol"), follow_redirects = True)
     assert "userid" in app.last_handler.session
+    
 
-    # remove session cookies 
-    c.cookie_jar.clear_session_cookies()
-    rv = c.get("/")
-    assert "userid" not in app.last_handler.session
+def test_password_forgot_wrong_code(app, client):
+    mail = app.module_map['mail']
 
-def test_remember_me(app):
-    """check if we can delete the session cookie and still be logged in"""
-    c = app.test_client()
+    rv = client.get("/users/pw_code_enter?code=wrong", follow_redirects=True)
+    assert u"Flash: We couldn't find a user with that code, please try again" in rv.data 
 
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo", remember=1))
-    assert "userid" in app.last_handler.session
-    rv = c.get("/")
-    assert "userid" in app.last_handler.session
-    c.cookie_jar.clear_session_cookies() # remove login
-    rv = c.get("/")
-    assert "userid" in app.last_handler.session
+def test_password_forgot_wrong_email(app, client):
+    mail = app.module_map['mail']
+
+    rv = client.post("/users/pw_forgot", data = dict(email="wrong@example.com"), follow_redirects = True)
+    assert u"Flash: The email address is not in our database" in rv.data 
+
+def test_password_forgot_post_with_wrong_code(app, client):
+    mail = app.module_map['mail']
+
+    rv = client.post("/users/pw_code_enter?code=wrong", data = dict(password="trololol", password2="trololol"), follow_redirects = True)
+    assert u"Flash: We couldn't find a user with that code, please try again" in rv.data 
+    
 
 
-def test_logout(app):
-    c = app.test_client()
 
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
-    rv = c.get("/")
-    assert "userid" in app.last_handler.session
-    rv = c.post("/userbase/logout")
-    rv = c.get("/")
-    assert "userid" not in app.last_handler.session
-
-def test_logout_with_remember(app):
-    c = app.test_client()
-
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo", remember=1))
-    rv = c.get("/")
-    assert "userid" in app.last_handler.session
-    rv = c.post("/userbase/logout")
-    rv = c.get("/")
-    assert "userid" not in app.last_handler.session
-
-def test_last_login(app):
-    c = app.test_client()
-
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
-    ll = app.last_handler.user.last_login
-
-    rv = c.post("/userbase/login", data = dict(username="foobar", password="barfoo"))
-    assert ll < app.last_handler.user.last_login
