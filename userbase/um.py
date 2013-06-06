@@ -82,8 +82,9 @@ class BaseUserModule(Module):
             'registration_success'  : {'endpoint' : 'root'},
             'logout_success'        : {'endpoint' : 'userbase.login'},
             'double_opt_in_pending' : {'endpoint' : 'root'},
-            'pw_code_success'       : {'endpoint' : 'userbase.login'}, # url to which to redirect after user has entered email address
-            'pw_code_enter'         : {'endpoint' : 'userbase.pw_code_enter'}, # url to be sent via mail where the user can set the new password
+            'pw_code_success'       : {'endpoint' : 'userbase.login'},          # url to which to redirect after user has entered email address
+            'pw_set_success'        : {'endpoint' : 'root'},                    # url to which to redirect after user has entered a new pw
+            'pw_code_enter'         : {'endpoint' : 'userbase.pw_code_enter'},  # url to be sent via mail where the user can set the new password
         }),
 
         # in case you want your own handlers define them here. They will be set on finalize
@@ -91,6 +92,7 @@ class BaseUserModule(Module):
         'handler:logout'            : handlers.LogoutHandler,
         'handler:pw_forgot'         : handlers.PasswordForgotHandler,
         'handler:pw_code_enter'     : handlers.PasswordCodeHandler,
+        'handler:pw_set'            : handlers.PasswordSetHandler,
         'handler:register'          : handlers.RegistrationHandler,     
         'handler:activate'          : handlers.ActivationHandler,      
         'handler:activation_code'   : handlers.ActivationCodeHandler,
@@ -151,6 +153,7 @@ class BaseUserModule(Module):
         self.add_url_rule(URL("/logout", "logout", self.config['handler:logout']))
         self.add_url_rule(URL("/pw_forgot", "pw_forgot", self.config['handler:pw_forgot']))
         self.add_url_rule(URL("/pw_code_enter", "pw_code_enter", self.config['handler:pw_code_enter']))
+        self.add_url_rule(URL("/pw_set", "pw_set", self.config['handler:pw_set']))
         if self.config.enable_registration:
             self.add_url_rule(URL("/register", "register", self.config['handler:register']))
             if self.config.use_double_opt_in:
