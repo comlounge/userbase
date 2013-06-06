@@ -21,7 +21,7 @@ class Password(CustomType):
             return None
         if value.startswith("HASH:"):
             return value
-        return "HASH:"+hashlib.new("md5",value).hexdigest()
+        return "HASH:"+hashlib.new("md5",value.encode("utf-8")).hexdigest()
 
     def to_python(self, value):
         """convert type to a python object"""
@@ -42,7 +42,7 @@ class User(Document):
 
     def check_password(self, pw):
         """check password"""
-        hash = hashlib.new("md5",pw).hexdigest()
+        hash = hashlib.new("md5",pw.encode("utf-8")).hexdigest()
         return "HASH:"+hash == self.password
 
     def create_pw(self, l=8):
