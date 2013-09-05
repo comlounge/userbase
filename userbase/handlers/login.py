@@ -20,7 +20,8 @@ class LoginHandler(Handler):
         form = cfg.login_form
         obj_class = cfg.user_class
 
-        form = cfg.login_form(self.request.form)
+        langs = [getattr(self, 'LANGUAGE', 'en')]
+        form = cfg.login_form(self.request.form, handler = self)
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
