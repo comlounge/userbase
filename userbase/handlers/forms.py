@@ -1,7 +1,10 @@
 from wtforms import Form, TextField, PasswordField, BooleanField, validators, SelectMultipleField, widgets
 from wtforms import ValidationError
+
+# check if we have babel installed and update our Form class eventually
 try:
     from sfext.babel import T
+    from sfext.babel.wtformsupport import I18nForm as Form
 except ImportError:
     T = lambda x: x
 
@@ -15,9 +18,10 @@ class BaseForm(Form):
     use it for the module and config itself
     """
     
-    def __init__(self, formdata=None, obj=None, prefix='', module=None, **kwargs):
+    def __init__(self, formdata=None, obj=None, prefix='', module=None, **kwargs):  
+        """extend the form with a more data to be stored"""
+        self.module = module
         super(BaseForm, self).__init__(formdata=formdata, obj=obj, prefix=prefix, **kwargs)
-        self.module = module                                                                                                                                                         
 
 ###
 ### username based forms
