@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-05-23 16:16+0200\n"
+"POT-Creation-Date: 2013-09-04 14:59+0200\n"
 "PO-Revision-Date: 2013-01-10 12:33+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -65,8 +65,9 @@ msgstr "Wiederholung des Passworts"
 msgid "Full name"
 msgstr "Voller Name"
 
-#: handlers/forms.py:35
-msgid "this email is already taken"
+#: handlers/forms.py:35 handlers/forms.py:60
+#, fuzzy
+msgid "this email address is already taken"
 msgstr "Ein Benutzer mit dieser E-Mail-Adresse ist schon registriert"
 
 #: handlers/forms.py:39
@@ -106,12 +107,12 @@ msgstr ""
 "Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir eine Anleitung zum "
 "Ändern Deines Passworted zusenden können."
 
-#: handlers/login.py:33
+#: handlers/login.py:32
 #, python-format
 msgid "Hello %(fullname)s, you are now logged in."
 msgstr "Hallo %(fullname)s, Du bist jetzt eingeloggt."
 
-#: handlers/login.py:37
+#: handlers/login.py:36
 msgid ""
 "Incorrect password. You might have mistyped your password, please check "
 "your spelling."
@@ -119,7 +120,7 @@ msgstr ""
 "Falsches Passwort. Du hast es eventuell falsch eingetippt, bitte versuche"
 " es noch einmal."
 
-#: handlers/login.py:44
+#: handlers/login.py:43
 #, python-format
 msgid ""
 "Your user account has not been activated. In order to receive a new "
@@ -128,58 +129,74 @@ msgstr ""
 "Dein Account wurde noch nicht aktiviert. Um einen neuen Aktivierungscode "
 "zugesandt zu bekommen, <a href=\"%s\">klicke bitte hier</a>."
 
-#: handlers/login.py:48 handlers/login.py:51
+#: handlers/login.py:47 handlers/login.py:50
 msgid "Login failed, please try again."
 msgstr "Login fehlgeschlaten, bitte versuche es noch einmal"
 
 #: handlers/logout.py:14
-#, fuzzy
 msgid "You are now logged out."
-msgstr "Hallo %(fullname)s, Du bist jetzt eingeloggt."
+msgstr "Du bist jetzt ausgeloggt."
 
-#: handlers/pw_forgot.py:62
+#: handlers/pw_forgot.py:30
+#, fuzzy
+msgid "Your password has been successfully changed"
+msgstr "Dein Passwort wurde erfolgreich geändert."
+
+#: handlers/pw_forgot.py:37
+#, fuzzy
+msgid "Your password change has failed"
+msgstr "Dein Passwort wurde erfolgreich geändert."
+
+#: handlers/pw_forgot.py:63
+#, fuzzy
 msgid "A link to set a new password has been sent to you"
-msgstr ""
+msgstr "Ein Link, um ein neues Passwort zu setzen, wurde Dir zugesandt."
 
-#: handlers/pw_forgot.py:67
+#: handlers/pw_forgot.py:68
 msgid "The email address is not in our database."
-msgstr ""
+msgstr "Diese E-Mail-Adresse ist nicht in unserer Datenbank vorhanden."
 
-#: handlers/pw_forgot.py:110
+#: handlers/pw_forgot.py:111
+#, fuzzy
 msgid "Your password has been changed"
-msgstr ""
+msgstr "Dein Passwort wurde erfolgreich geändert."
+
+#: handlers/pw_set.py:30
+msgid "Your password has been changed."
+msgstr "Dein Passwort wurde erfolgreich geändert."
 
 #: handlers/registration.py:32
 #, python-format
 msgid "Welcome, %(fullname)s"
-msgstr ""
+msgstr "Willkommen, %(fullname)s"
 
 #: handlers/registration.py:37
 msgid ""
 "To finish the registration process please check your email with "
 "instructions on how to activate your account."
 msgstr ""
+"Wir haben Dir eine E-Mail mit weiteren Instruktionen geschickt, umDeine "
+"Registrierung abzuschliessen. Bitte folge den Anweisungen."
 
 #: handlers/registration.py:40
-#, fuzzy
 msgid "Your user registration has been successful"
 msgstr "Dein Account wurde erfolgreich aktiviert."
 
 #: handlers/usereditor.py:73
 msgid "user data has been updated"
-msgstr ""
+msgstr "Die Benutzerdaten wurden aktualisiert"
 
 #: handlers/usereditor.py:100
 msgid "A new user has been added"
-msgstr ""
+msgstr "Ein neuer Benutzer wurde hinzugefügt"
 
 #: handlers/usereditor.py:122
 msgid "The user has been activated"
-msgstr ""
+msgstr "Der Benutzer wurde aktiviert"
 
 #: handlers/usereditor.py:124
 msgid "The user has been deactivated"
-msgstr ""
+msgstr "Der Benutzer wurde deaktiviert"
 
 #: module_templates/invalid_code.html:8
 msgid "The activation code is incorrect"
@@ -211,9 +228,8 @@ msgstr ""
 "eingeben."
 
 #: templates/activation.html:13
-#, fuzzy
 msgid "Activation Code"
-msgstr "Keine Aktivierungsmail bekommen?"
+msgstr "Aktivierungs-Code"
 
 #: templates/activation.html:14
 msgid "please enter your code here"
@@ -244,7 +260,8 @@ msgid "Save new password"
 msgstr "Passwort speichern"
 
 #: templates/registration.html:7
-msgid "Please register"
+#, fuzzy
+msgid "no Please register"
 msgstr "Bitte registriere Dich"
 
 #: templates/registration.html:15

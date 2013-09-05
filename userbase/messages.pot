@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-05-23 16:16+0200\n"
+"POT-Creation-Date: 2013-09-04 14:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,8 +61,8 @@ msgstr ""
 msgid "Full name"
 msgstr ""
 
-#: handlers/forms.py:35
-msgid "this email is already taken"
+#: handlers/forms.py:35 handlers/forms.py:60
+msgid "this email address is already taken"
 msgstr ""
 
 #: handlers/forms.py:39
@@ -98,25 +98,25 @@ msgid ""
 "reset your password."
 msgstr ""
 
-#: handlers/login.py:33
+#: handlers/login.py:32
 #, python-format
 msgid "Hello %(fullname)s, you are now logged in."
 msgstr ""
 
-#: handlers/login.py:37
+#: handlers/login.py:36
 msgid ""
 "Incorrect password. You might have mistyped your password, please check "
 "your spelling."
 msgstr ""
 
-#: handlers/login.py:44
+#: handlers/login.py:43
 #, python-format
 msgid ""
 "Your user account has not been activated. In order to receive a new "
 "activation email <a href=\"%s\">click here</a>"
 msgstr ""
 
-#: handlers/login.py:48 handlers/login.py:51
+#: handlers/login.py:47 handlers/login.py:50
 msgid "Login failed, please try again."
 msgstr ""
 
@@ -124,16 +124,28 @@ msgstr ""
 msgid "You are now logged out."
 msgstr ""
 
-#: handlers/pw_forgot.py:62
+#: handlers/pw_forgot.py:30
+msgid "Your password has been successfully changed"
+msgstr ""
+
+#: handlers/pw_forgot.py:37
+msgid "Your password change has failed"
+msgstr ""
+
+#: handlers/pw_forgot.py:63
 msgid "A link to set a new password has been sent to you"
 msgstr ""
 
-#: handlers/pw_forgot.py:67
+#: handlers/pw_forgot.py:68
 msgid "The email address is not in our database."
 msgstr ""
 
-#: handlers/pw_forgot.py:110
+#: handlers/pw_forgot.py:111
 msgid "Your password has been changed"
+msgstr ""
+
+#: handlers/pw_set.py:30
+msgid "Your password has been changed."
 msgstr ""
 
 #: handlers/registration.py:32
@@ -224,7 +236,7 @@ msgid "Save new password"
 msgstr ""
 
 #: templates/registration.html:7
-msgid "Please register"
+msgid "no Please register"
 msgstr ""
 
 #: templates/registration.html:15
