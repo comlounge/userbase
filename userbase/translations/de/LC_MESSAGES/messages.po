@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-09-04 14:59+0200\n"
+"POT-Creation-Date: 2014-01-17 17:02+0100\n"
 "PO-Revision-Date: 2013-01-10 12:33+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -44,54 +44,54 @@ msgstr ""
 msgid "This email address cannot not be found in our user database"
 msgstr ""
 
-#: handlers/forms.py:27 handlers/forms.py:43 handlers/forms.py:102
+#: handlers/forms.py:31 handlers/forms.py:47 handlers/forms.py:106
 msgid "Username"
 msgstr "Benutzername"
 
-#: handlers/forms.py:28 handlers/forms.py:64 handlers/forms.py:103
-#: handlers/forms.py:119 handlers/forms.py:126
+#: handlers/forms.py:32 handlers/forms.py:68 handlers/forms.py:107
+#: handlers/forms.py:123 handlers/forms.py:130
 msgid "E-Mail"
 msgstr ""
 
-#: handlers/forms.py:29 handlers/forms.py:44 handlers/forms.py:65
+#: handlers/forms.py:33 handlers/forms.py:48 handlers/forms.py:69
 msgid "Password"
 msgstr "Passwort"
 
-#: handlers/forms.py:30 handlers/forms.py:112
+#: handlers/forms.py:34 handlers/forms.py:116
 msgid "Password confirmation"
 msgstr "Wiederholung des Passworts"
 
-#: handlers/forms.py:31 handlers/forms.py:104
+#: handlers/forms.py:35 handlers/forms.py:108
 msgid "Full name"
 msgstr "Voller Name"
 
-#: handlers/forms.py:35 handlers/forms.py:60
+#: handlers/forms.py:39 handlers/forms.py:64
 #, fuzzy
 msgid "this email address is already taken"
 msgstr "Ein Benutzer mit dieser E-Mail-Adresse ist schon registriert"
 
-#: handlers/forms.py:39
+#: handlers/forms.py:43
 msgid "this username is already taken"
 msgstr "Dieser Benutzername ist schon vergeben"
 
-#: handlers/forms.py:45 handlers/forms.py:66
+#: handlers/forms.py:49 handlers/forms.py:70
 msgid "stay logged in"
 msgstr "Eingeloggt bleiben"
 
-#: handlers/forms.py:88
+#: handlers/forms.py:92
 #, python-format
 msgid "'%(value)s' is not a valid choice for this field"
 msgstr "'%(value)s' is kein gültiger Wert für dieses Feld"
 
-#: handlers/forms.py:111
+#: handlers/forms.py:115
 msgid "New Password"
 msgstr "Neues Passwort"
 
-#: handlers/forms.py:111
+#: handlers/forms.py:115
 msgid "Passwords must match"
 msgstr "Passwort und Wiederholung stimmen nicht überein"
 
-#: handlers/forms.py:120
+#: handlers/forms.py:124
 msgid ""
 "Please enter the email address you registered with to receive a new "
 "activation code."
@@ -99,7 +99,7 @@ msgstr ""
 "Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir einen neuen Code "
 "zusenden können"
 
-#: handlers/forms.py:127
+#: handlers/forms.py:131
 msgid ""
 "Please enter the email address you registered with to receive a link to "
 "reset your password."
@@ -107,12 +107,12 @@ msgstr ""
 "Bitte gebe Deine E-Mail-Adresse ein, damit wir Dir eine Anleitung zum "
 "Ändern Deines Passworted zusenden können."
 
-#: handlers/login.py:32
+#: handlers/login.py:33
 #, python-format
 msgid "Hello %(fullname)s, you are now logged in."
 msgstr "Hallo %(fullname)s, Du bist jetzt eingeloggt."
 
-#: handlers/login.py:36
+#: handlers/login.py:37
 msgid ""
 "Incorrect password. You might have mistyped your password, please check "
 "your spelling."
@@ -120,7 +120,7 @@ msgstr ""
 "Falsches Passwort. Du hast es eventuell falsch eingetippt, bitte versuche"
 " es noch einmal."
 
-#: handlers/login.py:43
+#: handlers/login.py:44
 #, python-format
 msgid ""
 "Your user account has not been activated. In order to receive a new "
@@ -129,7 +129,7 @@ msgstr ""
 "Dein Account wurde noch nicht aktiviert. Um einen neuen Aktivierungscode "
 "zugesandt zu bekommen, <a href=\"%s\">klicke bitte hier</a>."
 
-#: handlers/login.py:47 handlers/login.py:50
+#: handlers/login.py:48 handlers/login.py:51
 msgid "Login failed, please try again."
 msgstr "Login fehlgeschlaten, bitte versuche es noch einmal"
 
