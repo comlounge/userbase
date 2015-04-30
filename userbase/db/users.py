@@ -114,7 +114,6 @@ class User(Document):
         'pw_code'                       : basestring,
         'pw_code_sent'                  : datetime.datetime,
         'pw_code_expires'               : datetime.datetime,
-        'fullname'                      : basestring,
         'permissions'                   : [basestring],
     }
     
