@@ -1,6 +1,5 @@
 from starflyer import URL, Module, ConfigurationError, AttributeMapper
 from jinja2 import PackageLoader
-import mongokit
 import datetime
 import copy
 import bson
@@ -10,6 +9,7 @@ import handlers
 from .exceptions import *
 import db
 import hooks
+from mongogogo import ObjectNotFound
 
 __all__ = [
     'BaseUserModule', 
@@ -63,6 +63,7 @@ class BaseUserModule(Module):
         'cookie_domain'         : None, # means to use the domain from the app
         'cookie_lifetime'       : datetime.timedelta(days=365),
         'master_template'       : "master.html",
+        'pw_salt'               : "CHANGE ME!",
 
         # database related
         'mongodb_host'          : "localhost",
@@ -71,6 +72,7 @@ class BaseUserModule(Module):
         'mongodb_collection'    : "users",                      # name of the collection to use
         'mongodb_kwargs'        : {},                           
         'user_class'            : db.User,                      # the db class we use for the user
+        'collection_class'      : db.Users,                     # the collection class to use
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
 
         # endpoints for redirects
@@ -141,14 +143,18 @@ class BaseUserModule(Module):
     # module hook
     def finalize(self):
         """finalize the configuration"""
-        # open database
-        conn = self.connection = mongokit.Connection(
-            self.config.mongodb_host,
-            self.config.mongodb_port)
-        self.collection = conn[self.config.mongodb_name][self.config.mongodb_collection]
-        conn.register(self.config.user_class)
-        self.users = getattr(self.collection, self.config.user_class.name)
 
+        # database setup
+        conn = self.connection = pymongo.MongoClient(
+            self.config.mongodb_host,
+            int(self.config.mongodb_port))
+        self.db = conn[self.config.mongodb_name]
+        self.users = self.config.collection_class(self.db[self.config.mongodb_collection])
+        self.users.SALT = self.config.pw_salt
+        self.users.data_class = self.config.user_class # set the correct (custom) user class for it
+
+
+        # URL setup
         self.add_url_rule(URL("/login", "login", self.config['handler:login']))
         self.add_url_rule(URL("/logout", "logout", self.config['handler:logout']))
         self.add_url_rule(URL("/pw_forgot", "pw_forgot", self.config['handler:pw_forgot']))
@@ -271,7 +277,10 @@ class BaseUserModule(Module):
                 user_id = bson.ObjectId(user_id)
             except pymongo.errors.InvalidId:
                 return None
-        return self.users.get_from_id(user_id)
+        try:
+            return self.users.get(user_id)
+        except ObjectNotFound, e:
+            return None
 
     def get_users_by_ids(self, user_ids):
         """returns a list of users for a list of ids"""
@@ -336,7 +345,7 @@ class BaseUserModule(Module):
         :return: Returns the user object or an exception in case the registration failed
         """
         user_data = self.hooks.process_registration_user_data(user_data)
-        user = self.users()
+        user = self.users.create()
         user.update(user_data)
         if self.config.use_double_opt_in and not force:
             user.active = False
@@ -345,7 +354,7 @@ class BaseUserModule(Module):
             user.active = True
         if create_pw:
             user.create_pw()
-        user.save()
+        self.users.save(user)
         return user
 
     def send_activation_code(self, user):
