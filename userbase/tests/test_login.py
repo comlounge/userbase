@@ -6,6 +6,8 @@ def test_login(app):
     rv = c.post("/users/login", data = dict(username="foobar", password="barfoo"))
     assert rv.status_code == 302
     assert "userid" in app.last_handler.session
+    print "ok"
+    print app.last_handler.session
 
     # test the handler directly
     req = app.make_request(path = "/users/login", method="POST", data = dict(username="foobar", password="barfoo"))
@@ -42,6 +44,7 @@ def test_remember_me(app):
     rv = c.post("/users/login", data = dict(username="foobar", password="barfoo", remember=1))
     assert "userid" in app.last_handler.session
     rv = c.get("/")
+    print "kakak", app.last_handler.session
     assert "userid" in app.last_handler.session
     c.cookie_jar.clear_session_cookies() # remove login
     rv = c.get("/")
