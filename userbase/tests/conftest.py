@@ -27,8 +27,8 @@ class UserbaseTestApp(Application):
         'testing'       : True,
         'debug'         : True,
         'secret_key'    : "f00bar",
-        'server_name'   : "dev.localhost",
-        'session_cookie_domain' : "dev.localhost",
+        'server_name'   : "127.0.0.1",
+        'session_cookie_domain' : "127.0.0.1",
     }
 
     routes = [
@@ -67,12 +67,12 @@ def app(request, db):
         "email"         : "barfoo@example.com", 
         "fullname"      : "Foo bar",
     }, force = True, create_pw = False)
-    print user._id
     return app
 
 @pytest.fixture
 def client(request, app):
     return werkzeug.Client(app, werkzeug.BaseResponse)
+
 
 import re
 pattern = """
