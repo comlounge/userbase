@@ -4,7 +4,7 @@
     <div class="row">
         <div class="span8">
             <div class="form">
-                <h2>{{_('no Please register')}}</h2>
+                <h2>{{_('Please register')}}</h2>
                 <form class="boxform horizontal-form validate" method="POST" action="{{url}}">
                     {% for field in form %}
                         {{ formmacros.form_field(field, class="span6 required" if field.flags.required else "span6") }}
