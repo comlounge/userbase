@@ -9,15 +9,19 @@
                     {{_("You have received a code by email. You can either click the link provided in the email or you can manually enter the code below.")}}
                 </div>
                 
-                <form class="boxform horizontal-form validate" method="POST" action="{{url}}">
-                    <label>{{_("Activation Code")}}*</label>
-                    <input type="text" class="span10" placeholder="{{_("please enter your code here")}}">
-                    <span class="help-block">{{_("Enter the code from the activation email here")}}</span>
-                    <fieldset class="form-actions">
-                        <div class="input">
+                <form class="form" id="ub-activation-form" method="POST" action="{{url}}">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="code">{{_('Activation Code')}}</label>
+                            <input type="text" name="code" id="code" class="form-control" size=20>
+                            <span class="help-block">{{_("Enter the code from the activation email here")}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-actions col-md-6">
                             <input type="submit" class="btn btn-primary btn-large" value="{{_("Activate your account")}}">
                         </div>
-                    </fieldset>
+                    </div>
                 </form>
             </div>
         </div>

@@ -16,12 +16,17 @@ class ActivationHandler(BaseHandler):
         mod = self.module
         code = self.request.args.get("code", None)
         if self.request.method == 'POST':
+            print 1
+            print self.request.form
             code = self.request.form.get("code", "")
         else:
+            print 2
             code = self.request.args.get("code", None)
+        print code
         if code is not None:
             # TODO: check expiration time
             user = mod.get_user_by_activation_code(code)
+            print user
             if user is not None:
                 user.activate()
                 mod.login(self, user=user, save = False)
