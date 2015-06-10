@@ -363,7 +363,11 @@ class BaseUserModule(Module):
         user.set_activation_code(code)
         user.save()
         url = self.app.url_for(_append = True, _full = True, code = code, **self.config.urls.activation)
-        self.send_email(cfg.emails.activation_code, cfg.subjects.registration, user.email, user = user, url = url, code = code)
+        self.send_email(cfg.emails.activation_code, cfg.subjects.registration, user.email, 
+            user = user, 
+            activation_url = self.app.url_for(_full = True, **self.config.urls.activation),
+            url = url, 
+            code = code)
 
     def send_pw_code(self, user):
         cfg = self.config
