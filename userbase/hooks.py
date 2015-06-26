@@ -35,7 +35,7 @@ def string2filename(s, path = None):
     
     valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in res if c in valid_chars)
-    filename = filename.replace(" ","-")
+    filename = filename.replace(" ","_")
     
     # if path is not None we can check if there already is a file with that name
     if path is None:
@@ -85,7 +85,7 @@ class Hooks(object):
             prefix = 1
             base = username
             while self.userbase.get_user_by_username(username):
-                username = "%s-%s" %(base, prefix)
+                username = "%s_%s" %(base, prefix)
                 prefix = prefix + 1
             user_data['username'] = username
         if "password2" in user_data:
