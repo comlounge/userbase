@@ -146,7 +146,6 @@ class BaseUserModule(Module):
         """finalize the configuration"""
 
         # database setup
-        print "finalizing", self.config.mongodb_url
         conn = self.connection = pymongo.MongoClient(self.config.mongodb_url)
         self.db = conn[self.config.mongodb_name]
         self.users = self.config.collection_class(self.db[self.config.mongodb_collection])
