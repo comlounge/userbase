@@ -66,6 +66,7 @@ class BaseUserModule(Module):
         'pw_salt'               : "CHANGE ME!",
 
         # database related
+        'mongodb_url'           : "mongodb://localhost",
         'mongodb_host'          : "localhost",
         'mongodb_port'          : 27017,
         'mongodb_name'          : "userbase",                   # name of database to use
@@ -145,9 +146,8 @@ class BaseUserModule(Module):
         """finalize the configuration"""
 
         # database setup
-        conn = self.connection = pymongo.MongoClient(
-            self.config.mongodb_host,
-            int(self.config.mongodb_port))
+        print "finalizing", self.config.mongodb_url
+        conn = self.connection = pymongo.MongoClient(self.config.mongodb_url)
         self.db = conn[self.config.mongodb_name]
         self.users = self.config.collection_class(self.db[self.config.mongodb_collection])
         self.users.SALT = self.config.pw_salt
