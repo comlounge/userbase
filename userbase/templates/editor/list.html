@@ -4,7 +4,7 @@
 {% block content %}
 <div id="index">
     <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
             <h2>User Manager</h2>
             <table class="table table-condensed">
                 <thead>
@@ -41,20 +41,20 @@
                             {{user.readable_permissions}}
                         </td>
                         <td>
+                            <nobr>
                             <a href="{{url_for(".useredit", uid = user.id)}}" class="btn btn-mini"><i class="icon icon-pencil"></i></a>
                             <a href="#" class="btn btn-mini"><i class="icon icon-trash"></i></a>
                             {% if user.user.active %}
-                                <span class="btn disabled btn-success btn-mini">ACTIVATE</span>
                                 <form style="display: inline-block" method="POST" action="{{url_for('.useractivate', uid = user.id)}}">
-                                    <button href="{{url_for('.useractivate', uid = user.id)}}" class="btn btn-danger btn-mini">DEACTIVATE</button>
+                                    <button href="{{url_for('.useractivate', uid = user.id)}}" class="btn btn-danger btn-xs">DEACTIVATE</button>
                                 </form>
                             {% else %}
                                 <form style="display: inline-block" method="POST" action="{{url_for('.useractivate', uid = user.id)}}">
-                                    <button href="{{url_for('.useractivate', uid = user.id)}}" class="btn btn-success btn-mini">ACTIVATE</button>
+                                    <button href="{{url_for('.useractivate', uid = user.id)}}" class="btn btn-success btn-xs">ACTIVATE</button>
                                 </form>
-                                <span class="btn disabled btn-danger btn-mini">DEACTIVATE</span>
                             {% endif %}
-                            <a href="#" class="btn btn-mini">SEND PW</a>
+                            <a href="#" class="btn btn-xs btn-default">SEND PW</a>
+                            </nobr>
                         </td>
                     </tr>
                     {% endfor %}

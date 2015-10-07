@@ -6,7 +6,7 @@ def test_login(app):
     rv = c.post("/users/login", data = dict(username="foobar", password="barfoo"))
     assert rv.status_code == 302
     assert "userid" in app.last_handler.session
-
+    
     # test the handler directly
     req = app.make_request(path = "/users/login", method="POST", data = dict(username="foobar", password="barfoo"))
     handler = app.find_handler(req)
@@ -38,7 +38,6 @@ def test_no_remember_me(app):
 def test_remember_me(app):
     """check if we can delete the session cookie and still be logged in"""
     c = app.test_client()
-
     rv = c.post("/users/login", data = dict(username="foobar", password="barfoo", remember=1))
     assert "userid" in app.last_handler.session
     rv = c.get("/")

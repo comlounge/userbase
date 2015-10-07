@@ -1,49 +1,89 @@
-from mongokit import Document, Connection, CustomType
 import hashlib
 import uuid
 import re
 import datetime
+from mongogogo import *
 
-def email_validator(value):
-   email = re.compile(r'(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)',re.IGNORECASE)
-   return bool(email.match(value))
 
-class Password(CustomType):
-    mongo_type = basestring
-    python_type = basestring # optional, just for more validation
-    init_type = None # optional, fill the first empty value
+class UserSchema(Schema):
+    """main schema for a barcamp holding all information about core data, events etc."""
 
-    def to_bson(self, value):
-        """convert type to a mongodb type"""
-        # for some reason this is called twice and thus the password is encoded twice. 
-        # so this is a workaround
-        if value is None:
-            return None
-        if value.startswith("HASH:"):
-            return value
-        return "HASH:"+hashlib.new("md5",value.encode("utf-8")).hexdigest()
+    created                     = DateTime()
+    updated                     = DateTime()
+    username                    = String(required = True)
+    email                       = String(required = True)
+    fullname                    = String()
+    _password                    = String(required = True)
+    active                      = Boolean(default = False)
+    activation_time             = DateTime()
+    last_login                  = DateTime()
+    last_ip                     = String()
+    activation_code             = String()
+    activation_code_sent        = DateTime()
+    activation_code_expires     = DateTime()
+    pw_code                     = String()
+    pw_code_sent                = DateTime()
+    pw_code_expires             = DateTime()
+    permissions                 = List(String())
 
-    def to_python(self, value):
-        """convert type to a python object"""
-        return value
+    bad_login_attempts          = Integer()
 
-__all__ = ['UserBase', 'User']
-
-class UserBase(object):
-    """Base class for all users"""
-
-    
-
-class User(Document):
+class User(Record):
     """a user identified by email address and password"""
 
-    name = "User" # should be the same name as the class
-    use_dot_notation = True
+    schema = UserSchema()
+    _protected = ['schema', 'collection', '_protected', '_schemaless', 'password', 'default_values']
+    default_values = {
+        "created"                       : datetime.datetime.utcnow,
+        "updated"                       : datetime.datetime.utcnow,
+        "last_ip"                       : "",
+        "last_login"                    : None,
+        "activation_time"               : None,
+        "activation_code_expires"       : None,
+        "activation_code"               : None,
+        "pw_code"                       : None,
+        "pw_code_expires"               : None,
+        "active"                        : False,
+        "permissions"                   : [],
+        "bad_login_attempts"            : 0,
+    }
 
+    def _compute_pw(self, pw):
+        """compute the password"""
+        return "HASH:" + hashlib.new("md5",(self.collection.SALT+pw).encode("utf-8")).hexdigest()
+
+
+    def __init__(self, doc={}, from_db = None, collection = None, *args, **kwargs):
+        """override the constructor to set the password properly if given"""
+
+        # need this for getting SALT
+        self.collection = collection
+
+        if "password" in doc:
+            doc['_password'] = self._compute_pw(doc['password'])
+
+        return super(User, self).__init__(doc = doc, from_db = from_db, collection = collection, *args, **kwargs)
+
+    def update(self, doc = {}):
+        """setting the password here, too"""
+        if "password" in doc:
+            doc['_password'] = self._compute_pw(doc['password'])
+        super(User, self).update(doc)
+
+    
     def check_password(self, pw):
         """check password"""
-        hash = hashlib.new("md5",pw.encode("utf-8")).hexdigest()
-        return "HASH:"+hash == self.password
+        return self._compute_pw(pw) == self._password
+
+    def get_password(self):
+        """just return the encrypted password"""
+        return self._password
+
+    def set_password(self, pw):
+        """encrypt and save the password"""
+        self._password = self._compute_pw(pw)
+    
+    password = property(get_password, set_password)
 
     def create_pw(self, l=8):
         """create a password for the user and store it in the password field
@@ -97,49 +137,7 @@ class User(Document):
         self.pw_code = code
         self.pw_code_sent = datetime.datetime.utcnow()
         self.pw_code_expires = expires
-
-    structure = {
-        'username'                      : basestring,
-        'email'                         : basestring,
-        'fullname'                      : basestring,
-        'password'                      : Password(),
-        'date_creation'                 : datetime.datetime,
-        'active'                        : bool,
-        'activation_time'               : datetime.datetime,
-        'last_login'                    : datetime.datetime,
-        'last_ip'                       : basestring,
-        'activation_code'               : basestring,
-        'activation_code_sent'          : datetime.datetime,
-        'activation_code_expires'       : datetime.datetime,
-        'pw_code'                       : basestring,
-        'pw_code_sent'                  : datetime.datetime,
-        'pw_code_expires'               : datetime.datetime,
-        'permissions'                   : [basestring],
-    }
     
-    validators = {
-        'email': email_validator,
-    }
-
-    required_fields = ['email', 'password', 'date_creation']
-    
-    default_values = {
-        'date_creation'                 : datetime.datetime.utcnow,
-        "last_ip"                       : "",
-        "last_login"                    : None,
-        "activation_time"               : None,
-        "activation_code_expires"       : None,
-        "activation_code"               : None,
-        "pw_code"                       : None,
-        "pw_code_expires"               : None,
-        "active"                        : False,
-        "permissions"                   : [],
-    }
-    
-    def get_id(self):
-        """return the userid we want to use in sessions etc."""
-        return self._id
-
     def has_permission(self, permission):
         """checks if the user has a given permission. Returns ``True`` if so otherwise ``False``
         """
@@ -152,3 +150,11 @@ class User(Document):
             return self['fullname']
         return self['username']
     
+
+class Users(Collection):
+    """the user collection"""
+
+    data_class = User
+    SALT = "YOU SHOULD CHANGE THIS"
+
+

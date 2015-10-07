@@ -27,6 +27,8 @@ class UserbaseTestApp(Application):
         'testing'       : True,
         'debug'         : True,
         'secret_key'    : "f00bar",
+        'server_name'   : "127.0.0.1",
+        'session_cookie_domain' : "127.0.0.1",
     }
 
     routes = [
@@ -48,7 +50,7 @@ class UserbaseTestApp(Application):
 
 @pytest.fixture
 def db(request): 
-    db = pymongo.Connection()[DB_NAME]
+    db = pymongo.MongoClient()[DB_NAME]
     def fin():
         db.users.remove()
     request.addfinalizer(fin)
@@ -59,7 +61,7 @@ def app(request, db):
     """create the simplest app with uploader support ever"""
     app = UserbaseTestApp(__name__)
     ub = app.module_map['userbase']
-    ub.register({
+    user = ub.register({
         "username"      : u"foobar", 
         "password"      : "barfoo", 
         "email"         : "barfoo@example.com", 
@@ -70,6 +72,7 @@ def app(request, db):
 @pytest.fixture
 def client(request, app):
     return werkzeug.Client(app, werkzeug.BaseResponse)
+
 
 import re
 pattern = """

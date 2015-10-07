@@ -33,10 +33,11 @@ def test_password_forgot_complete(app):
     assert "userid" in app.last_handler.session
     
 
-def test_password_forgot_wrong_code(app, client):
+def test_password_forgot_wrong_code(app):
     mail = app.module_map['mail']
+    client = app.test_client()
 
-    rv = client.get("/users/pw_code_enter?code=wrong", follow_redirects=True)
+    rv = client.get("/users/pw_code_enter?code=wrong", follow_redirects = True)
     assert u"Flash: We couldn't find a user with that code, please try again" in rv.data 
 
 def test_password_forgot_wrong_email(app, client):
@@ -45,8 +46,9 @@ def test_password_forgot_wrong_email(app, client):
     rv = client.post("/users/pw_forgot", data = dict(email="wrong@example.com"), follow_redirects = True)
     assert u"Flash: The email address is not in our database" in rv.data 
 
-def test_password_forgot_post_with_wrong_code(app, client):
+def test_password_forgot_post_with_wrong_code(app):
     mail = app.module_map['mail']
+    client = app.test_client()
 
     rv = client.post("/users/pw_code_enter?code=wrong", data = dict(password="trololol", password2="trololol"), follow_redirects = True)
     assert u"Flash: We couldn't find a user with that code, please try again" in rv.data 

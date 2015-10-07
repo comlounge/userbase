@@ -46,7 +46,7 @@ class UserList(Handler):
     def get(self):
         """show the user list"""
         mod = self.module
-        users = self.module.users.fetch()
+        users = self.module.users.find()
         return self.render(users = UserWrapper(mod, users))
 
 class UserEdit(Handler):

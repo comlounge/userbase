@@ -5,9 +5,10 @@ import re
 import urlparse
 from conftest import lre_string
 
-def test_registration(client, app):
+def test_registration(app):
     """log in as the dummy user"""
     mail = app.module_map['mail']
+    client = app.test_client()
 
     # get the registration form
     resp = client.get("/users/register")

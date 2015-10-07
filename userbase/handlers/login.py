@@ -34,10 +34,10 @@ class LoginHandler(Handler):
                     return redirect(url)
                 except PasswordIncorrect, e:
                     log.warn("login failed: incorrect password", username = e.username)
-                    self.flash(self._("Incorrect password. You might have mistyped your password, please check your spelling."), category="danger")
+                    self.flash(self._("Invalid credentials. You might have mistyped something, please check your spelling."), category="danger")
                 except UserUnknown, e:
                     log.warn("login failed: unknown user", username = e.username)
-                    self.flash("Unknown username. You might have mistyped your name, please check your spelling.", category="danger")
+                    self.flash(self._("Invalid credentials. You might have mistyped something, please check your spelling."), category="danger")
                 except UserNotActive, e:
                     if cfg.use_double_opt_in:
                         log.warn("login failed: user account not yet activated")
