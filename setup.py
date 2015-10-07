@@ -19,7 +19,7 @@ setup(name='userbase',
       zip_safe=False,
       install_requires=[
         "pyyaml",
-        "pymongo>==3",
+        "pymongo>=3",
         "argparse",
         "sf-mail",
         "mongogogo",
