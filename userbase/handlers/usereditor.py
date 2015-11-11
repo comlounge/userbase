@@ -5,7 +5,7 @@ from userbase import db
 from userbase.decorators import logged_in, permission
 import werkzeug.exceptions
 
-__all__ = ['UserList', 'UserEdit', 'UserAdd', 'UserActivate']
+__all__ = ['UserList', 'UserEdit', 'UserAdd', 'UserActivate', 'SendPW']
 
 class UserAdapter(object):
     """extend the user with some additional attributes we compute via module and handler"""
@@ -122,6 +122,24 @@ class UserActivate(Handler):
             self.flash(self._(u'The user has been activated') %user)
         else:
             self.flash(self._(u'The user has been deactivated') %user)
+        url = self.url_for("userbase.userlist")
+        return redirect(url)
+
+class SendPW(Handler):
+    """send a password reset link to a user"""
+
+    @logged_in()
+    @permission("userbase:admin")
+    def post(self, uid = None):
+        """set the pw forgotten link"""
+        cfg = self.module.config
+        mod = self.module
+        user = mod.get_user_by_id(uid)
+
+        # send out the password reset link
+        mod.send_pw_code(user)
+        self.flash(self._(u'A link for resetting the password has been sent to the user') %user)
+
         url = self.url_for("userbase.userlist")
         return redirect(url)
 

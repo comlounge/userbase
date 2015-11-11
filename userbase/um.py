@@ -169,6 +169,7 @@ class BaseUserModule(Module):
             self.add_url_rule(URL("/admin/new", "useradd", handlers.UserAdd))
             self.add_url_rule(URL("/admin/<uid>", "useredit", handlers.UserEdit))
             self.add_url_rule(URL("/admin/<uid>/activate", "useractivate", handlers.UserActivate))
+            self.add_url_rule(URL("/admin/<uid>/sendpw", "sendpw", handlers.SendPW))
 
         # attach the global hooks
         self.hooks = self.config.hooks(self)

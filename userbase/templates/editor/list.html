@@ -53,7 +53,7 @@
                                     <button href="{{url_for('.useractivate', uid = user.id)}}" class="btn btn-success btn-xs">ACTIVATE</button>
                                 </form>
                             {% endif %}
-                            <a href="#" class="btn btn-xs btn-default">SEND PW</a>
+                            <a href="{{url_for('.sendpw', uid = user.id)}}?method=POST" class="btn btn-xs btn-default">SEND PW</a>
                             </nobr>
                         </td>
                     </tr>
