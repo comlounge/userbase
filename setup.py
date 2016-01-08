@@ -28,6 +28,7 @@ setup(name='userbase',
         "markdown",
         "pytest",
         "wtforms",
+        "passlib",
         "paste",
       ],
       entry_points="""
