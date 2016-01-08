@@ -11,6 +11,9 @@ import db
 import hooks
 from mongogogo import ObjectNotFound
 
+from passlib.context import CryptContext
+
+
 __all__ = [
     'BaseUserModule', 
     'EMailUserModule',
@@ -42,6 +45,8 @@ check the token. We also use a secure cookie for it and you can set the cookie s
 for the user.
 
 """
+
+
 
 
 class BaseUserModule(Module):
@@ -127,7 +132,21 @@ class BaseUserModule(Module):
             'welcome'               : '_m/userbase/emails/welcome',
             'pw_code'               : '_m/userbase/emails/pw_code',
         }),
-            
+
+        # password handling, you can change this (but make sure users can still login)
+        'pw_context'                : CryptContext(
+                schemes=["pbkdf2_sha256"],                                                                                                            
+                default="pbkdf2_sha256",
+
+                # vary rounds parameter randomly when creating new hashes...
+                all__vary_rounds = 0.1,
+
+                # set the number of rounds that should be used...
+                # (appropriate values may vary for different schemes,
+                # and the amount of time you wish it to take)
+                pbkdf2_sha256__default_rounds = 10000,
+            ),
+
         # hooks
         'hooks'                     : hooks.Hooks,
 
@@ -148,8 +167,8 @@ class BaseUserModule(Module):
         # database setup
         conn = self.connection = pymongo.MongoClient(self.config.mongodb_url)
         self.db = conn[self.config.mongodb_name]
-        self.users = self.config.collection_class(self.db[self.config.mongodb_collection])
-        self.users.SALT = self.config.pw_salt
+        self.users = self.config.collection_class(self.db[self.config.mongodb_collection], pw_context = self.config.pw_context)
+        self.users.SALT = self.config.pw_salt # we still need this for older versions
         self.users.data_class = self.config.user_class # set the correct (custom) user class for it
 
 

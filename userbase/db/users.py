@@ -27,6 +27,7 @@ class UserSchema(Schema):
     permissions                 = List(String())
 
     bad_login_attempts          = Integer()
+    last_failed_login           = DateTime()
 
 class User(Record):
     """a user identified by email address and password"""
@@ -46,17 +47,22 @@ class User(Record):
         "active"                        : False,
         "permissions"                   : [],
         "bad_login_attempts"            : 0,
+        "last_failed_login"             : None,
     }
 
-    def _compute_pw(self, pw):
-        """compute the password"""
+    def _old_compute_pw(self, pw):
+        """old version to store passwords which we want to get rid of"""
         return "HASH:" + hashlib.new("md5",(self.collection.SALT+pw).encode("utf-8")).hexdigest()
-
+        
+    def _compute_pw(self, pw):
+        """new version on computing password a much more safer way using passlib"""
+        ctx = self.collection.md.pw_context
+        return ctx.encrypt(pw)
 
     def __init__(self, doc={}, from_db = None, collection = None, *args, **kwargs):
         """override the constructor to set the password properly if given"""
 
-        # need this for getting SALT
+        # need this for the password context and SALT
         self.collection = collection
 
         if "password" in doc:
@@ -69,11 +75,31 @@ class User(Record):
         if "password" in doc:
             doc['_password'] = self._compute_pw(doc['password'])
         super(User, self).update(doc)
-
-    
+  
     def check_password(self, pw):
         """check password"""
-        return self._compute_pw(pw) == self._password
+        hashed = self._password
+        if hashed.startswith("$pbkdf2"):
+            # new password style
+            success = self.collection.md.pw_context.verify(pw, hashed)
+        else:
+            success = self._old_compute_pw(pw) == self._password
+            if success:
+                # lets update the user
+                self._password = self.collection.md.pw_context.encrypt(pw)
+                self.collection.save(self)
+
+        if not success:
+            self.last_failed_login = datetime.datetime.utcnow()
+            if not self.bad_login_attempts:
+                self.bad_login_attempts = 1
+            else:
+                self.bad_login_attempts = self.bad_login_attempts + 1
+        else:
+            self.last_failed_login = None
+            self.bad_login_attempts = 0
+        self.collection.save(self)
+        return success
 
     def get_password(self):
         """just return the encrypted password"""
@@ -155,6 +181,7 @@ class Users(Collection):
     """the user collection"""
 
     data_class = User
-    SALT = "YOU SHOULD CHANGE THIS"
+    SALT = ""
+
 
 
