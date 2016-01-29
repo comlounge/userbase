@@ -157,4 +157,12 @@ class Users(Collection):
     data_class = User
     SALT = "YOU SHOULD CHANGE THIS"
 
+    def before_serialize(self, obj):
+        """make sure email and username are lowercase before serializing"""
+        if obj.has_key("email"):
+            obj['email'] = obj['email'].lower()
+        if obj.has_key("username"):
+            obj['username'] = obj['username'].lower()
+        return obj
+
 

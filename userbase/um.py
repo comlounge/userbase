@@ -260,7 +260,7 @@ class BaseUserModule(Module):
 
     def get_user_by_email(self, email):
         """try to retrieve the user by the email address"""
-        return self.users.find_one({'email': email})
+        return self.users.find_one({'email': email.lower()})
 
     def get_user_by_username(self, username):
         """try to retrieve the user by the username"""
@@ -306,7 +306,7 @@ class BaseUserModule(Module):
         """
         cfg = self.config
         if user is None:
-            username = user_credentials[cfg.user_id_field]
+            username = user_credentials[cfg.user_id_field].lower() # make sure it's lowercase for better matching
             password = user_credentials['password']
             user = self.get_user_by_credential(username)
             if user is None:
