@@ -1,21 +1,28 @@
 import uuid 
 import string
 import os.path
+import types
 
 mapping = {
     196 : 'AE', 198 : 'AE', 214 : 'OE', 220 : 'UE', 223 : 'ss', 224 : 'a',
     228 : 'ae', 230 : 'ae', 246 : 'oe', 252 : 'ue'
 }
 
-def string2filename(s, path = None):
+def string2filename(s, path = None, default=u"anonymous"):
     """convert a string to a valid filename"""
     
     from unicodedata import decomposition, normalize
 
-    # TODO: make sure that s is unicode (add check and conversion)
+    # TODO: make it a better conversion?
+    if type(s) != types.UnicodeType:
+        s = unicode(s)
     
     s = s.strip()
     s = s.lower()
+
+
+    if s=="":
+        s = default
 
     # remove an eventual path
     s = s.replace("\\","/")
