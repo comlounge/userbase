@@ -1,6 +1,6 @@
 # coding=utf-8
 from starflyer import Module, Application, Handler, URL
-from userbase import username_userbase
+from userbase import username_userbase, email_userbase
 from sfext.mail import mail_module
 import py.path
 import pytest
@@ -48,6 +48,36 @@ class UserbaseTestApp(Application):
         ),
     ]
 
+class UserbaseEMailTestApp(Application):
+    """base app for testing"""
+
+    defaults = {
+        'secret_key'    : "182827",
+        'testing'       : True,
+        'debug'         : True,
+        'secret_key'    : "f00bar",
+        'server_name'   : "127.0.0.1",
+        'session_cookie_domain' : "127.0.0.1",
+    }
+
+    routes = [
+        URL("/", "root", TestHandler)
+    ]
+
+    modules = [
+        mail_module(debug = True),
+        email_userbase(
+            url_prefix = "/users",
+            login_after_registration    = True,
+            double_opt_in               = True,
+            enable_registration         = True,
+            mongodb_name = DB_NAME,
+            login_success_url_params = {'endpoint' : 'root'},
+            logout_success_url_params = {'endpoint' : 'root'},
+        ),
+    ]
+
+
 @pytest.fixture
 def db(request): 
     db = pymongo.MongoClient()[DB_NAME]
@@ -68,6 +98,16 @@ def app(request, db):
         "fullname"      : "Foo bar",
     }, force = True, create_pw = False)
     return app
+
+@pytest.fixture
+def email_app(request, db):
+    """create the simplest app with uploader support ever"""
+    return UserbaseEMailTestApp(__name__)
+
+@pytest.fixture
+def email_client(request, email_app):
+    return werkzeug.Client(email_app, werkzeug.BaseResponse)
+
 
 @pytest.fixture
 def client(request, app):

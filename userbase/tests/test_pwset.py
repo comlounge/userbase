@@ -23,7 +23,7 @@ def test_set_new_password(app):
 
     # login with old password
     rv = c.post("/users/login", data = dict(username="foobar", password="barfoo"), follow_redirects = True)
-    assert "Flash: Incorrect password." in rv.data
+    assert "Flash: Invalid credentials." in rv.data
     assert "userid" not in app.last_handler.session
 
     # login with new password
