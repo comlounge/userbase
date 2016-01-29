@@ -13,6 +13,25 @@ def test_login(app):
     rv = handler(**req.view_args)
     assert app.module_map.userbase.get_user(handler).username == "foobar"
 
+
+def test_login_email(email_app):
+    """log in as the dummy user by email"""
+    app = email_app
+    c = email_app.test_client()
+    email_app.make_user()
+    rv = c.post("/users/login", data = dict(email="barfoo@example.org", password="barfoo"))
+    print rv
+    assert rv.status_code == 302 # 302 also means redirect and thus success, 200 might mean error
+    assert "userid" in email_app.last_handler.session
+    
+    # test the handler directly
+    req = app.make_request(path = "/users/login", method="POST", data = dict(email="barfoo@example.org", password="barfoo"))
+    handler = app.find_handler(req)
+    rv = handler(**req.view_args)
+    assert app.module_map.userbase.get_user(handler).username == "foo_bar"
+
+
+
 def test_login_logout(app):
     # login
     c = app.test_client()

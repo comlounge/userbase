@@ -77,6 +77,15 @@ class UserbaseEMailTestApp(Application):
         ),
     ]
 
+    def make_user(self):
+        """make dummy user"""
+        ub = self.module_map['userbase']
+        user = ub.register({
+            "password"      : "barfoo", 
+            "email"         : "barfoo@example.org", 
+            "fullname"      : "Foo bar",
+        }, force = True, create_pw = False)
+
 
 @pytest.fixture
 def db(request): 
