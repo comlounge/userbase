@@ -20,7 +20,6 @@ def test_login_email(email_app):
     c = email_app.test_client()
     email_app.make_user()
     rv = c.post("/users/login", data = dict(email="barfoo@example.org", password="barfoo"))
-    print rv
     assert rv.status_code == 302 # 302 also means redirect and thus success, 200 might mean error
     assert "userid" in email_app.last_handler.session
     
@@ -30,7 +29,14 @@ def test_login_email(email_app):
     rv = handler(**req.view_args)
     assert app.module_map.userbase.get_user(handler).username == "foo_bar"
 
-
+def test_login_email_lowercase(email_app):
+    """log in as the dummy user by email using a non-lowercase email"""
+    app = email_app
+    c = email_app.test_client()
+    email_app.make_user()
+    rv = c.post("/users/login", data = dict(email="BarFoo@Example.org", password="barfoo"))
+    assert rv.status_code == 302 # 302 also means redirect and thus success, 200 might mean error
+    assert "userid" in email_app.last_handler.session
 
 def test_login_logout(app):
     # login
