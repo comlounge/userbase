@@ -1,0 +1,6 @@
+Version 1.1.
+============
+
+- passwords are now stored more securly using passlib. 
+  Existing users should migrate automatically
+- emails are now checked lowercase only. This allows people to login regardless of how the email address was entered.

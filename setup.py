@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '1.0.4'
+version = '1.1.0'
 
 setup(name='userbase',
       version=version,
@@ -28,6 +28,7 @@ setup(name='userbase',
         "markdown",
         "pytest",
         "wtforms",
+        "passlib",
         "paste",
       ],
       entry_points="""
