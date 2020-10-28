@@ -15,7 +15,7 @@ from passlib.context import CryptContext
 
 
 __all__ = [
-    'BaseUserModule', 
+    'BaseUserModule',
     'EMailUserModule',
     'UsernameUserModule',
     'username_userbase',
@@ -27,21 +27,21 @@ __all__ = [
 cookie and user handling in userbase
 
 The userid is generally stored in the handler session. By calling ``get_user()`` from
-the userbase module this will be retrieved (None if not present). 
+the userbase module this will be retrieved (None if not present).
 
-To remember a user we store an additional cookie which can be configured by the data above. 
+To remember a user we store an additional cookie which can be configured by the data above.
 We need to be able to invalidate that information though if the user changes his password or
 if it is changed or the user is deactivated. The following cases can happen:
 
 - the user changes his password. In this case the userbase cookie must be updated
-- the admin deletes/deactivates the user. Once the user comes back the cookie should not match anymore. 
+- the admin deletes/deactivates the user. Once the user comes back the cookie should not match anymore.
 
 So we need some token which changes and which can be checked. This is what the ``get_token()`` method
 of the user object should implement. Usually it can be just the hashed userid. But it could also be
-e.g. hash(userid:password). If the user is inactive then it should return None. 
+e.g. hash(userid:password). If the user is inactive then it should return None.
 
 The cookie itself stores both the userid and the token. This way we can fetch the user and
-check the token. We also use a secure cookie for it and you can set the cookie secret seperately 
+check the token. We also use a secure cookie for it and you can set the cookie secret seperately
 for the user.
 
 """
@@ -76,7 +76,7 @@ class BaseUserModule(Module):
         'mongodb_port'          : 27017,
         'mongodb_name'          : "userbase",                   # name of database to use
         'mongodb_collection'    : "users",                      # name of the collection to use
-        'mongodb_kwargs'        : {},                           
+        'mongodb_kwargs'        : {},
         'user_class'            : db.User,                      # the db class we use for the user
         'collection_class'      : db.Users,                     # the collection class to use
         'user_id_field'         : 'email',                      # the field in the class and form with the id (email or username)
@@ -101,9 +101,11 @@ class BaseUserModule(Module):
         'handler:pw_forgot'         : handlers.PasswordForgotHandler,
         'handler:pw_code_enter'     : handlers.PasswordCodeHandler,
         'handler:pw_set'            : handlers.PasswordSetHandler,
-        'handler:register'          : handlers.RegistrationHandler,     
-        'handler:activate'          : handlers.ActivationHandler,      
+        'handler:register'          : handlers.RegistrationHandler,
+        'handler:activate'          : handlers.ActivationHandler,
         'handler:activation_code'   : handlers.ActivationCodeHandler,
+        'handler:userlist'          : handlers.UserList,
+        'handler:useredit'          : handlers.UserEdit,
 
         # form related
         'login_form'                : handlers.EMailLoginForm,          # the login form to use
@@ -112,7 +114,7 @@ class BaseUserModule(Module):
         'add_form'                  : handlers.UserAddForm,             # the registration form to use
         'pw_forgot_form'            : handlers.PWEMailForm,             # pw forgot form to use
         'pw_change_form'            : handlers.PasswordChangeForm,      # for setting a new password
-        
+
         # further settings
         'enable_registration'       : False,                            # global switch for allowing new users or not
         'enable_usereditor'         : True,                             # global switch for registering the handlers for the user management
@@ -135,7 +137,7 @@ class BaseUserModule(Module):
 
         # password handling, you can change this (but make sure users can still login)
         'pw_context'                : CryptContext(
-                schemes=["pbkdf2_sha256"],                                                                                                            
+                schemes=["pbkdf2_sha256"],
                 default="pbkdf2_sha256",
 
                 # vary rounds parameter randomly when creating new hashes...
@@ -184,9 +186,9 @@ class BaseUserModule(Module):
                 self.add_url_rule(URL("/activate", "activate", self.config['handler:activate']))
                 self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler:activation_code']))
         if self.config.enable_usereditor:
-            self.add_url_rule(URL("/admin/", "userlist", handlers.UserList))
+            self.add_url_rule(URL("/admin/", "userlist", self.config['handler:userlist']))
             self.add_url_rule(URL("/admin/new", "useradd", handlers.UserAdd))
-            self.add_url_rule(URL("/admin/<uid>", "useredit", handlers.UserEdit))
+            self.add_url_rule(URL("/admin/<uid>", "useredit", self.config['handler:useredit']))
             self.add_url_rule(URL("/admin/<uid>/activate", "useractivate", handlers.UserActivate))
             self.add_url_rule(URL("/admin/<uid>/sendpw", "sendpw", handlers.SendPW))
 
@@ -235,7 +237,7 @@ class BaseUserModule(Module):
 
         # TODO: now reset the remember cookie
         # this means to move save_session from handler to module, better anyway
-    
+
     def after_handler(self, handler, response):
         """check if we need to do a logout"""
         if handler.session.has_key("remember"):
@@ -330,6 +332,7 @@ class BaseUserModule(Module):
             user = self.get_user_by_credential(username)
             if user is None:
                 raise UserUnknown(u"User not found", username = username)
+            import pdb; pdb.set_trace()
             if not user.check_password(password):
                 raise PasswordIncorrect(u"Password is wrong", username = username)
         if not user.active and not force:
@@ -358,8 +361,8 @@ class BaseUserModule(Module):
         Depending on the configuration, an activation code will be sent and the user will eventually be logged
         in
 
-        :param user_data: dictionary containing the data for the new user. All required fields need to be present, otherwise a RegistrationFailed exception will be raised. 
-        :param force: If ``True`` it does not send any opt in and the user is active directly. Defaults to ``False``. 
+        :param user_data: dictionary containing the data for the new user. All required fields need to be present, otherwise a RegistrationFailed exception will be raised.
+        :param force: If ``True`` it does not send any opt in and the user is active directly. Defaults to ``False``.
         :param create_pw: If ``True`` a password for the user is created by calling the user object's ``create_pw()``. Defaults to ``False``
         :return: Returns the user object or an exception in case the registration failed
         """
@@ -382,10 +385,10 @@ class BaseUserModule(Module):
         user.set_activation_code(code)
         user.save()
         url = self.app.url_for(_append = True, _full = True, code = code, **self.config.urls.activation)
-        self.send_email(cfg.emails.activation_code, cfg.subjects.registration, user.email, 
-            user = user, 
+        self.send_email(cfg.emails.activation_code, cfg.subjects.registration, user.email,
+            user = user,
             activation_url = self.app.url_for(_full = True, **self.config.urls.activation),
-            url = url, 
+            url = url,
             code = code)
 
     def send_pw_code(self, user):
@@ -401,7 +404,7 @@ class BaseUserModule(Module):
         self.send_email(self.config.emails.welcome, cfg.subjects.welcome, user.email, user = user, url = url)
 
     def send_email(self, tmplname, subject, to, **kw):
-        """send an email template out. 
+        """send an email template out.
 
         :param subject: The subject to use
         :param template: The name of the template without any extension. This will be added depending on whether we send html emails or not

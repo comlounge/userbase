@@ -13,7 +13,7 @@ class UserAdapter(object):
     def __init__(self, userbase, user):
         self.userbase = userbase
         self.user = user
-    
+
     @property
     def id(self):
         return str(self.user._id)
@@ -68,7 +68,7 @@ class UserEdit(Handler):
         if self.request.method == 'POST':
             if form.validate():
                 f = form.data
-                user.update(**f)
+                user.update(f)
                 user.save()
                 self.flash(self._(u'user data has been updated') %user)
                 url = self.url_for("userbase.userlist")
@@ -96,7 +96,7 @@ class UserAdd(Handler):
                 user = mod.register(f, force = True, create_pw = True)
                 user.update(**f)
                 user.save()
-                # TODO: send password and user info 
+                # TODO: send password and user info
                 self.flash(self._(u'A new user has been added') %user)
                 url = self.url_for("userbase.userlist")
                 return redirect(url)
