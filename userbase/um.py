@@ -332,7 +332,6 @@ class BaseUserModule(Module):
             user = self.get_user_by_credential(username)
             if user is None:
                 raise UserUnknown(u"User not found", username = username)
-            import pdb; pdb.set_trace()
             if not user.check_password(password):
                 raise PasswordIncorrect(u"Password is wrong", username = username)
         if not user.active and not force:
