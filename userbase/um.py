@@ -105,6 +105,7 @@ class BaseUserModule(Module):
         'handler:activate'          : handlers.ActivationHandler,
         'handler:activation_code'   : handlers.ActivationCodeHandler,
         'handler:userlist'          : handlers.UserList,
+        'handler:useradd'           : handlers.UserAdd,
         'handler:useredit'          : handlers.UserEdit,
 
         # form related
@@ -187,7 +188,7 @@ class BaseUserModule(Module):
                 self.add_url_rule(URL("/activation_code", "activation_code", self.config['handler:activation_code']))
         if self.config.enable_usereditor:
             self.add_url_rule(URL("/admin/", "userlist", self.config['handler:userlist']))
-            self.add_url_rule(URL("/admin/new", "useradd", handlers.UserAdd))
+            self.add_url_rule(URL("/admin/new", "useradd", self.config['handler:useradd']))
             self.add_url_rule(URL("/admin/<uid>", "useredit", self.config['handler:useredit']))
             self.add_url_rule(URL("/admin/<uid>/activate", "useractivate", handlers.UserActivate))
             self.add_url_rule(URL("/admin/<uid>/sendpw", "sendpw", handlers.SendPW))
